@@ -246,6 +246,16 @@
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\capa_entidad\capa_entidad.csproj">
+      <Project>{7cc8729c-3c15-4ba4-933e-375f285195a4}</Project>
+      <Name>capa_entidad</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\capa_negocio\capa_negocio.csproj">
+      <Project>{51a57e74-5859-4531-a781-39e22d494256}</Project>
+      <Name>capa_negocio</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

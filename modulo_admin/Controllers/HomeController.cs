@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using capa_negocio;
+using capa_entidad;
 
 namespace modulo_admin.Controllers
 {
@@ -25,6 +27,13 @@ namespace modulo_admin.Controllers
         public ActionResult Producto()
         {
             return View();
+        }
+        public JsonResult ListarUsuarios()
+        {
+            List<USUARIOS> lst = new List<USUARIOS>();
+            lst = new CN_Usuario().Listar();
+
+            return Json(lst, JsonRequestBehavior.AllowGet);
         }
     }
 }

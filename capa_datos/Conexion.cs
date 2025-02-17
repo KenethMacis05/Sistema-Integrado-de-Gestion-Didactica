@@ -7,6 +7,7 @@ namespace capa_datos
 {
     public class Conexion
     {
+        //public static string conexion = ConfigurationManager.ConnectionStrings["cadena"].ToString();
         public static string conexion;
 
         static Conexion()
