@@ -18,3 +18,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+:root {
+    --colorPrimario: #153960;
+}
+
+.esp-link {
+    color: #153960; font-weight: 900 !important
+}

@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Security.AccessControl;
+using System.Data;
 
 namespace capa_datos
 {
@@ -23,7 +24,7 @@ namespace capa_datos
         }
 
         public static string TestConnection()
-        {
+        {           
             using (SqlConnection conn = new SqlConnection(conexion))
             {
                 try

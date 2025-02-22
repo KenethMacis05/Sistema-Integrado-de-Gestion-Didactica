@@ -4,5 +4,136 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!--Titulo-->
 <h2>Usuario</h2>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+    <li class="breadcrumb-item active">Usuarios</li>
+</ol>
+
+<!--Contenedor-->
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-users"></i> Lista de usuarios
+    </div>
+    <div class="card-body">
+        <a href="#" class="btn btn-primary">Crear usuario</a>
+
+        <hr />
+
+        <!--Tabla-->
+        <table class="display cell-border" style="width: 100%" id="datatable">
+            <thead>
+                <tr>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
+    </div>    
+</div>
+
+@section scripts{
+    <script>
+        @*jQuery.ajax({
+            url: '@Url.Action("ListarUsuarios", "Home")',
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data)
+            }
+        })*@
+        
+        let dataTable;
+        let dataTableIsInitialized = false;
+
+        const dataTableOptions = {
+            lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+            pageLength: 5,
+            destroy: true,
+            language: {
+                lengthMenu: "Mostrar _MENU_ registros por página",
+                zeroRecords: "Ningún usuario encontrado",
+                info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+                infoEmpty: "Ningún usuario encontrado",
+                infoFiltered: "(filtrados desde _MAX_ registros totales)",
+                search: "Buscar:",
+                loadingRecords: "Cargando...",
+                paginate: {
+                    first: "Primero",
+                    last: "Último",
+                    next: "Siguiente",
+                    previous: "Anterior"
+                },
+            },
+            responsive: true,
+            ordering: false,
+            "ajax": {
+                url: '@Url.Action("ListarUsuarios", "Home")',
+                type: "GET",
+                dataType: "json",
+            },
+            "columns": [
+                { "data": "nombre" },
+                { "data": "apellido" },
+                { "data": "correo" },
+                {
+                    "data": "estado", "render": function (valor) {
+                        if (valor) {
+                            return "<span class='badge text-bg-success'>SI</span>"
+                        } else {
+                            return "<span class='badge text-bg-danger'>NO</span>"
+                        }
+                    }
+                },
+                {
+                    "defaultContent":
+                        '<button type:"button" class="btn btn-primary btn-sm"><i class="fa fa-pen"></i></button>' +
+                        '<button type:"button" class="btn btn-danger btn-sm ms-2"><i class="fa fa-trash"></i></button>',
+                    "width": "90"
+                }
+            ]            
+        };
+
+        const initDataTable = async () => {
+            if (dataTableIsInitialized) {
+                dataTable.destroy();
+            }
+
+            dataTable = $("#datatable").DataTable(dataTableOptions);
+            dataTableIsInitialized = true;
+        };
+
+        window.addEventListener("load", async () => {
+            await initDataTable();
+        });
+
+
+        @*tabla_usuarios = $("#tabla_usuarios").DataTable({
+            responsive: true,
+            ordering: false,
+            "ajax": {
+                url: '@Url.Action("ListarUsuarios", "Home")',
+                type: "GET",
+                dataType: "json",
+            },
+            "columns": [
+                { "data": "nombre" },
+                { "data": "apellido" },
+                { "data": "correo" },
+            ]
+        });*@
+
+    </script>
+}
+
 

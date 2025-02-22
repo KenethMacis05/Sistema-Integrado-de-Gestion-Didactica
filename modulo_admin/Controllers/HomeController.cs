@@ -28,12 +28,14 @@ namespace modulo_admin.Controllers
         {
             return View();
         }
+
+        [HttpGet]
         public JsonResult ListarUsuarios()
         {
             List<USUARIOS> lst = new List<USUARIOS>();
             lst = new CN_Usuario().Listar();
 
-            return Json(lst, JsonRequestBehavior.AllowGet);
+            return Json(new { data = lst}, JsonRequestBehavior.AllowGet);
         }
     }
 }
