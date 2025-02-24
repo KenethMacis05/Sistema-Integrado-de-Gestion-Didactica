@@ -24,5 +24,14 @@ textarea {
 }
 
 .esp-link {
-    color: #153960; font-weight: 900 !important
+    color: ; font-weight: 500 !important
+}
+
+@media (max-width: 768px) {
+    .img-marca {
+        display: none !important;
+    }
+    #layoutSidenav_nav {
+        padding-top: 50px !important;
+    }
 }
