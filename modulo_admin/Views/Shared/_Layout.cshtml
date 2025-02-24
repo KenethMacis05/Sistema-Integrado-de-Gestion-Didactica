@@ -3,12 +3,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body class="sb-nav-fixed">    
+<body class="sb-nav-fixed">
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion pt-2" style="background-color: white; border-right: 1px solid #E6E6E6" id="sidenavAccordion">
@@ -17,24 +17,24 @@
                         <img class="img-fluid img-marca" src="@Url.Content("~/assets/img/Marca.png")" alt="Descripción de la imagen" />
                         <hr style="background-color: #E6E6E6" class="m-2" />
                         <div class="sb-sidenav-menu-heading">Resumen</div>
-                        <a class="nav-link esp-link" style="color: #153960" href="@Url.Action("Index", "Home")">
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Index", "Home")">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
-                        </a>
-                        <a class="nav-link esp-link" href="@Url.Action("Usuario", "Home")">
+                        </a>                        
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Usuario", "Home")">
                             <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                             Usuarios
-                        </a>                    
+                        </a>
                         <div class="sb-sidenav-menu-heading">Mantenimiento</div>
-                        <a class="nav-link esp-link" href="@Url.Action("Categoria", "Mantenedor")">
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Categoria", "Mantenedor")">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                             Categorias
                         </a>
-                        <a class="nav-link esp-link" href="@Url.Action("Marca", "Mantenedor")">
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Marca", "Mantenedor")">
                             <div class="sb-nav-link-icon"><i class="fas fa-bookmark"></i></div>
                             Marcas
                         </a>
-                        <a class="nav-link esp-link" href="@Url.Action("Producto", "Mantenedor")">
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Producto", "Mantenedor")">
                             <div class="sb-nav-link-icon"><i class="fas fa-boxes"></i></div>
                             Productos
                         </a>
@@ -50,21 +50,39 @@
         </div>
         <div id="layoutSidenav_content" style="top: 0">
             <main>
-                <nav class="sb-topnav navbar navbar-expand navbar-dark" style="background-color: #153960; position:relative">
+                <div class="p-3 d-flex flex-wrap align-items-center justify-content-between">
+                    <!-- Logo UNAN -->
+                    <div class="me-2 mb-2 mb-md-0">
+                        <img class="img-fluid" src="@Url.Content("~/assets/img/www.unan.edu.ni.png")" alt="Logo UNAN" />
+                    </div>
+
+                    <!-- Iconos de redes sociales -->
+                    <div class="d-flex flex-wrap gap-1">
+                        <img class="img-fluid social-icon" src="@Url.Content("~/assets/img/Iconos redes sociales-01.png")" alt="UnanManaguaOficial" />
+                        <img class="img-fluid social-icon" src="@Url.Content("~/assets/img/Iconos redes sociales-02.png")" alt="Red Social 2" />
+                        <img class="img-fluid social-icon" src="@Url.Content("~/assets/img/Iconos redes sociales-03.png")" alt="Red Social 3" />
+                        <img class="img-fluid social-icon" src="@Url.Content("~/assets/img/Iconos redes sociales-04.png")" alt="Red Social 4" />
+                        <img class="img-fluid social-icon" src="@Url.Content("~/assets/img/Iconos redes sociales-05.png")" alt="Red Social 5" />
+                    </div>
+                </div>
+                <nav class="sb-topnav navbar navbar-expand navbar-dark esp-background" style="position: relative">
                     <div class="d-flex align-content-center justify-content-center">
-                        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+                        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-list text-white"></i></button>
                     </div>
                     <!-- Navbar Search-->
                     @*<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
-                </div>
-                </form>*@
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                        </div>
+                        </form>*@
                     <!-- Navbar-->
+                    <div class="text-center text-white w-100 p-3 titulo">
+                        <h1 class="fs-3">Sistema Integrado de Gestión Institucional - SIGI</h1>
+                    </div>
                     <ul class="navbar-nav ms-auto me-0 me-md-3 my-2 my-md-0">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw text-white"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="#!">Correo del Usuario</a></li>
                                 <li><hr class="dropdown-divider" /></li>
@@ -73,10 +91,13 @@
                         </li>
                     </ul>
                 </nav>
+                <div style="background-color: #0072BB" class="pt-2 pb-2 p-4 text-white text-end">
+                    <p class="m-0"><i class="fa fa-user"></i> 21018205 (KENETH ERNESTO MACIS FLORES)</p>
+                </div>
                 <div class="container-fluid px-4">
                     @RenderBody()
                 </div>
-            </main>            
+            </main>
             <footer class="position-relative" style="top: 50px">
                 <div class="container-fluid">
                     <div class="small" style="border-top: 1px solid #E6E6E6">

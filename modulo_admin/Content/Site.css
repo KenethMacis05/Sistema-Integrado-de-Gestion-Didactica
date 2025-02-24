@@ -20,18 +20,37 @@ textarea {
 }
 
 :root {
-    --colorPrimario: #153960;
+    --colorPrimario: #02116F;
+    --colorSecundario: #0072BB;
+    --colorGris: #E6E6E6;
+}
+
+.esp-background {
+    background-color: var(--colorPrimario)
+
 }
 
 .esp-link {
-    color: ; font-weight: 500 !important
+    color: var(--colorPrimario); font-weight: 500 !important
 }
 
 @media (max-width: 768px) {
-    .img-marca {
+    .img-marca, .titulo {
         display: none !important;
     }
     #layoutSidenav_nav {
         padding-top: 50px !important;
     }
+}
+
+/* Estilo hover para el enlace de Productos */
+.nav-link.esp-link-hover:hover {
+    background-color: var(--colorGris);
+    color: var(--colorSecundario);
+    text-decoration: none; /* Quitar subrayado */
+    border-radius: 4px; /* Bordes redondeados (opcional) */
+}
+
+.esp-link:hover {
+    color: var(--colorSecundario);
 }

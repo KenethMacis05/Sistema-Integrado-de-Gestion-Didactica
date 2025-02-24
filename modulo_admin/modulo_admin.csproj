@@ -119,7 +119,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\img\Iconos redes sociales-02.png" />
+    <Content Include="assets\img\Iconos redes sociales-03.png" />
+    <Content Include="assets\img\Iconos redes sociales-04.png" />
+    <Content Include="assets\img\Iconos redes sociales-05.png" />
+    <Content Include="assets\img\Iconos redes sociales-01.png" />
     <Content Include="assets\img\Marca.png" />
+    <Content Include="assets\img\www.unan.edu.ni.png" />
     <Content Include="Content\all.css" />
     <Content Include="Content\all.min.css" />
     <Content Include="Content\bootstrap-grid.css" />

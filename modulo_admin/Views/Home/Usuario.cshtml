@@ -3,9 +3,14 @@
     ViewBag.Title = "Usuario";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .esp-link:hover {
+        color: #0072BB !important;
+    }
+</style>
 
 <!--Titulo-->
-<h2 class="mt-2">Usuario</h2>
+<div class="alert text-center mt-4" style="background-color: #F7F7F7; border: 1px #D2D2D2 solid " role="alert"><h2 class="fs-3">Usuarios</h2></div>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
     <li class="breadcrumb-item active">Usuarios</li>
@@ -13,32 +18,49 @@
 
 <!--Contenedor-->
 <div class="card">
-    <div class="card-header">
-        <i class="fa fa-users"></i> Lista de usuarios
+    <div class="card-header pb-0 border-bottom-0">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active esp-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                    <i class="fa fa-users"></i> Lista de usuarios
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link esp-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link esp-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
+            </li>
+        </ul>        
     </div>
     <div class="card-body">
-        <a href="#" class="btn btn-primary">Crear usuario</a>
+        <div class="tab-content" id="myTabContent">
+            <!--Contenedor 1-->
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <a href="#" class="btn btn-primary">Crear usuario</a>
+                <hr />
+                <!--Tabla-->
+                <table class="display cell-border" style="width: 100%" id="datatable">
+                    <thead>
+                        <tr>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Correo</th>
+                            <th>Activo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
 
-        <hr />
-
-        <!--Tabla-->
-        <table class="display cell-border" style="width: 100%" id="datatable">
-            <thead>
-                <tr>
-                    <th>Nombres</th>
-                    <th>Apellidos</th>
-                    <th>Correo</th>
-                    <th>Activo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-
-            </tfoot>
-        </table>
-    </div>    
+                    </tfoot>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+        </div>        
+    </div>
 </div>
 
 @section scripts{
@@ -52,7 +74,7 @@
                 console.log(data)
             }
         })*@
-        
+
         let dataTable;
         let dataTableIsInitialized = false;
 
@@ -101,7 +123,7 @@
                         '<button type:"button" class="btn btn-danger btn-sm ms-2"><i class="fa fa-trash"></i></button>',
                     "width": "90"
                 }
-            ]            
+            ]
         };
 
         const initDataTable = async () => {
