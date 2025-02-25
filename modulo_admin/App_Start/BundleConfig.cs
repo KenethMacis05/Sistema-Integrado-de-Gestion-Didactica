@@ -11,11 +11,12 @@ namespace modulo_admin
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/fontawesome/all.min.js",
                         "~/Scripts/DataTables/jquery.dataTables.js",
-                        "~/Scripts/DataTables/dataTables.responsive.js",
+                        "~/Scripts/DataTables/dataTables.responsive.js",                        
                         "~/Scripts/jquery-{version}.js"));
             
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.bundle.js",
+                      "~/Scripts/bootstrap.bundle.min.js",
                       "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

@@ -54,3 +54,11 @@ textarea {
 .esp-link:hover {
     color: var(--colorSecundario);
 }
+
+.table-cabezera {
+    background: var(--colorSecundario) !important
+}
+
+.titulo {
+    height: 100px !important;
+}

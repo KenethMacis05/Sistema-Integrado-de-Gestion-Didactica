@@ -281,10 +281,12 @@ table.dataTable td {
 }
 .dataTables_wrapper .dataTables_length {
   float: left;
+  margin-bottom: 10px;
 }
 .dataTables_wrapper .dataTables_filter {
   float: right;
   text-align: right;
+  margin-bottom: 10px;
 }
 .dataTables_wrapper .dataTables_filter input {
   margin-left: 0.5em;
