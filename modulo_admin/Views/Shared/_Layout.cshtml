@@ -54,6 +54,7 @@
         </div>
         <div id="layoutSidenav_content" style="top: 0">
             <main>
+                @*
                 <div class="p-3 d-flex flex-wrap align-items-center justify-content-between">
                     <!-- Logo UNAN -->
                     <div class="me-2 mb-2 mb-md-0">
@@ -68,11 +69,10 @@
                         <img class="img-fluid social-icon" src="@Url.Content("~/assets/img/Iconos redes sociales-04.png")" alt="Red Social 4" />
                         <img class="img-fluid social-icon" src="@Url.Content("~/assets/img/Iconos redes sociales-05.png")" alt="Red Social 5" />
                     </div>
-                </div>
+                </div>                 
+                *@
                 <nav class="sb-topnav navbar navbar-expand navbar-dark esp-background" style="position: relative; height: 80px">
-                    <div class="d-flex align-content-center justify-content-center">
-                        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-list text-white"></i></button>
-                    </div>
+                    
                     <!-- Navbar Search-->
                     @*<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                         <div class="input-group">
@@ -82,21 +82,27 @@
                         </form>*@
                     <!-- Navbar-->
                     <div class="text-center text-white w-100">
-                        <h1 class="fs-3">Sistema Integrado de Gestión Institucional - SIGI</h1>
+                        <h1 class="fs-3">Sistema Integrado de Gestión Institucional - <span style="color: #FBB907">SIGI</span></h1>
                     </div>
-                    <ul class="navbar-nav ms-auto me-0 me-md-3 my-2 my-md-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-cog fa-fw text-white"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#!">Correo del Usuario</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="#!">Cerrar Sesion</a></li>
-                            </ul>
-                        </li>
-                    </ul>
                 </nav>
                 <div style="background-color: #0072BB" class="pt-2 pb-2 p-4 text-white text-end">
-                    <p class="m-0"><i class="fa fa-user"></i> 21018205 (KENETH ERNESTO MACIS FLORES)</p>
+                    <div class="d-flex ">
+                        <div class="d-flex align-content-center justify-content-center m-0 p-0">
+                            <div class="d-flex align-content-center justify-content-center">
+                                <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-list text-white"></i></button>                               
+                            </div>
+                        </div>
+                        <ul class="navbar-nav ms-auto me-0 me-md-3 my-2 my-md-0">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-cog fa-fw text-white"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#!">Correo del Usuario</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" href="#!">Cerrar Sesion</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div style="display: flex;">
                     <div style="background: #DC291E; width: 33.3%; height: 6px;"></div>
