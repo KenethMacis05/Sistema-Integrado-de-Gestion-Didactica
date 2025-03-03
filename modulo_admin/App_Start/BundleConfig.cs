@@ -20,10 +20,10 @@ namespace modulo_admin
                       "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",              
-                      "~/Content/DataTables/css/jquery.dataTables.css",              
-                      "~/Content/DataTables/css/responsive.dataTables.css",              
-                      "~/Content/Site.css"));       
+                      "~/Content/bootstrap.css",
+                      "~/Content/DataTables/css/jquery.dataTables.css",
+                      "~/Content/DataTables/css/responsive.dataTables.css",
+                      "~/Content/Site.css"));                         
         }
     }
 }

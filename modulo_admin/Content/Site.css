@@ -27,38 +27,104 @@ textarea {
 
 .esp-background {
     background-color: var(--colorPrimario)
-
 }
 
 .esp-link {
-    color: var(--colorPrimario); font-weight: 500 !important
+    color: var(--colorPrimario);
+    font-weight: 500 !important
 }
 
 @media (max-width: 768px) {
-    .img-marca, .titulo {
+    .img-marca, .titulo, .esp-background {
         display: none !important;
     }
-    #layoutSidenav_nav {
-        padding-top: 50px !important;
-    }
-}
 
-/* Estilo hover para el enlace de Productos */
-.nav-link.esp-link-hover:hover {
-    background-color: var(--colorGris);
-    color: var(--colorSecundario);
-    text-decoration: none; /* Quitar subrayado */
-    border-radius: 4px; /* Bordes redondeados (opcional) */
+    .sb-topnav {
+        position: fixed !important;
+    }
+
+    .container-fluid {
+        margin-top: 70px
+    }
+
+    #layoutSidenav_nav {
+        margin-top: 50px
+    }
 }
 
 .esp-link:hover {
+    color: var(--colorSecundario) !important
+}
+
+.nav-link.esp-link-hover:hover {
+    background-color: var(--colorGris);
+    color: var(--colorSecundario);
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.nav-link.esp-link-hover:focus {
+    background-color: var(--colorGris);
+    color: var(--colorSecundario);
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+/* Estilos para los enlaces del submenú */
+.nav-link.esp-submenu-link {
+    color: #343A40;
+    position: relative;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+/* Crear la línea inferior con ::after */
+.nav-link.esp-submenu-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0; /* Inicialmente sin anchura */
+    height: 2px; /* Grosor de la línea */
+    background-color: var(--colorSecundario);
+    transition: width 0.3s ease; /* Animación de la anchura */
+}
+
+/* Animación al hacer hover */
+.nav-link.esp-submenu-link:hover {
     color: var(--colorSecundario);
 }
 
-.table-cabezera {
+.nav-link.esp-submenu-link:hover::after {
+        width: 100%; /* La línea se expande de izquierda a derecha */
+}
+
+.table-cabezera {    
     background: var(--colorSecundario) !important
 }
 
 .titulo {
     height: 100px !important;
+}
+
+.collapse {
+    max-height: 0 !important; /* Altura inicial (colapsado) */
+    overflow: hidden !important; /* Oculta el contenido que excede la altura */
+    transition: max-height 0.5s ease !important; /* Animación suave */
+}
+
+    .collapse.show {
+        max-height: 500px !important; /* Altura máxima (ajusta según tu contenido) */
+    }
+
+.sb-sidenav-collapse-arrow i {
+    transition: transform 0.3s ease !important; /* Animación para el ícono */
+}
+
+.collapsed .sb-sidenav-collapse-arrow i {
+    transform: rotate(0deg) !important; /* Flecha hacia abajo */
+}
+
+.sb-sidenav-collapse-arrow i {
+    transform: rotate(180deg) !important; /* Flecha hacia arriba */
 }
