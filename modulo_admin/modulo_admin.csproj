@@ -187,6 +187,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +202,7 @@
     <Content Include="assets\img\Iconos redes sociales-04.png" />
     <Content Include="assets\img\Iconos redes sociales-05.png" />
     <Content Include="assets\img\Iconos redes sociales-01.png" />
+    <Content Include="assets\img\loginIMG1920x180-711x682.png" />
     <Content Include="assets\img\Marca.png" />
     <Content Include="assets\img\www.unan.edu.ni.png" />
     <Content Include="Content\all.css" />
@@ -387,6 +395,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Login.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
