@@ -53,34 +53,66 @@
             transition: border-color 0.3s ease-in-out;
         }
 
-        .input-wrapper input {
-            flex: 1;
-            border: none;
-            background: none;
-            padding: 10px;
-            font-size: 14px;
-            outline: none;
-            color: #333;
-        }
+            .input-wrapper input {
+                flex: 1;
+                border: none;
+                background: none;
+                padding: 10px;
+                font-size: 14px;
+                outline: none;
+                color: #333;
+            }
 
-        .input-wrapper .icon {
-            background-color: #0a1f5e;
-            padding: 7px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 3px;
-            color: white;
+            .input-wrapper .icon {
+                background-color: #0a1f5e;
+                padding: 7px 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 3px;
+                color: white;
+                cursor: pointer;
+            }
+
+            .input-wrapper:focus-within {
+                border: 1px solid #0072BB;
+                box-shadow: 0px 0px 5px rgba(0, 115, 187, 0.658);
+            }
+
+                .input-wrapper:focus-within .icon {
+                    background-color: #0072BB;
+                }
+
+        .toggle-password {
             cursor: pointer;
+            color: #0072BB;
+            text-decoration: underline;
         }
 
-        .input-wrapper:focus-within {
-            border: 1px solid #0072BB;
-            box-shadow: 0px 0px 5px rgba(0, 115, 187, 0.658);
+        .btnLogin {
+            box-shadow: -3px 3px 10px rgb(128, 128, 128, 0.658);
         }
 
-        .input-wrapper:focus-within .icon {
-            background-color: #0072BB;
+            .btnLogin:hover {
+                background-color: #0283D5 !important;
+            }
+
+            .btnLogin:active {
+                background-color: #025E99 !important;
+            }
+
+        @media (max-width: 768px){
+            .separador{
+                margin: 1rem 0px !important;
+            }
+            .contenedorLogin{
+                padding: 3rem 1rem !important
+            }
+        }
+        .btnLoginCorreoInstitucional:hover{
+            background: #F4F4F4;
+            border-color: #0072BB !important;
+            color: #0072BB !important;
         }
     </style>
 </head>
@@ -100,41 +132,41 @@
             </div>
             <div class="col-lg-5 p-5 contenedorLogin">
                 <div class="login-header text-center mb-4">
-                    <h1 class="fw-bold">INICIAR SESIÓN</h1>
+                    <h1 class="fw-bold fs-2" style="color: #555555">INICIAR SESIÓN</h1>
                     <p class="text-muted">Ingrese sus credenciales para acceder</p>
                 </div>
                 <form>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Usuario :</label>
+                        <label for="username" class="form-label" style="color: #555555">Usuario</label>
                         <div class="input-wrapper">
-                            <input type="text" id="username" class="border-0 shadow-none"
-                                placeholder="Ingrese su nombre de usuario">
+                            <input type="text" id="username" required class="border-0 shadow-none" placeholder="Ingrese su nombre de usuario">
                             <span class="icon">
                                 <i class="bi bi-person-fill fs-5"></i>
                             </span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña:</label>
+                        <label for="password" class="form-label" style="color: #555555">Contraseña:</label>
                         <div class="input-wrapper">
-                            <input type="password" id="password" class="border-0 shadow-none" placeholder="Ingrese su contraseña">
+                            <input type="password" id="password" required class="border-0 shadow-none" placeholder="Ingrese su contraseña">
                             <span class="icon" id="togglePassword">
                                 <i class="bi bi-key-fill fs-5"></i>
                             </span>
                         </div>
+                        <p class="mt-2 toggle-password" id="togglePasswordText">Ver contraseña</p>
                     </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">¿Olvidó su contraseña?</label>
+                    <div class="mb-5 form-check text-end">
+                        <a class="" href="#" style="color: #02116F">¿Olvidó su contraseña?</a>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100" style="background-color: #0072BB;">Iniciar
+                    <button type="submit" class="btn btn-primary w-100 fw-bold btnLogin" style="background-color: #0072BB;">
+                        Iniciar
                         Sesión</button>
-                    <div class="my-3 d-flex align-items-center">
-                        <div class="flex-grow-1 bg-secondary" style="height: 1.5px;"></div>
-                        <div class="mx-3">o</div>
-                        <div class="flex-grow-1 bg-secondary" style="height: 1.5px;"></div>
+                    <div class="mt-5 mb-5 separador d-flex align-items-center">
+                        <div class="flex-grow-1" style="height: 1.5px; background-color: #C2C2C2"></div>
+                        <div class="mx-3" style="color: #C2C2C2">O</div>
+                        <div class="flex-grow-1" style="height: 1.5px; background-color: #C2C2C2"></div>
                     </div>
-                    <button type="submit" class="btn btn-outline-primary w-100" style="border-color: #02116F; color: #02116F;">
+                    <button type="submit" class="btn btn-outline-primary w-100 btnLoginCorreoInstitucional" style="border-color: #02116F; color: #02116F;">
                         Iniciar Sesión por Correo Institucional
                     </button>
                 </form>
@@ -145,32 +177,36 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+
     <!-- Script para mostrar/ocultar contraseña -->
     <script>
-        const togglePassword = document.getElementById('togglePassword');
+        const togglePasswordText = document.getElementById('togglePasswordText');
         const passwordInput = document.getElementById('password');
+        const togglePasswordIcon = document.getElementById('togglePassword');
 
-        togglePassword.addEventListener('click', function () {
+        togglePasswordText.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
 
-            // Cambiar el ícono
+            // Cambiar el texto y el ícono
             if (type === 'password') {
-                togglePassword.innerHTML = '<i class="bi bi-key-fill fs-5"></i>';
+                togglePasswordText.textContent = 'Ver contraseña';
+                togglePasswordIcon.innerHTML = '<i class="bi bi-key-fill fs-5"></i>';
             } else {
-                togglePassword.innerHTML = '<i class="bi bi-eye-slash fs-5"></i>';
+                togglePasswordText.textContent = 'Ocultar contraseña';
+                togglePasswordIcon.innerHTML = '<i class="bi bi-eye-slash fs-5"></i>';
             }
         });
 
         // Cambiar el ícono al hacer focus en el input de contraseña
         passwordInput.addEventListener('focus', function () {
-            togglePassword.innerHTML = '<i class="bi bi-eye-fill fs-5"></i>';
+            togglePasswordIcon.innerHTML = '<i class="bi bi-eye-fill fs-5"></i>';
         });
 
         // Cambiar el ícono al perder el focus si la contraseña está oculta
         passwordInput.addEventListener('blur', function () {
             if (passwordInput.getAttribute('type') === 'password') {
-                togglePassword.innerHTML = '<i class="bi bi-key-fill fs-5"></i>';
+                togglePasswordIcon.innerHTML = '<i class="bi bi-key-fill fs-5"></i>';
             }
         });
     </script>
