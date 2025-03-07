@@ -12,13 +12,6 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
-
 :root {
     --colorPrimario: #02116F;
     --colorSecundario: #0072BB;
@@ -127,4 +120,109 @@ textarea {
 
 .sb-sidenav-collapse-arrow i {
     transform: rotate(180deg) !important; /* Flecha hacia arriba */
+}
+
+/*Estilos del Login*/
+.bodyLogin {
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 1rem;
+}
+
+.contenedorLogin {
+    background-color: #fff;
+    border-radius: 0.625rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.login-image {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 0.625rem;
+    border-bottom-left-radius: 0.625rem;
+}
+
+.cartLogin {
+    border-radius: 0.625rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.input-wrapper input {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+    color: #333;
+}
+
+.input-wrapper .icon {
+    background-color: #0a1f5e;
+    padding: 11px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+}
+
+.input-wrapper:focus-within {
+    border: 1px solid #0072BB;
+    box-shadow: 0px 0px 5px rgba(0, 115, 187, 0.658);
+}
+
+.input-wrapper:focus-within .icon {
+    background-color: #0072BB;
+}
+
+.toggle-password {
+    cursor: pointer;
+    color: #0072BB;
+    text-decoration: underline;
+}
+
+.btnLogin {
+    box-shadow: -3px 3px 10px rgb(128, 128, 128, 0.658);
+}
+
+.btnLogin:hover {
+    background-color: #0283D5 !important;
+}
+
+.btnLogin:active {
+    background-color: #025E99 !important;
+}
+
+@media (max-width: 768px) {
+    .separador {
+        margin: 1rem 0px !important;
+    }
+
+    .contenedorLogin {
+        padding: 3rem 1rem !important
+    }
+}
+
+.btnLoginCorreoInstitucional:hover {
+    background: #F4F4F4;
+    border-color: #0072BB !important;
+    color: #0072BB !important;
 }
