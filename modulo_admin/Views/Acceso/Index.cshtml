@@ -1,0 +1,111 @@
+﻿
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <title>Login</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="bodyLogin">
+    <div class="container">
+        <div class="row cartLogin">
+            <div class="col-lg-7 d-none d-lg-block p-0">
+                <!-- Imagen responsiva para pantallas grandes -->
+                <picture>
+                    <source srcset="@Url.Content("~/assets/img/loginIMG1920x180-711x682.png")" media="(min-width: 768px)">
+                    <source srcset="@Url.Content("~/assets/img/loginIMG1920x180-711x682.png")" media="(min-width: 1920px)">
+                    <source srcset="@Url.Content("~/assets/img/loginIMG1920x180-711x682.png")" media="(min-width: 1200px)">
+                    <img src="@Url.Content("~/assets/img/loginIMG1920x180-711x682.png")" alt="2025: Eficiencia y Calidad para seguir en Victorias"
+                         class="login-image">
+                </picture>
+            </div>
+            <div class="col-lg-5 p-5 contenedorLogin">
+                <div class="login-header text-center mb-4">
+                    <h1 class="fw-bold fs-2" style="color: #555555">INICIAR SESIÓN</h1>
+                    <p class="text-muted">Ingrese sus credenciales para acceder</p>
+                </div>
+                <form method="post" action="@Url.Action("Index", "Acceso")">
+                    <div class="mb-3">
+                        <label for="usuario" class="form-label" style="color: #555555">Usuario</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="usuario" id="usuario" required class="border-0 shadow-none" placeholder="Ingrese su nombre de usuario">
+                            <span class="icon">
+                                <i class="fas fa-user fs-5"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label" style="color: #555555">Contraseña:</label>
+                        <div class="input-wrapper">
+                            <input type="password" name="password" id="password" required class="border-0 shadow-none" placeholder="Ingrese su contraseña">
+                            <span class="icon" id="togglePassword">
+                                <i class="fas fa-key fs-5"></i>
+                            </span>
+                        </div>
+                        <p class="mt-2 toggle-password" id="togglePasswordText">Ver contraseña</p>
+                    </div>
+                    <div class="mb-5 form-check text-end">
+                        <a class="" href="#" style="color: #02116F">¿Olvidó su contraseña?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold btnLogin" style="background-color: #0072BB;">
+                        Iniciar
+                        Sesión
+                    </button>
+                    <div class="mt-5 mb-5 separador d-flex align-items-center">
+                        <div class="flex-grow-1" style="height: 1.5px; background-color: #C2C2C2"></div>
+                        <div class="mx-3" style="color: #C2C2C2">O</div>
+                        <div class="flex-grow-1" style="height: 1.5px; background-color: #C2C2C2"></div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary w-100 btnLoginCorreoInstitucional" style="border-color: #02116F; color: #02116F;">
+                        Iniciar Sesión por Correo Institucional
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        window.addEventListener('DOMContentLoaded', event => {
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', event => {
+                    event.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+                });
+            }
+
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const collapseTrigger = document.getElementById('collapseTrigger');
+            const collapseContent = document.getElementById('collapseLayouts');
+            const arrowIcon = collapseTrigger.querySelector('.sb-sidenav-collapse-arrow i');
+
+            collapseTrigger.addEventListener('click', function (event) {
+                event.preventDefault();
+                collapseTrigger.classList.toggle('collapsed');
+                collapseContent.classList.toggle('show');
+
+                // Cambiar el ícono de la flecha
+                if (collapseTrigger.classList.contains('collapsed')) {
+                    arrowIcon.classList.remove('fa-angle-up');
+                    arrowIcon.classList.add('fa-angle-down');
+                } else {
+                    arrowIcon.classList.remove('fa-angle-down');
+                    arrowIcon.classList.add('fa-angle-up');
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

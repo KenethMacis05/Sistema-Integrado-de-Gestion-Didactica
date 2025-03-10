@@ -45,6 +45,7 @@
                 <table class="display cell-border" style="width: 100%" id="datatable">
                     <thead class="table-cabezera cell-border" style="background: #0072BB; color: white">
                         <tr>
+                            <th>Usuario</th>
                             <th>Nombres</th>
                             <th>Apellidos</th>
                             <th>Correo</th>
@@ -260,7 +261,7 @@
             });
         }        
 
-@*jQuery.ajax({
+jQuery.ajax({
         url: '@Url.Action("ListarUsuarios", "Home")',
         type: "GET",
         dataType: "json",
@@ -268,7 +269,7 @@
         success: function (data) {
             console.log(data)
         }
-    })*@
+    })
 
         let dataTable;
         let dataTableIsInitialized = false;
@@ -300,6 +301,7 @@
                 dataType: "json",
                 },
                 "columns": [
+                { "data": "usuario" },
                 { "data": "nombre" },
                 { "data": "apellido" },
                 { "data": "correo" },

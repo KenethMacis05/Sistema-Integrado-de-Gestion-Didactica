@@ -34,6 +34,7 @@ namespace capa_datos
                                 new USUARIOS
                                 {
                                     id_usuario = Convert.ToInt32(dr["id_usuario"]),
+                                    usuario = dr["usuario"].ToString(),
                                     nombre = dr["nombre"].ToString(),
                                     apellido = dr["apellido"].ToString(),
                                     correo = dr["correo"].ToString(),
