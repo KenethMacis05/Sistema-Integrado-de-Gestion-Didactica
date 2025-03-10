@@ -30,28 +30,28 @@
                             Usuarios
                         </a>
                         <div class="sb-sidenav-menu-heading">Mantenimiento</div>
-                        <a class="nav-link collapsed esp-link esp-link-hover" href="#" id="collapseTrigger">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                            Layouts
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapseLayouts">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link esp-submenu-link" href="layout-static.html">Static Navigation</a>
-                                <a class="nav-link esp-submenu-link" href="layout-sidenav-light.html">Light Sidenav</a>
-                            </nav>
-                        </div>
-                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Categoria", "Mantenedor")">
+                        @*<a class="nav-link collapsed esp-link esp-link-hover" href="#" id="collapseTrigger">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Layouts
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link esp-submenu-link" href="layout-static.html">Static Navigation</a>
+                                    <a class="nav-link esp-submenu-link" href="layout-sidenav-light.html">Light Sidenav</a>
+                                </nav>
+                            </div>*@
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Matriz_de_Integracion", "Planificacion")">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                            Categorias
+                            Matriz de Integración
                         </a>
-                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Marca", "Mantenedor")">
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Plan_Didactico_Semestral", "Planificacion")">
                             <div class="sb-nav-link-icon"><i class="fas fa-bookmark"></i></div>
-                            Marcas
+                            Plan Semestral
                         </a>
-                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Producto", "Mantenedor")">
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Plan_de_Clases_Diario", "Planificacion")">
                             <div class="sb-nav-link-icon"><i class="fas fa-boxes"></i></div>
-                            Productos
+                            Plan de Clases
                         </a>
                     </div>
                 </div>
@@ -143,6 +143,6 @@
             });
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
