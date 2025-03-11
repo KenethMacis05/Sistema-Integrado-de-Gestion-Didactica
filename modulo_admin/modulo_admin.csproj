@@ -196,6 +196,7 @@
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilidades\Encriptar.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\img\Iconos redes sociales-02.png" />
@@ -572,6 +573,10 @@
     <Content Include="Scripts\jquery-3.7.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\capa_datos\capa_datos.csproj">
+      <Project>{8b93b009-e132-4fe4-858e-96b770495d1d}</Project>
+      <Name>capa_datos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\capa_entidad\capa_entidad.csproj">
       <Project>{7cc8729c-3c15-4ba4-933e-375f285195a4}</Project>
       <Name>capa_entidad</Name>

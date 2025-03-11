@@ -12,6 +12,7 @@ namespace modulo_admin.Controllers
     {
         public ActionResult Index()
         {
+            var usuario = Session["UsuarioAutenticado"] as USUARIOS;            
             return View();
         }public ActionResult Usuario()
         {

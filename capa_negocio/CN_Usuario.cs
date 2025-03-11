@@ -13,6 +13,6 @@ namespace capa_negocio
         public List<USUARIOS> Listar()
         {
             return cd_usuario.Listar();
-        }
+        }        
     }
 }
