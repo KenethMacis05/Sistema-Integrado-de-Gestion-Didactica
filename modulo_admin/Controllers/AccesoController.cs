@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 using capa_datos;
 using capa_entidad;
-using modulo_admin.Utilidades;
 
 namespace modulo_admin.Controllers
 {
