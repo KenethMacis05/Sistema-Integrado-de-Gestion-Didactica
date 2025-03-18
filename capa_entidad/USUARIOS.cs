@@ -9,12 +9,14 @@ namespace capa_entidad
     public class USUARIOS
     {
         public int id_usuario { get; set; }
+        public string pri_nombre { get; set; }
+        public string seg_nombre { get; set; }
+        public string pri_apellido { get; set; }
+        public string seg_apellido { get; set; }
         public string usuario { get; set; }
-        public string nombre { get; set; }
-        public string apellido { get; set; }
-        public string correo { get; set; }
         public string contrasena { get; set; }
-        public bool restablecer { get; set; }
+        public string correo { get; set; }
+        public int fk_rol { get; set; }
         public bool estado { get; set; }
 
     }

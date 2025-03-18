@@ -35,12 +35,14 @@ namespace capa_datos
                                 new USUARIOS
                                 {
                                     id_usuario = Convert.ToInt32(dr["id_usuario"]),
+                                    pri_nombre = dr["pri_nombre"].ToString(),
+                                    seg_nombre = dr["seg_nombre"].ToString(),
+                                    pri_apellido = dr["pri_apellido"].ToString(),
+                                    seg_apellido = dr["seg_apellido"].ToString(),
                                     usuario = dr["usuario"].ToString(),
-                                    nombre = dr["nombre"].ToString(),
-                                    apellido = dr["apellido"].ToString(),
-                                    correo = dr["correo"].ToString(),
                                     contrasena = dr["contrasena"].ToString(),
-                                    restablecer = Convert.ToBoolean(dr["restablecer"]),
+                                    correo = dr["correo"].ToString(),
+                                    fk_rol = Convert.ToInt32(dr["fk_rol"]),
                                     estado = Convert.ToBoolean(dr["estado"])
                                 }
                                 );
@@ -82,12 +84,14 @@ namespace capa_datos
                             usuarioAutenticado = new USUARIOS
                             {
                                 id_usuario = Convert.ToInt32(dr["id_usuario"]),
+                                pri_nombre = dr["pri_nombre"].ToString(),
+                                seg_nombre = dr["seg_nombre"].ToString(),
+                                pri_apellido = dr["pri_apellido"].ToString(),
+                                seg_apellido = dr["seg_apellido"].ToString(),
                                 usuario = dr["usuario"].ToString(),
-                                nombre = dr["nombre"].ToString(),
-                                apellido = dr["apellido"].ToString(),
+                                contrasena = dr["contrasena"].ToString(),                                
                                 correo = dr["correo"].ToString(),
-                                contrasena = dr["contrasena"].ToString(),
-                                restablecer = Convert.ToBoolean(dr["restablecer"]),
+                                fk_rol = Convert.ToInt32(dr["fk_rol"]),
                                 estado = Convert.ToBoolean(dr["estado"])
                             };
                         }
