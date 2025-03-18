@@ -105,5 +105,130 @@ namespace capa_datos
 
             return usuarioAutenticado; // Retorna el usuario autenticado o null si no se encontró
         }
+
+        // Registrar usuario
+        public int RegistrarUsuario(USUARIOS usuario, out string mensaje)
+        {
+            int idautogenerado = 0;
+            mensaje = string.Empty;            
+
+            try
+            {
+                // Crear conexión
+                using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
+                {
+                    // Consulta SQL con parámetros
+                    SqlCommand cmd = new SqlCommand("usp_RegistrarUsuario", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar parámetros
+                    cmd.Parameters.AddWithValue("pri_nombre", usuario.pri_nombre);
+                    cmd.Parameters.AddWithValue("seg_nombre", usuario.seg_nombre);
+                    cmd.Parameters.AddWithValue("pri_apellido", usuario.pri_apellido);
+                    cmd.Parameters.AddWithValue("seg_apellido", usuario.seg_apellido);
+                    cmd.Parameters.AddWithValue("usuario", usuario.usuario);
+                    cmd.Parameters.AddWithValue("contrasena", usuario.contrasena);
+                    cmd.Parameters.AddWithValue("correo", usuario.correo);
+                    cmd.Parameters.AddWithValue("fk_rol", usuario.fk_rol);
+                    cmd.Parameters.AddWithValue("estado", usuario.estado);
+
+                    // Parámetros de salida
+                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+
+                    // Abrir conexión
+                    conexion.Open();
+
+                    // Ejecutar comando
+                    cmd.ExecuteNonQuery();
+
+                    // Obtener valores de los parámetros de salida
+                    idautogenerado = Convert.ToInt32(cmd.Parameters["Resultado"].Value);                    
+                    mensaje = cmd.Parameters["@mensaje"].Value.ToString();                    
+                }
+            }
+            catch (Exception ex)
+            {
+                idautogenerado = 0;
+                mensaje = "Error al registrar el usuario: " + ex.Message;
+            }
+
+            return idautogenerado;
+        }
+
+        // Actualizar usuario
+        public bool ActualizarUsuario(USUARIOS usuario, out string mensaje)
+        {
+            bool resultado = false;            
+            mensaje = string.Empty;
+            try
+            {
+                // Crear conexión
+                using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
+                {
+                    // Consulta SQL con parámetros
+                    SqlCommand cmd = new SqlCommand("usp_ModificarUsuario", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    // Agregar parámetros
+                    cmd.Parameters.AddWithValue("id_usuario", usuario.id_usuario);
+                    cmd.Parameters.AddWithValue("pri_nombre", usuario.pri_nombre);
+                    cmd.Parameters.AddWithValue("seg_nombre", usuario.seg_nombre);
+                    cmd.Parameters.AddWithValue("pri_apellido", usuario.pri_apellido);
+                    cmd.Parameters.AddWithValue("seg_apellido", usuario.seg_apellido);
+                    cmd.Parameters.AddWithValue("usuario", usuario.usuario);
+                    cmd.Parameters.AddWithValue("contrasena", usuario.contrasena);
+                    cmd.Parameters.AddWithValue("correo", usuario.correo);
+                    cmd.Parameters.AddWithValue("fk_rol", usuario.fk_rol);
+                    cmd.Parameters.AddWithValue("estado", usuario.estado);
+                    // Parámetros de salida
+                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+                    // Abrir conexión
+                    conexion.Open();
+                    // Ejecutar comando
+                    cmd.ExecuteNonQuery();
+                    // Obtener valores de los parámetros de salida
+                    resultado = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
+                    mensaje = cmd.Parameters["mensaje"].Value.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                mensaje = "Error al actualizar el usuario: " + ex.Message;
+            }
+            return resultado;
+        }
+
+        // Eliminar usuario
+        public bool EliminarUsuario(int id_usuario, out string mensaje)
+        {
+            bool resultado = false;
+            mensaje = string.Empty;
+            try
+            {
+                // Crear conexión
+                using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
+                {
+                    // Consulta SQL con parámetros
+                    SqlCommand cmd = new SqlCommand("DELETE TOP (1) FROM USUARIOS WHERE id_usuario = @id_usuario", conexion);
+                    cmd.CommandType = CommandType.Text;
+                    // Agregar parámetros
+                    cmd.Parameters.AddWithValue("id_usuario", id_usuario);                    
+                    
+                    // Abrir conexión
+                    conexion.Open();                    
+
+                    // Obtener valores de los parámetros de salida
+                    resultado = cmd.ExecuteNonQuery() > 0 ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                mensaje = "Error al eliminar el usuario: " + ex.Message;
+            }
+            return resultado;
+        }
     }
 }

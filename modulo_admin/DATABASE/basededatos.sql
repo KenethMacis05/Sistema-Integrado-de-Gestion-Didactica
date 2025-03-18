@@ -471,7 +471,7 @@ GO
 INSERT INTO USUARIOS(pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, fk_rol)
 VALUES 
     ('Keneth', 'Ernesto', 'Macis', 'Flores', 'Keny', 
-        'ken050802', 
+        'Ken050802.05',
         'ken123oficial@gmail.com', 
         (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR')),
 
@@ -1170,3 +1170,5 @@ BEGIN
         SET @Resultado = 0
 END
 GO
+
+select * from USUARIOS
