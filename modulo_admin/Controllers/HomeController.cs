@@ -5,30 +5,47 @@ using System.Web;
 using System.Web.Mvc;
 using capa_negocio;
 using capa_entidad;
+using modulo_admin.Filters;
+using modulo_admin.Controllers;
+using capa_datos;
 
 namespace modulo_admin.Controllers
 {
+    [VerificarSession]
     public class HomeController : Controller
     {
+        private static USUARIOS SesionUsuario;
+
         public ActionResult Index()
         {
-            var usuario = Session["UsuarioAutenticado"] as USUARIOS;            
-            return View();
-        }public ActionResult Usuario()
-        {
-            return View();
-        }public ActionResult Categoria()
-        {
+
+
+            if (Session["UsuarioAutenticado"] != null)
+            {
+                SesionUsuario = (USUARIOS)Session["UsuarioAutenticado"];
+            }
+            else
+            {
+                SesionUsuario = new USUARIOS();
+            }
+
+            try
+            {                
+                ViewBag.NombreUsuario = SesionUsuario.pri_nombre + " " + SesionUsuario.pri_apellido;                
+            }
+            catch (Exception ex)
+            {                                
+                ViewBag.Mensaje = "Ocurrió un error al cargar los datos del usuario";
+                return View();
+            }
+
             return View();
         }
-        public ActionResult Marca()
+        
+        public ActionResult Usuario()
         {
             return View();
-        }
-        public ActionResult Producto()
-        {
-            return View();
-        }
+        }               
 
         [HttpGet]
         public JsonResult ListarUsuarios()
@@ -37,6 +54,12 @@ namespace modulo_admin.Controllers
             lst = new CN_Usuario().Listar();
 
             return Json(new { data = lst}, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult CerrarSesion()
+        {
+            Session["UsuarioAutenticado"] = null;            
+            return RedirectToAction("Index", "Acceso");
         }
     }
 }

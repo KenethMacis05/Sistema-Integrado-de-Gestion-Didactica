@@ -55,12 +55,5 @@ namespace modulo_admin.Controllers
             }
             
         }
-
-        public ActionResult CerrarSesion()
-        {
-            Session["UsuarioAutenticado"] = null;
-            Session.Abandon();
-            return View();
-        }
     }
 }

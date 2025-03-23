@@ -471,7 +471,7 @@ GO
 INSERT INTO USUARIOS(pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, fk_rol)
 VALUES 
     ('Keneth', 'Ernesto', 'Macis', 'Flores', 'Keny', 
-        'Ken050802.05',
+        'admin',
         'ken123oficial@gmail.com', 
         (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR')),
 
@@ -878,9 +878,9 @@ BEGIN
     IF EXISTS (SELECT * FROM USUARIOS WHERE usuario = @Usuario AND estado = 1)
     BEGIN
         -- Verificar si la contraseña es correcta
-        IF EXISTS (SELECT * FROM USUARIOS WHERE usuario = @Usuario AND contrasena = CONVERT(VARBINARY(64), @Clave) AND estado = 1)
+        IF EXISTS (SELECT * FROM USUARIOS WHERE usuario = @Usuario AND contrasena = @Clave AND estado = 1)
         BEGIN
-            SET @IdUsuario = (SELECT TOP 1 id_usuario FROM USUARIOS WHERE usuario = @Usuario AND contrasena = CONVERT(VARBINARY(64), @Clave) AND estado = 1)
+            SET @IdUsuario = (SELECT TOP 1 id_usuario FROM USUARIOS WHERE usuario = @Usuario AND contrasena = @Clave AND estado = 1)
             SET @Mensaje = 'Inicio de sesión exitoso'
         END
         ELSE
@@ -895,8 +895,19 @@ BEGIN
 END
 GO
 
+DECLARE @IdUsuario INT
+DECLARE @Mensaje VARCHAR(255)
 
 
+EXEC usp_LoginUsuario
+    @Usuario = 'admin',
+    @Clave = 'admin',
+    @IdUsuario = @IdUsuario OUTPUT,
+    @Mensaje = @Mensaje OUTPUT
+
+PRINT 'ID Usuario: ' + CAST(@IdUsuario AS VARCHAR)
+PRINT 'Mensaje: ' + @Mensaje
+GO
 
 
 CREATE PROCEDURE usp_ObtenerDetalleUsuario
