@@ -1018,7 +1018,7 @@ CREATE PROCEDURE usp_RegistrarUsuario(
     @Clave VARCHAR(100),
     @Correo VARCHAR(60),
     @FkRol INT,
-
+    @Estado BIT,
     @Resultado INT OUTPUT,
     @Mensaje VARCHAR(255) OUTPUT
 )
@@ -1042,15 +1042,15 @@ BEGIN
     END
 
     -- Insertar el nuevo usuario
-    INSERT INTO USUARIOS (pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, fk_rol)
-    VALUES (@PriNombre, @SegNombre, @PriApellido, @SegApellido, @Usuario, CONVERT(VARBINARY(64), @Clave), @Correo, @FkRol)
+    INSERT INTO USUARIOS (pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, fk_rol, estado)
+    VALUES (@PriNombre, @SegNombre, @PriApellido, @SegApellido, @Usuario, CONVERT(VARBINARY(64), @Clave), @Correo, @FkRol, @Estado)
 
     SET @Resultado = SCOPE_IDENTITY()
     SET @Mensaje = 'Usuario registrado exitosamente'
 END
 GO
 
-CREATE PROCEDURE usp_ModificarUsuario(
+CREATE PROCEDURE usp_ModificarUsuario
     @IdUsuario INT,
     @PriNombre VARCHAR(60),
     @SegNombre VARCHAR(60),
@@ -1064,21 +1064,27 @@ CREATE PROCEDURE usp_ModificarUsuario(
 
     @Resultado INT OUTPUT,
     @Mensaje VARCHAR(255) OUTPUT
-)
 AS
 BEGIN
     SET @Resultado = 0
     SET @Mensaje = ''
 
+    -- Verificar si el usuario existe
+    IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
+    BEGIN
+        SET @Mensaje = 'El usuario no existe'
+        RETURN
+    END
+
     -- Verificar si el nombre de usuario ya existe (excluyendo al usuario actual)
-    IF EXISTS (SELECT * FROM USUARIOS WHERE usuario = @Usuario AND id_usuario != @IdUsuario)
+    IF EXISTS (SELECT 1 FROM USUARIOS WHERE usuario = @Usuario AND id_usuario != @IdUsuario)
     BEGIN
         SET @Mensaje = 'El nombre de usuario ya está en uso'
         RETURN
     END
 
     -- Verificar si el correo electrónico ya existe (excluyendo al usuario actual)
-    IF EXISTS (SELECT * FROM USUARIOS WHERE correo = @Correo AND id_usuario != @IdUsuario)
+    IF EXISTS (SELECT 1 FROM USUARIOS WHERE correo = @Correo AND id_usuario != @IdUsuario)
     BEGIN
         SET @Mensaje = 'El correo electrónico ya está registrado'
         RETURN
@@ -1108,13 +1114,14 @@ CREATE PROCEDURE usp_EliminarUsuario
     @Resultado BIT OUTPUT
 AS
 BEGIN
-    SET @Resultado = 1
-    IF NOT EXISTS (SELECT * FROM USUARIOS WHERE id_usuario = @IdUsuario)
+    SET @Resultado = 0
+
+    -- Verificar si el usuario existe antes de eliminarlo
+    IF EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
     BEGIN
         DELETE FROM USUARIOS WHERE id_usuario = @IdUsuario
+        SET @Resultado = 1 -- Usuario eliminado exitosamente
     END
-    ELSE
-        SET @Resultado = 0
 END
 GO
 

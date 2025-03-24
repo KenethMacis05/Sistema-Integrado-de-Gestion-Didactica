@@ -122,15 +122,15 @@ namespace capa_datos
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     // Agregar parámetros
-                    cmd.Parameters.AddWithValue("pri_nombre", usuario.pri_nombre);
-                    cmd.Parameters.AddWithValue("seg_nombre", usuario.seg_nombre);
-                    cmd.Parameters.AddWithValue("pri_apellido", usuario.pri_apellido);
-                    cmd.Parameters.AddWithValue("seg_apellido", usuario.seg_apellido);
-                    cmd.Parameters.AddWithValue("usuario", usuario.usuario);
-                    cmd.Parameters.AddWithValue("contrasena", usuario.contrasena);
-                    cmd.Parameters.AddWithValue("correo", usuario.correo);
-                    cmd.Parameters.AddWithValue("fk_rol", usuario.fk_rol);
-                    cmd.Parameters.AddWithValue("estado", usuario.estado);
+                    cmd.Parameters.AddWithValue("PriNombre", usuario.pri_nombre);
+                    cmd.Parameters.AddWithValue("SegNombre", usuario.seg_nombre);
+                    cmd.Parameters.AddWithValue("PriApellido", usuario.pri_apellido);
+                    cmd.Parameters.AddWithValue("SegApellido", usuario.seg_apellido);
+                    cmd.Parameters.AddWithValue("Usuario", usuario.usuario);
+                    cmd.Parameters.AddWithValue("Clave", usuario.contrasena);
+                    cmd.Parameters.AddWithValue("Correo", usuario.correo);
+                    cmd.Parameters.AddWithValue("FkRol", usuario.fk_rol);
+                    cmd.Parameters.AddWithValue("Estado", usuario.estado);
 
                     // Parámetros de salida
                     cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -144,7 +144,7 @@ namespace capa_datos
 
                     // Obtener valores de los parámetros de salida
                     idautogenerado = Convert.ToInt32(cmd.Parameters["Resultado"].Value);                    
-                    mensaje = cmd.Parameters["@mensaje"].Value.ToString();                    
+                    mensaje = cmd.Parameters["Mensaje"].Value.ToString();                    
                 }
             }
             catch (Exception ex)
@@ -169,27 +169,32 @@ namespace capa_datos
                     // Consulta SQL con parámetros
                     SqlCommand cmd = new SqlCommand("usp_ModificarUsuario", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
+
                     // Agregar parámetros
-                    cmd.Parameters.AddWithValue("id_usuario", usuario.id_usuario);
-                    cmd.Parameters.AddWithValue("pri_nombre", usuario.pri_nombre);
-                    cmd.Parameters.AddWithValue("seg_nombre", usuario.seg_nombre);
-                    cmd.Parameters.AddWithValue("pri_apellido", usuario.pri_apellido);
-                    cmd.Parameters.AddWithValue("seg_apellido", usuario.seg_apellido);
-                    cmd.Parameters.AddWithValue("usuario", usuario.usuario);
-                    cmd.Parameters.AddWithValue("contrasena", usuario.contrasena);
-                    cmd.Parameters.AddWithValue("correo", usuario.correo);
-                    cmd.Parameters.AddWithValue("fk_rol", usuario.fk_rol);
-                    cmd.Parameters.AddWithValue("estado", usuario.estado);
+                    cmd.Parameters.AddWithValue("IdUsuario", usuario.id_usuario);
+                    cmd.Parameters.AddWithValue("PriNombre", usuario.pri_nombre ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("SegNombre", usuario.seg_nombre);
+                    cmd.Parameters.AddWithValue("PriApellido", usuario.pri_apellido ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("SegApellido", usuario.seg_apellido);
+                    cmd.Parameters.AddWithValue("Usuario", usuario.usuario ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Clave", usuario.contrasena ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Correo", usuario.correo ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("FkRol", usuario.fk_rol);
+                    cmd.Parameters.AddWithValue("Estado", usuario.estado);
+                    
                     // Parámetros de salida
                     cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+                    
                     // Abrir conexión
                     conexion.Open();
+                    
                     // Ejecutar comando
                     cmd.ExecuteNonQuery();
+
                     // Obtener valores de los parámetros de salida
-                    resultado = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
-                    mensaje = cmd.Parameters["mensaje"].Value.ToString();
+                    resultado = cmd.Parameters["Resultado"].Value != DBNull.Value && Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
+                    mensaje = cmd.Parameters["Mensaje"].Value != DBNull.Value ? cmd.Parameters["Mensaje"].Value.ToString() : "Mensaje no disponible.";
                 }
             }
             catch (Exception ex)
