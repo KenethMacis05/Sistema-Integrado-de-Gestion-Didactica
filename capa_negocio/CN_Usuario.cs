@@ -37,15 +37,27 @@ namespace capa_negocio
 
             if (string.IsNullOrEmpty(mensaje))
             {
-                string contrasenapordefecto = "123456";
-                usuario.contrasena = Encriptar.GetSHA256(contrasenapordefecto);
+                string clave = CN_Recursos.GenerarClave();
 
-                return cd_usuario.RegistrarUsuario(usuario, out mensaje);
+                string asunto = "Creación de usuario";
+                string mensaje_correo = "<h3>Su cuenta fue creada correctamente</h3></br><p>Su contraseña para acceder es: !clave!</p>";
+                mensaje_correo = mensaje_correo.Replace("!clave!", clave);
+
+                bool resultado = CN_Recursos.EnviarCorreo(usuario.correo, asunto, mensaje_correo);
+
+                if (resultado)
+                {
+                    usuario.contrasena = Encriptar.GetSHA256(clave);
+                    return cd_usuario.RegistrarUsuario(usuario, out mensaje);
+                }
+                else
+                {
+                    mensaje = "Ocurrió un error al enviar el correo.";
+                    return 0;
+                }
             }
-            else
-            {
-                return 0;
-            }
+
+            return 0; // Ensure all code paths return a value
         }
 
         //Editar usuario

@@ -44,7 +44,22 @@ SELECT * FROM USUARIOS WHERE id_usuario = 3
 DECLARE @Resultado BIT
 
 EXEC usp_EliminarUsuario
-    @IdUsuario = 4, -- Cambia este ID por uno válido
+    @IdUsuario = 6,
     @Resultado = @Resultado OUTPUT
 
 SELECT @Resultado AS Resultado
+
+---Usuario login
+DECLARE @IdUsuario INT
+DECLARE @Mensaje VARCHAR(255)
+
+
+EXEC usp_LoginUsuario
+    @Usuario = 'admin',
+    @Clave = 'admin',
+    @IdUsuario = @IdUsuario OUTPUT,
+    @Mensaje = @Mensaje OUTPUT
+
+PRINT 'ID Usuario: ' + CAST(@IdUsuario AS VARCHAR)
+PRINT 'Mensaje: ' + @Mensaje
+GO

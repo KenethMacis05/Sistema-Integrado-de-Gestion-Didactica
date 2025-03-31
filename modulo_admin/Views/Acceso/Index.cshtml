@@ -10,8 +10,7 @@
     <link rel="icon" type="image/x-icon" href="@Url.Content("~/faviconUNAN.ico")" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <title>Iniciar Sesión</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/css")    
 </head>
 <body class="bodyLogin">
     <div class="container">
@@ -31,7 +30,9 @@
                     <h1 class="fw-bold fs-2" style="color: #555555">INICIAR SESIÓN</h1>
                     <p class="text-muted">Ingrese sus credenciales para acceder</p>
                 </div>
-                <form method="post" action="@Url.Action("Index", "Acceso")">
+                @using (Html.BeginForm("Index", "Acceso", FormMethod.Post, new { @autocomplete = "off", @id = "loginForm" }))
+                {
+                    @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label for="usuario" class="form-label" style="color: #555555">Usuario</label>
                         <div class="input-wrapper">
@@ -51,10 +52,11 @@
                         </div>
                         <p class="mt-2 toggle-password" id="togglePasswordText">Ver contraseña</p>
                     </div>
-                    @if (ViewBag.Mensaje != null)
+                    if (TempData["ErrorMessage"] != null)
                     {
-                        <div class="alert alert-danger">
-                            @ViewBag.Mensaje
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     }
                     <div class="mb-5 form-check text-end">
@@ -72,13 +74,16 @@
                     <button type="submit" class="btn btn-outline-primary w-100 btnLoginCorreoInstitucional" style="border-color: #02116F; color: #02116F;">
                         Iniciar Sesión por Correo Institucional
                     </button>
-                </form>
+                }
+
             </div>
         </div>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/complementos")
+
 
     <script>
         const togglePasswordText = document.getElementById('togglePasswordText');
@@ -110,6 +115,27 @@
                 togglePasswordIcon.innerHTML = '<i class="fas fa-key fs-5"></i>';
             }
         });
+
+        // Validación del formulario antes de enviar
+        $('#loginForm').submit(function (e) {
+            let isValid = true;
+
+            // Validar usuario
+            if ($('#usuario').val().trim() === '') {
+                isValid = false;
+                $('#usuario').addClass('is-invalid');
+            } else {
+                $('#usuario').removeClass('is-invalid');
+            }
+
+            // Validar contraseña
+            if ($('#password').val().trim() === '') {
+                isValid = false;
+                $('#password').addClass('is-invalid');
+            } else {
+                $('#password').removeClass('is-invalid');
+            }
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>

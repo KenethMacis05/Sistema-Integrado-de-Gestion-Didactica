@@ -1,8 +1,19 @@
 ﻿const listarUsuariosUrl = config.listarUsuariosUrl;
 const guardarUsuariosUrl = config.guardarUsuariosUrl;
+const eliminarUsuariosUrl = config.eliminarUsuariosUrl;
 
 var filaSeleccionada
 
+// Configuración común para todas las alertas
+const swalConfig = {
+    confirmButtonColor: "#3085d6",
+    customClass: {
+        popup: 'custom-success-alerta',
+        confirmButton: 'custom-confirmar-button',
+    }
+};
+
+//Abrir modal
 function abrirModal(json) {
     $("#idUsuario").val("0");
     $("#usuario").val("");
@@ -30,6 +41,7 @@ function abrirModal(json) {
     $("#createUser").modal("show");
 }
 
+//Boton seleccionar usuario para editar
 $("#datatable tbody").on("click", '.btn-editar', function () {
     filaSeleccionada = $(this).closest("tr");
 
@@ -38,7 +50,81 @@ $("#datatable tbody").on("click", '.btn-editar', function () {
     abrirModal(data)
 });
 
-function Guardar() {
+$("#datatable tbody").on("click", '.btn-eliminar', function () {
+    const usuarioseleccionado = $(this).closest("tr");
+    const data = dataTable.row(usuarioseleccionado).data();    
+
+    // Alerta de confirmación
+    Swal.fire({
+        ...swalConfig,
+        title: "¿Estás seguro?",
+        text: "¡Esta acción no se puede deshacer!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            // Mostrar loader
+            Swal.fire({
+                title: "Eliminando usuario",
+                html: "Por favor espere...",
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Enviar petición AJAX
+            $.ajax({
+                url: eliminarUsuariosUrl,
+                type: "POST",
+                data: JSON.stringify({ id_usuario: data.id_usuario }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+
+                success: function (response) {
+                    Swal.close();
+                    if (response.Respuesta) {
+                        // Eliminar fila de DataTable
+                        dataTable.row(usuarioseleccionado).remove().draw();
+
+                        // Mostrar alerta de éxito
+                        Swal.fire({
+                            ...swalConfig,
+                            title: "¡Eliminado!",
+                            text: response.Mensaje || "Usuario eliminado correctamente",
+                            icon: "success",
+                            confirmButtonClass: "btn btn-success"
+                        });
+                    } else {
+                        // Mostrar alerta de error
+                        Swal.fire({
+                            ...swalConfig,
+                            title: "Error",
+                            text: response.Mensaje || "No se pudo eliminar el usuario",
+                            icon: "error"
+                        });
+                    }
+                },
+
+                error: function (xhr) {
+                    Swal.fire({
+                        ...swalConfig,
+                        title: "Error",
+                        text: "Error al conectar con el servidor",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    });
+});
+
+function Guardar() {    
+
     var Usuario = {
         id_usuario: $("#idUsuario").val(),
         pri_nombre: $("#priNombre").val(),
@@ -52,118 +138,109 @@ function Guardar() {
         estado: $("#estado").prop("checked")
     };
 
+    // Mostrar loader de espera
+    Swal.fire({
+        title: "Procesando",
+        html: "Guardando datos del usuario...",
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     jQuery.ajax({
-        url: guardarUsuariosUrl,      
+        url: guardarUsuariosUrl,
         type: "POST",
         data: JSON.stringify({ usuario: Usuario }),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
-
-        beforeSend: function () {
-            console.log("Enviando solicitud...");
-            // Aquí puedes mostrar un loader o spinner
-        },
-
         success: function (data) {
-            // Aquí procesas la respuesta exitosa del servidor
-            
+            Swal.close();
 
             // Usuario Nuevo
             if (Usuario.id_usuario == 0) {
                 if (data.Resultado != 0) {
-                    Usuario.id_usuario = data.Resultado
-                    dataTable.row.add(Usuario).draw(false)
-
-                    $("#createUser").modal("hide");
-                } else {
-
+                    Usuario.id_usuario = data.Resultado;
+                    dataTable.row.add(Usuario).draw(false);
                     $("#createUser").modal("hide");
 
+                    // Mostrar alerta de éxito
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error al crear el usuario',
-                        text: 'No se pudo eliminar el usuario. Por favor, inténtalo de nuevo más tarde.',
-                        text: data.Mensaje,
-                        confirmButtonText: "Entendido",
-                        confirmButtonColor: "#3085d6",
-                        customClass: {
-                            popup: 'custom-success-alerta',
-                            confirmButton: 'custom-confirmar-button',
-                        }
-                    }).then(() => {
-                        window.location.href = '#';
+                        ...swalConfig,
+                        title: "¡Éxito!",
+                        text: "Usuario creado correctamente",
+                        icon: "success",
+                        confirmButtonText: "Aceptar"
+                    });
+                } else {
+                    $("#createUser").modal("hide");
+
+                    // Mostrar alerta de error
+                    Swal.fire({
+                        ...swalConfig,
+                        title: "Error",
+                        text: data.Mensaje || "No se pudo crear el usuario",
+                        icon: "error",
+                        confirmButtonText: "Entendido"
                     });
                 }
-
-
             }
-
             // Actualizar Usuario
-            else
-            {
+            else {
                 if (data.Resultado) {
-                    dataTable.row(filaSeleccionada).data(Usuario)
+                    dataTable.row(filaSeleccionada).data(Usuario);
                     filaSeleccionada = null;
-
-                    $("#createUser").modal("hide");
-                } else {
-
                     $("#createUser").modal("hide");
 
+                    // Mostrar alerta de éxito
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error al crear el usuario',
-                        text: 'No se pudo editar el usuario. Por favor, inténtalo de nuevo más tarde.',
-                        text: data.Mensaje,
-                        confirmButtonText: "Entendido",
-                        confirmButtonColor: "#3085d6",
-                        customClass: {
-                            popup: 'custom-success-alerta',
-                            confirmButton: 'custom-confirmar-button',
-                        }
-                    }).then(() => {
-                        window.location.href = '#';
+                        ...swalConfig,
+                        title: "¡Éxito!",
+                        text: "Usuario actualizado correctamente",
+                        icon: "success",
+                        confirmButtonText: "Aceptar"
+                    });
+                } else {
+                    $("#createUser").modal("hide");
+
+                    // Mostrar alerta de error
+                    Swal.fire({
+                        ...swalConfig,
+                        title: "Error",
+                        text: data.Mensaje || "No se pudo actualizar el usuario",
+                        icon: "error",
+                        confirmButtonText: "Entendido"
                     });
                 }
-
             }
-
-            console.log("Respuesta exitosa:", data);
-
-
         },
-
         error: function (xhr, status, error) {
-            console.error("Error en la solicitud:");
-            console.error("Estado:", status); // Ejemplo: "error"
-            console.error("Código de estado:", xhr.status); // Ejemplo: 404, 500
-            console.error("Mensaje de error:", error); // Mensaje de error (si lo hay)
-            console.error("Respuesta del servidor:", xhr.responseText); // Mensaje de respuesta del servidor (si lo hay)
-            console.error("Usuario:", Usuario);
-            console.error("Datos:", JSON.stringify({ usuario: Usuario }));
-            console.error("URL:", guardarUsuariosUrl);
-            console.error(data.Mensaje);
-        },
+            Swal.fire({
+                ...swalConfig,
+                title: "Error en el servidor",
+                text: "Ocurrió un error al procesar la solicitud",
+                icon: "error",
+                confirmButtonText: "Entendido"
+            });
 
-        complete: function () {
-            console.log("Solicitud completada.");
-            // Aquí puedes ocultar el loader o realizar acciones post-solicitud
+            console.error("Error en la solicitud:", {
+                status: status,
+                error: error,
+                statusCode: xhr.status
+            });
         }
-    });    
+    });
 }
 
-
-
-
-jQuery.ajax({
-    url: listarUsuariosUrl,
-    type: "GET",
-    dataType: "json",
-    contentType: "application/json; charset=utf-8",
-    success: function (data) {
-        console.log(data)
-    }
-})
+//jQuery.ajax({
+//    url: listarUsuariosUrl,
+//    type: "GET",
+//    dataType: "json",
+//    contentType: "application/json; charset=utf-8",
+//    success: function (data) {
+//        console.log(data)
+//    }
+//})
 
 let dataTable;
 
@@ -188,22 +265,34 @@ const dataTableOptions = {
     },
     responsive: true,
     ordering: false,
+
     ajax: {
         url: listarUsuariosUrl,
         type: "GET",
         dataType: "json"
     },
+
     columns: [
         { data: "usuario" },
-        { data: "pri_nombre" },
-        { data: "pri_apellido" },
+        {
+            data: "pri_nombre",
+            render: function (data, type, row) {
+                return data + ' ' + row.seg_nombre;
+            }
+        },
+        {
+            data: "pri_apellido",
+            render: function (data, type, row) {
+                return data + ' ' + row.seg_apellido;
+            }
+        },
         { data: "correo" },
         {
             data: "estado",
             render: function (valor) {
                 return valor
-                    ? "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-success'>SI</span></div>"
-                    : "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-danger'>NO</span></div>";
+                    ? "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-success'>ACTIVO</span></div>"
+                    : "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-danger'>NO ACTIVO</span></div>";
             },
             width: "90"
         },
@@ -219,11 +308,6 @@ const dataTableOptions = {
 $(document).ready(function () {
     dataTable = $("#datatable").DataTable(dataTableOptions);
 });
-
-$(document).ready(function () {
-    dataTable = $("#datatable").DataTable(dataTableOptions);
-});
-
 
 ///////////////////////////////////////////////
 

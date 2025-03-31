@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using capa_datos;
 using capa_entidad;
 
@@ -13,47 +14,43 @@ namespace modulo_admin.Controllers
         private CD_Usuarios cd_usuario = new CD_Usuarios();
         // GET: Acceso
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Index(int? error)
         {
-            return View();
+            return View();            
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Index(string usuario, string password)
         {
             try
-            {
-                //Validar que los campos no esten vacios
-                if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(password))
-                {
-                    TempData["ErrorMessage"] = "Por favor, complete todos los campos.";
-                    return View();
-                }
-
+            {                
+                string mensaje = string.Empty;
                 //Generar hash de la contraseña
                 string contrasenaHash = Encriptar.GetSHA256(password);
 
-
                 //Validar usuario y contraseña
-                USUARIOS usuarioAutenticado = cd_usuario.LoginUsuario(usuario, password);
+                USUARIOS usuarioAutenticado = cd_usuario.LoginUsuario(usuario, password, out mensaje);
                 if (usuarioAutenticado != null)
                 {
                     Session["UsuarioAutenticado"] = usuarioAutenticado;
+                    Session["RolUsuario"] = usuarioAutenticado.fk_rol;
+                    Session.Timeout = 30; // 30 minutos de inactividad
 
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    ViewBag.Mensaje = "Usuario o contraseña incorrectos";
-                    return View();
+                    TempData["ErrorMessage"] = mensaje ?? "Credenciales incorrectas";
+                    return RedirectToAction("Index", "Acceso");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error: {ex.Message}";
-                return View();
+                TempData["ErrorMessage"] = "Error al iniciar sesión: " + ex.Message;
+                return RedirectToAction("Index", "Acceso");
             }
-            
+
         }
     }
 }

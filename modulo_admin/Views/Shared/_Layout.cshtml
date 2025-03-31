@@ -3,12 +3,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="@Url.Content("~/faviconUNAN.ico")" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">    
 </head>
 <body class="sb-nav-fixed">
     <div id="layoutSidenav">
@@ -68,7 +67,7 @@
         <div id="layoutSidenav_content" style="top: 0">
             <main>
                 <div class="sb-topnav text-center text-white w-100 esp-background d-flex align-items-center justify-content-center" style="position: relative; height: 80px">
-                    <h1 class="fs-3 m-0">Sistema Integrado de Gestión Didáctica - <span style="color: #FBB907" class="fw-bold">SIPD</span></h1>
+                    <h1 class="fs-3 m-0">Sistema Integrado de Gestión Didáctica - <span style="color: #FBB907" class="fw-bold">SIGD</span></h1>
                 </div>
                 <nav class="sb-topnav navbar navbar-expand navbar-dark table-cabezera" style="position: relative;">
 
@@ -82,7 +81,7 @@
                                 <li><a class="dropdown-item" href="#!">Ajustes</a></li>
                                 <li><a class="dropdown-item" href="#!">Registro de actividad</a></li>
                                 <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="">Cerrar sesión</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("CerrarSesion", "Home")">Cerrar sesión</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -109,8 +108,8 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/complementos")
     @RenderSection("scripts", required: false)
-  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

@@ -1115,12 +1115,11 @@ CREATE PROCEDURE usp_EliminarUsuario
 AS
 BEGIN
     SET @Resultado = 0
-
-    -- Verificar si el usuario existe antes de eliminarlo
+    
     IF EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
     BEGIN
         DELETE FROM USUARIOS WHERE id_usuario = @IdUsuario
-        SET @Resultado = 1 -- Usuario eliminado exitosamente
+        SET @Resultado = 1
     END
 END
 GO
