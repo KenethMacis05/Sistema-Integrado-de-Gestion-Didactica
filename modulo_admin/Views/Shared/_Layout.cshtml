@@ -30,22 +30,30 @@
                             Usuarios
                         </a>
                         <div class="sb-sidenav-menu-heading">Archivos</div>
-                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Index", "GestorArchivos")">
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("GestionArchivos", "Archivo")">
                             <div class="sb-nav-link-icon"><i class="fas fa-cloud"></i></div>
                             Gestor de archivos
                         </a>
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("CarpetasCompartidas", "Archivo")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-share-square"></i></div>
+                            Carpetas compartidas
+                        </a>
+                        <a class="nav-link esp-link esp-link-hover" href="@Url.Action("ArchivosCompartidos", "Archivo")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-share-square"></i></div>
+                            Archivos compartidos
+                        </a>
                         <div class="sb-sidenav-menu-heading">Crear documento</div>
                         @*<a class="nav-link collapsed esp-link esp-link-hover" href="#" id="collapseTrigger">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                            Layouts
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="collapseLayouts">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link esp-submenu-link" href="layout-static.html">Static Navigation</a>
-                                <a class="nav-link esp-submenu-link" href="layout-sidenav-light.html">Light Sidenav</a>
-                            </nav>
-                        </div>*@
+            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+            Layouts
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+        </a>
+        <div class="collapse" id="collapseLayouts">
+            <nav class="sb-sidenav-menu-nested nav">
+                <a class="nav-link esp-submenu-link" href="layout-static.html">Static Navigation</a>
+                <a class="nav-link esp-submenu-link" href="layout-sidenav-light.html">Light Sidenav</a>
+            </nav>
+        </div>*@
                         <a class="nav-link esp-link esp-link-hover" href="@Url.Action("Matriz_de_Integracion", "Planificacion")">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                             Matriz de Integración
