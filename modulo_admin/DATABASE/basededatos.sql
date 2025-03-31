@@ -1062,7 +1062,7 @@ CREATE PROCEDURE usp_ModificarUsuario
     @Usuario VARCHAR(50),
     @Clave VARCHAR(100),
     @Correo VARCHAR(60),
-    @Telefono INT(8),
+    @Telefono INT,
     @FkRol INT,
     @Estado BIT,
 
