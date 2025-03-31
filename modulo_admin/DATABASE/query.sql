@@ -1,5 +1,5 @@
 ﻿select * from USUARIOS;
-
+SELECT id_usuario, pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, correo, telefono, fk_rol, estado, reestablecer FROM USUARIOS WHERE id_usuario = 3
 -- Registrar Usuario
 DECLARE @Resultado INT
 DECLARE @Mensaje VARCHAR(255)
@@ -12,6 +12,7 @@ EXEC usp_RegistrarUsuario
     @Usuario = 'juanperez',
     @Clave = '12345',
     @Correo = 'juan.perez@example.com',
+    @Telefono = 12345677,
     @FkRol = 1,
     @Estado = 1,
     @Resultado = @Resultado OUTPUT,
@@ -32,6 +33,7 @@ EXEC usp_ModificarUsuario
     @Usuario = 'ana.lopez',
     @Clave = 'nueva_clave',
     @Correo = 'ana.lopez@example.com',
+    @Telefono = 12345676,
     @FkRol = 2,
     @Estado = 1, -- Activo (1) o Inactivo (0)
     @Resultado = @Resultado OUTPUT,

@@ -18,6 +18,7 @@ function abrirModal(json) {
     $("#idUsuario").val("0");
     $("#usuario").val("");
     $("#correo").val("");
+    $("#telefono").val("");
     $("#contrasena").val("");
     $("#priNombre").val("");
     $("#segNombre").val("");
@@ -30,6 +31,7 @@ function abrirModal(json) {
         $("#idUsuario").val(json.id_usuario);
         $("#usuario").val(json.usuario);
         $("#correo").val(json.correo);
+        $("#telefono    ").val(json.telefono);
         $("#contrasena").val(json.contrasena);
         $("#priNombre").val(json.pri_nombre);
         $("#segNombre").val(json.seg_nombre);
@@ -134,6 +136,7 @@ function Guardar() {
         usuario: $("#usuario").val(),
         contrasena: $("#contrasena").val(),
         correo: $("#correo").val(),
+        telefono: $("#telefono").val(),
         fk_rol: $("#rol").val(),
         estado: $("#estado").prop("checked")
     };
@@ -232,15 +235,15 @@ function Guardar() {
     });
 }
 
-//jQuery.ajax({
-//    url: listarUsuariosUrl,
-//    type: "GET",
-//    dataType: "json",
-//    contentType: "application/json; charset=utf-8",
-//    success: function (data) {
-//        console.log(data)
-//    }
-//})
+jQuery.ajax({
+    url: listarUsuariosUrl,
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {
+        console.log(data)
+    }
+})
 
 let dataTable;
 
@@ -272,6 +275,8 @@ const dataTableOptions = {
         dataType: "json"
     },
 
+    
+
     columns: [
         { data: "usuario" },
         {
@@ -287,6 +292,7 @@ const dataTableOptions = {
             }
         },
         { data: "correo" },
+        { data: "telefono" },
         {
             data: "estado",
             render: function (valor) {

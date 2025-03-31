@@ -56,8 +56,10 @@ CREATE TABLE USUARIOS (
     --contrasena VARBINARY(64) NOT NULL, -- Guardar el hash de la contraseña
 	contrasena VARCHAR(255) NOT NULL,
     correo VARCHAR(60) NOT NULL UNIQUE,
+    telefono int UNIQUE,
     fk_rol INT NOT NULL,
     estado BIT DEFAULT 1,
+    reestablecer BIT DEFAULT 1,
     fecha_registro DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_USUARIO_ROL FOREIGN KEY (fk_rol) REFERENCES ROL(id_rol) ON DELETE CASCADE
 )
@@ -468,16 +470,16 @@ VALUES
 GO
 
 -- REGISTROS EN TABLA USUARIOS
-INSERT INTO USUARIOS(pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, fk_rol)
+INSERT INTO USUARIOS(pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, telefono, fk_rol)
 VALUES 
     ('Keneth', 'Ernesto', 'Macis', 'Flores', 'Keny', 
         'admin',
-        'ken123oficial@gmail.com', 
+        'ken123oficial@gmail.com', 12345678,
         (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR')),
 
 	('admin', 'admin', 'admin', 'admin', 'admin', 
         'admin', 
-        'admin@gmail.com', 
+        'admin@gmail.com', 87654321,
         (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'));
 
     --('admin', 'admin', 'admin', 'admin', 'admin', 
@@ -1017,8 +1019,9 @@ CREATE PROCEDURE usp_RegistrarUsuario(
     @Usuario VARCHAR(50),
     @Clave VARCHAR(100),
     @Correo VARCHAR(60),
+    @Telefono INT,
     @FkRol INT,
-    @Estado BIT,
+    @Estado BIT,    
     @Resultado INT OUTPUT,
     @Mensaje VARCHAR(255) OUTPUT
 )
@@ -1042,8 +1045,8 @@ BEGIN
     END
 
     -- Insertar el nuevo usuario
-    INSERT INTO USUARIOS (pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, fk_rol, estado)
-    VALUES (@PriNombre, @SegNombre, @PriApellido, @SegApellido, @Usuario, CONVERT(VARBINARY(64), @Clave), @Correo, @FkRol, @Estado)
+    INSERT INTO USUARIOS (pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, telefono, fk_rol, estado)
+    VALUES (@PriNombre, @SegNombre, @PriApellido, @SegApellido, @Usuario, CONVERT(VARBINARY(64), @Clave), @Correo, @Telefono, @FkRol, @Estado)
 
     SET @Resultado = SCOPE_IDENTITY()
     SET @Mensaje = 'Usuario registrado exitosamente'
@@ -1059,6 +1062,7 @@ CREATE PROCEDURE usp_ModificarUsuario
     @Usuario VARCHAR(50),
     @Clave VARCHAR(100),
     @Correo VARCHAR(60),
+    @Telefono INT(8),
     @FkRol INT,
     @Estado BIT,
 
@@ -1100,6 +1104,7 @@ BEGIN
         usuario = @Usuario,
         contrasena = CONVERT(VARBINARY(64), @Clave),
         correo = @Correo,
+        telefono = @Telefono,
         fk_rol = @FkRol,
         estado = @Estado
     WHERE id_usuario = @IdUsuario

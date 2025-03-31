@@ -42,6 +42,7 @@ namespace capa_datos
                                     usuario = dr["usuario"].ToString(),
                                     contrasena = dr["contrasena"].ToString(),
                                     correo = dr["correo"].ToString(),
+                                    telefono = Convert.ToInt32(dr["telefono"]),
                                     fk_rol = Convert.ToInt32(dr["fk_rol"]),
                                     estado = Convert.ToBoolean(dr["estado"])
                                 }
@@ -61,7 +62,7 @@ namespace capa_datos
         {
             using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
             {
-                string query = "SELECT id_usuario, pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, correo, fk_rol, estado FROM USUARIOS WHERE id_usuario = @idUsuario";
+                string query = "SELECT id_usuario, pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, correo, telefono, fk_rol, estado, reestablecer FROM USUARIOS WHERE id_usuario = @idUsuario";
 
                 SqlCommand cmd = new SqlCommand(query, conexion);
                 cmd.CommandType = CommandType.Text;
@@ -82,8 +83,10 @@ namespace capa_datos
                             seg_apellido = dr["seg_apellido"].ToString(),
                             usuario = dr["usuario"].ToString(),
                             correo = dr["correo"].ToString(),
+                            telefono = Convert.ToInt32(dr["telefono"]),
                             fk_rol = Convert.ToInt32(dr["fk_rol"]),
-                            estado = Convert.ToBoolean(dr["estado"]),                            
+                            estado = Convert.ToBoolean(dr["estado"]),
+                            reestablecer = Convert.ToBoolean(dr["reestablecer"])
                         };
                     }
                 }
@@ -161,8 +164,9 @@ namespace capa_datos
                     cmd.Parameters.AddWithValue("Usuario", usuario.usuario);
                     cmd.Parameters.AddWithValue("Clave", usuario.contrasena);
                     cmd.Parameters.AddWithValue("Correo", usuario.correo);
+                    cmd.Parameters.AddWithValue("Telefono", usuario.telefono);
                     cmd.Parameters.AddWithValue("FkRol", usuario.fk_rol);
-                    cmd.Parameters.AddWithValue("Estado", usuario.estado);
+                    cmd.Parameters.AddWithValue("Estado", usuario.estado);                    
 
                     // Parámetros de salida
                     cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -211,6 +215,7 @@ namespace capa_datos
                     cmd.Parameters.AddWithValue("Usuario", usuario.usuario ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("Clave", usuario.contrasena ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("Correo", usuario.correo ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Telefono", usuario.telefono);
                     cmd.Parameters.AddWithValue("FkRol", usuario.fk_rol);
                     cmd.Parameters.AddWithValue("Estado", usuario.estado);
                     
