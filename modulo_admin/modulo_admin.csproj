@@ -394,7 +394,10 @@
     <Content Include="Content\v4-shims.css" />
     <Content Include="Content\v4-shims.min.css" />
     <Content Include="DATABASE\basededatos.sql" />
+    <Content Include="DATABASE\inserts.sql" />
+    <Content Include="DATABASE\procedimientos_almacenados.sql" />
     <Content Include="DATABASE\query.sql" />
+    <Content Include="DATABASE\vistas.sql" />
     <Content Include="favicon.ico" />
     <Content Include="faviconUNAN.ico" />
     <Content Include="Global.asax" />

@@ -28,9 +28,10 @@ namespace modulo_admin.Controllers
                 string mensaje = string.Empty;
                 //Generar hash de la contraseña
                 string contrasenaHash = Encriptar.GetSHA256(password);
+                
 
                 //Validar usuario y contraseña
-                USUARIOS usuarioAutenticado = cd_usuario.LoginUsuario(usuario, password, out mensaje);
+                USUARIOS usuarioAutenticado = cd_usuario.LoginUsuario(usuario, contrasenaHash, out mensaje);
                 if (usuarioAutenticado != null)
                 {
                     Session["UsuarioAutenticado"] = usuarioAutenticado;

@@ -78,22 +78,9 @@ CREATE TABLE PERMISOS (
 )
 GO
 
--- (5) TABLA PERMISOS
-IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PERMISOS')
-CREATE TABLE PERMISOS (
-    id_permisos INT PRIMARY KEY IDENTITY(1,1),
-    fk_rol INT NOT NULL,
-    fk_submenu INT NOT NULL,
-    estado BIT DEFAULT 1, -- Habilitar o deshabilitar permisos
-    fecha_registro DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_PERMISOS_ROL FOREIGN KEY (fk_rol) REFERENCES ROL(id_rol) ON DELETE CASCADE,
-    CONSTRAINT FK_PERMISOS_SUBMENU FOREIGN KEY (fk_submenu) REFERENCES SUBMENU(id_submenu) ON DELETE CASCADE
-)
-GO
-
 -----------------------------------------------------TABLAS PARA LA PLANIFICACION-----------------------------------------------------
 
--- Tabla Asignatura
+-- (1) Tabla Asignatura
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'ASIGNATURA')
 CREATE TABLE ASIGNATURA (
     id_asignatura INT PRIMARY KEY IDENTITY(1,1),
@@ -104,7 +91,7 @@ CREATE TABLE ASIGNATURA (
 
 GO
 
--- Tabla Carrera
+-- (2) Tabla Carrera
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'CARRERA')
 CREATE TABLE CARRERA (
     id_carrera INT PRIMARY KEY IDENTITY(1,1),
@@ -115,7 +102,7 @@ CREATE TABLE CARRERA (
 
 GO
 
--- Tabla Departamento
+-- (3) Tabla Departamento
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'DEPARTAMENTO')
 CREATE TABLE DEPARTAMENTO (
     id_departamento INT PRIMARY KEY IDENTITY(1,1),
@@ -126,7 +113,7 @@ CREATE TABLE DEPARTAMENTO (
 
 GO
 
--- Tabla AreaConocimiento
+-- (4) Tabla AreaConocimiento
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'AREACONOCIMIENTO')
 CREATE TABLE AREACONOCIMIENTO (
     id_area INT PRIMARY KEY IDENTITY(1,1),
@@ -137,7 +124,7 @@ CREATE TABLE AREACONOCIMIENTO (
 
 GO
 
--- Tabla ComponenteCurricular
+-- (5) Tabla ComponenteCurricular
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'COMPONENTECURRICULAR')
 CREATE TABLE COMPONENTECURRICULAR (
     id_componente_curricular INT PRIMARY KEY IDENTITY(1,1),    
@@ -153,7 +140,7 @@ CREATE TABLE COMPONENTECURRICULAR (
 
 GO
 
--- Tabla Semestre
+-- (6) Tabla Semestre
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'SEMESTRE')
 CREATE TABLE SEMESTRE(
 	id_semestre INT PRIMARY KEY IDENTITY(1,1),
@@ -164,7 +151,7 @@ CREATE TABLE SEMESTRE(
 
 GO
 
--- Tabla Periodo
+-- (7) Tabla Periodo
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PERIODO')
 CREATE TABLE PERIODO (
 	id_periodo INT PRIMARY KEY IDENTITY(1,1),
@@ -177,7 +164,7 @@ CREATE TABLE PERIODO (
 GO
 
 -----------------------------------------------------Etapa 1: Matriz de Integracion de Componentes-----------------------------------------------------
--- Tabla MatrizIntegracionComponentes
+-- (1) Tabla MatrizIntegracionComponentes
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MATRIZINTEGRACIONCOMPONENTES')
 CREATE TABLE MATRIZINTEGRACIONCOMPONENTES (
     id_matriz_integracion INT PRIMARY KEY IDENTITY(1,1),
@@ -204,7 +191,7 @@ CREATE TABLE MATRIZINTEGRACIONCOMPONENTES (
 
 GO
 
--- Tabla MatrizAsignatura
+-- (2) Tabla MatrizAsignatura
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MATRIZASIGNATURA')
 CREATE TABLE MATRIZASIGNATURA (
     id_matriz_asignatura INT PRIMARY KEY IDENTITY(1,1),
@@ -218,7 +205,7 @@ CREATE TABLE MATRIZASIGNATURA (
 GO
 
 -----------------------------------------------------Etapa 2: Plan Didactico Semestral-----------------------------------------------------
--- Tabla PlanDidacticoSemestral
+-- (1) Tabla PlanDidacticoSemestral
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PLANDIDACTICOSEMESTRAL')
 CREATE TABLE PLANDIDACTICOSEMESTRAL (
     id_plan_didactico_semestral INT PRIMARY KEY IDENTITY(1,1),	
@@ -278,7 +265,7 @@ CREATE TABLE PLANDIDACTICOSEMESTRAL (
 
 GO
 
--- Tabla Temas de Planifiación Semestral (D. TEMAS, HORAS CREDITOS)
+-- (2) Tabla Temas de Planifiación Semestral (D. TEMAS, HORAS CREDITOS)
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'TEMAPLANIFICACIONSEMESTRAL')
 CREATE TABLE TEMAPLANIFICACIONSEMESTRAL (
     id_tema INT PRIMARY KEY IDENTITY(1,1),
@@ -295,7 +282,7 @@ CREATE TABLE TEMAPLANIFICACIONSEMESTRAL (
 
 GO
 
--- Tabla Competencia (E. COMPETENCIAS CON LAS QUE VA A CONTRIBUIR)
+-- (3) Tabla Competencia (E. COMPETENCIAS CON LAS QUE VA A CONTRIBUIR)
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'COMPETENCIAS')
 CREATE TABLE COMPETENCIA (
     id_competencia INT PRIMARY KEY IDENTITY(1,1),    
@@ -307,7 +294,7 @@ CREATE TABLE COMPETENCIA (
 
 GO
 
--- Tabla Eje Transversal
+-- (4) Tabla Eje Transversal
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'EJESTRANSVERSAL')
 CREATE TABLE EJESTRANSVERSAL (
     id_eje INT PRIMARY KEY IDENTITY(1,1),
@@ -321,7 +308,7 @@ CREATE TABLE EJESTRANSVERSAL (
 
 GO
 
--- Tabla Matriz de Planifiacion Semestral
+-- (5) Tabla Matriz de Planifiacion Semestral
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MATRIZPLANIFICACIONSEMESTRAL')
 CREATE TABLE MATRIZPLANIFICACIONSEMESTRAL (
     id_matriz INT PRIMARY KEY IDENTITY(1,1),  
@@ -357,7 +344,7 @@ CREATE TABLE MATRIZPLANIFICACIONSEMESTRAL (
 GO
 
 -----------------------------------------------------Etapa 3: Plan de Clases Diario-----------------------------------------------------
--- Tabla Plan de Clases Diario
+-- (1) Tabla Plan de Clases Diario
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PLANCLASESDIARIO')
 CREATE TABLE PLANCLASESDIARIO (
     id_plan_diario INT PRIMARY KEY IDENTITY(1,1),
@@ -423,7 +410,7 @@ CREATE TABLE PLANCLASESDIARIO (
 
 GO
 
--- Tabla Anexo
+-- (2) Tabla Anexo
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'ANEXO')
 CREATE TABLE ANEXO (
     id_anexo INT PRIMARY KEY IDENTITY(1,1),
@@ -436,761 +423,3 @@ CREATE TABLE ANEXO (
 );
 
 GO
-
-
-------------------------------------------------INSERT EN LAS TABLAS------------------------------------------------
-
--- REGISTROS EN TABLA ROL
-INSERT INTO ROL(descripcion) 
-VALUES 
-    ('ADMINISTRADOR'),
-    ('INTEGRADOR'),
-    ('PROFESOR');
-
-GO
-
--- REGISTROS EN TABLA MENU
-INSERT INTO MENU(nombre, icono) 
-VALUES
-    ('Usuario', 'fas fa-users'),
-    ('Matriz de Integracion', 'fas fa-table'),
-    ('Plan Didactico Semestral', 'fas fa-bookmark'),
-    ('Plan de Clases Diario', 'fas fa-boxes'),
-    ('Reportes', 'far fa-file-pdf');
-
-GO
-
--- REGISTROS EN TABLA SUBMENU
-INSERT INTO SUBMENU(fk_menu, nombre, controlador, vista, icono) 
-VALUES
-    ((SELECT TOP 1 id_menu FROM MENU WHERE nombre = 'Usuario'), 'Rol', 'Usuario', 'Rol', 'fas fa-user-tag'),
-    ((SELECT TOP 1 id_menu FROM MENU WHERE nombre = 'Usuario'), 'Asignar Permisos', 'Usuario', 'Permisos', 'fas fa-user-lock'),
-    ((SELECT TOP 1 id_menu FROM MENU WHERE nombre = 'Usuario'), 'Usuarios', 'Usuario', 'Index', 'fas fa-users-cog');
-
-GO
-
--- REGISTROS EN TABLA USUARIOS
-INSERT INTO USUARIOS(pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, telefono, fk_rol)
-VALUES 
-    ('Keneth', 'Ernesto', 'Macis', 'Flores', 'Keny', 
-        'admin',
-        'ken123oficial@gmail.com', 12345678,
-        (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR')),
-
-	('admin', 'admin', 'admin', 'admin', 'admin', 
-        'admin', 
-        'admin@gmail.com', 87654321,
-        (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'));
-
-    --('admin', 'admin', 'admin', 'admin', 'admin', 
-    --    CONVERT(VARBINARY(64), '29cfa0f8e37e40a1a7a723aa88eca2cc050f270417969bfbe753f6bc0919aefe'), 
-    --    'admin@gmail.com', 
-    --    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'));
-GO
-
--- REGISTROS EN TABLA PERMISOS
-
--- ADMINISTRADOR tiene acceso a todos los menús y submenús
-INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
-SELECT 
-    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'), 
-    id_submenu, 
-    1 
-FROM SUBMENU;
-
-GO
-
--- INTEGRADOR tiene acceso a todo excepto el menú 'Usuario'
-INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
-SELECT 
-    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 
-    id_submenu, 
-    CASE 
-        WHEN (SELECT nombre FROM MENU WHERE id_menu = fk_menu) = 'Usuario' THEN 0 -- No tiene acceso al menú 'Usuario'
-        ELSE 1 -- Tiene acceso a todo lo demás
-    END 
-FROM SUBMENU;
-
-GO
-
--- PROFESOR tiene acceso solo a los menús: Matriz de Integración, Plan Didáctico Semestral, Plan de Clases Diario
-INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
-SELECT 
-    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 
-    id_submenu, 
-    1 
-FROM SUBMENU
-WHERE fk_menu IN (
-    SELECT id_menu FROM MENU 
-    WHERE nombre IN ('Matriz de Integracion', 'Plan Didactico Semestral', 'Plan de Clases Diario')
-);
-
-GO
-
--- REGISTROS EN TABLA ASIGNATURA
-INSERT INTO Asignatura (nombre) 
-VALUES 
-	('Hardware'), 
-	('Diseño Web'),
-	('Software'),
-	('Seguridad Informática'),
-	('Diseño de Soluciones Educativas');
-
-go
-
--- REGISTROS EN LA TABLA CARRERA
-INSERT INTO Carrera (nombre) 
-VALUES 
-	('Informática Educativa'),
-	('Diseño Grafico'),
-	('Administración Turística y Hotelera'),
-	('Ciencias Naturales'),
-	('Ciencias Sociales'),
-	('Física-Matemática'),
-	('Inglés'),
-	('Lengua y Literatura Hispánicas'),
-	('Cultura y Artes'),
-	('Danza'),
-	('Educación Física y Deportes'),
-	('Educación Musical'),
-	('Traducción e Interpretación en Lenguas Extranjeras'),
-	('Turismo Sostenible');
-
-go
-
-INSERT INTO Departamento (nombre) 
-VALUES 
-	('Tecnología Educativa'),
-	('Multidisciplinario'),
-	('Enseñanza de las Ciencias'),
-	('Español'),
-	('Lenguas Extranjeras'),
-	('Pedagogía'),
-	('Administración de Empresas'),
-	('Contabilidad Pública y Finanzas'),
-	('Economía'),
-	('Derecho'),
-	('Ciencias Sociales y Políticas'),
-	('Ciencias de la Información y Comunicación'),
-	('Psicología y Trabajo Social'),
-	('Ciencias Básicas Biomédicas'),
-	('Ciencias Médico-quirúrgica'),
-	('Salud Materno Infantil'),
-	('Salud Pública'),
-	('Integrador de las Prácticas en Salud'),
-	('Salud Visual'),
-	('Salud Oral'),
-	('Enfermería y Anestesia'),
-	('Fisioterapia'),
-	('Nutrición'),
-	('Bioanálisis clínico'),
-	('Matemáticas'),
-	('Computación'),
-	('Física'),
-	('Biología'),
-	('Química'),
-	('Construcción'),
-	('Tecnología');
-
--- REGISTROS EN LA TABLA AREACONOCIMIENTO
-INSERT INTO AreaConocimiento (nombre) 
-VALUES 
-	('Educación, Arte y Humanidades'),
-	('Ciencias Económicas y Administrativas'),
-	('Ciencias Sociales y Jurídicas'),
-	('Ciencias de la Salud'),
-	('Ciencias Básicas y Tecnología');
-
-go
-
--- REGISTROS EN LA TABLA COMPONENTECURRICULAR
-INSERT INTO ComponenteCurricular (fk_asignatura, fk_carrera, fk_departamento, fk_area)
-VALUES 
-	(1, 1, 1, 1),
-	(2, 1, 1, 1),
-	(3, 1, 1, 1),
-	(4, 1, 1, 1),
-	(5, 1, 1, 1);
-
-go
-
-INSERT INTO SEMESTRE (descripcion) VALUES ('Semestre I'), ('Semestre II')
-
-GO
-
-INSERT INTO PERIODO (anio, fk_semestre) VALUES ('2025', 1), ('2025', 2), ('2024', 1), ('2024', 2)
-
-GO
-
-----------------------------------------------PRUEBAS DE REGISTROS DE LAS TABLAS PRINCIPALES----------------------------------------------
-INSERT INTO MatrizIntegracionComponentes (
-    fk_profesor,    
-    codigo_documento,
-    nombre_matriz_integracion_componente,
-    competencias,
-    objetivo_anio,
-    objetivo_semestre,
-    objetivo_integrador,
-    accion_integradora,
-    tipo_evaluacion
-)
-VALUES (
-    1, -- fk_profesor    
-    'MIC-001', -- codigo_documento
-    'Matriz de Integración de Hardware', -- nombre_matriz_integracion_componente
-    'Competencias en hardware', -- competencias
-    'Integrar conocimientos de hardware y software', -- objetivo_anio
-    'Desarrollar habilidades en hardware', -- objetivo_semestre
-    'Crear soluciones educativas integradas', -- objetivo_integrador
-    'Proyecto final integrador', -- accion_integradora
-    'Sumativa' -- tipo_evaluacion
-);
-
--- Asignatura 1: Hardware
-INSERT INTO MatrizAsignatura (fk_matriz_integracion, fk_asignatura, descripcion)
-VALUES (
-    1, -- fk_matriz_integracion
-    1, -- fk_asignatura (Hardware)
-    'Requisitos de hardware para servidores' -- descripcion
-);
-
-INSERT INTO PlanDidacticoSemestral (
-    fk_matriz_integracion,
-    fk_profesor,
-    codigo_documento,
-    nombre_plan_didactico_semestral,
-    fk_componente_curricular,
-    fk_anio_semestre,
-    fecha_inicio,
-    fecha_fin,
-    eje_disiplinar,
-    fk_asignatura,
-    curriculum,
-    competencias,
-    objetivo_integrador,
-    eje_transversal,
-    bibliografia
-)
-VALUES (
-    1, -- fk_matriz_integracion
-    1, -- fk_profesor
-    'PDS-001', -- codigo_documento
-    'Plan Didáctico de Hardware', -- nombre_plan_didactico_semestral
-    1, -- fk_componente_curricular
-    1, -- fk_anio_semestre
-    '2023-08-01', -- fecha_inicio
-    '2023-12-15', -- fecha_fin
-    'Integración de hardware y software', -- eje_disiplinar
-    1, -- fk_asignatura (Hardware)
-    'Currículum de hardware', -- curriculum
-    'Competencias en hardware', -- competencias
-    'Crear soluciones educativas integradas', -- objetivo_integrador
-    'Eje transversal de hardware', -- eje_transversal
-    'Bibliografía de hardware' -- bibliografia
-);
-
--- Tema 1: Introducción al Hardware
-INSERT INTO TemaPlanificacionSemestral (
-    fk_plan_didactico_semestral,
-    tema,
-    horas_teoricas,
-    horas_laboratorio,
-    horas_practicas,
-    horas_investigacion,
-    P_LAB_INV,
-    creditos
-)
-VALUES (
-    1, -- fk_plan_didactico_semestral (ID del Plan Didáctico Semestral)
-    'Introducción al Hardware', -- tema
-    10, -- horas_teoricas
-    5, -- horas_laboratorio
-    5, -- horas_practicas
-    2, -- horas_investigacion
-    1, -- P_LAB_INV
-    3 -- creditos
-);
-
--- Tema 2: Componentes de Hardware
-INSERT INTO TemaPlanificacionSemestral (
-    fk_plan_didactico_semestral,
-    tema,
-    horas_teoricas,
-    horas_laboratorio,
-    horas_practicas,
-    horas_investigacion,
-    P_LAB_INV,
-    creditos
-)
-VALUES (
-    1, -- fk_plan_didactico_semestral
-    'Componentes de Hardware', -- tema
-    8, -- horas_teoricas
-    4, -- horas_laboratorio
-    4, -- horas_practicas
-    2, -- horas_investigacion
-    1, -- P_LAB_INV
-    2 -- creditos
-);
-
--- Matriz de Planificación Semestral
-INSERT INTO MatrizPlanificacionSemestral (
-    fk_plan_didactico_semestral,
-    numero_semana,
-    objetivo_aprendizaje,
-    contenidos_esenciales,
-    estrategias_aprendizaje,
-    estrategias_evaluacion,
-    tipo_evaluacion,
-    instrumento_evaluacion,
-    evidencias_aprendizaje
-)
-VALUES (
-    1, -- fk_plan_didactico_semestral (ID del Plan Didáctico Semestral)
-    1, -- numero_semana
-    'Comprender los conceptos básicos de hardware', -- objetivo_aprendizaje
-    'Introducción al hardware y sus componentes', -- contenidos_esenciales
-    'Clases teóricas y prácticas', -- estrategias_aprendizaje
-    'Evaluación por proyecto', -- estrategias_evaluacion
-    'Sumativa', -- tipo_evaluacion
-    'Rúbrica', -- instrumento_evaluacion
-    'Lista de componentes identificados' -- evidencias_aprendizaje
-);
-
-INSERT INTO PlanClasesDiario (
-    fk_plan_didactico_semestral,
-    codigo_documento,
-    nombre_plan_clases_diario,
-    fk_componente_curricular,
-    ejes,
-    fk_asignatura,
-    fk_profesor,
-    fk_periodo,
-    competencias,
-    BOA,
-    fecha_inicio,
-    fecha_fin,
-    objetivo_aprendizaje,
-    tema_contenido,
-    indicador_logro,
-    tareas_iniciales,
-    tareas_desarrollo,
-    tareas_sintesis,
-    tipo_evaluacion,
-    estrategia_evaluacion,
-    instrumento_evaluacion,
-    evidencias_aprendizaje,
-    criterios_aprendizaje,
-    indicadores_aprendizaje,
-    nivel_aprendizaje
-)
-VALUES (
-    1, -- fk_plan_didactico_semestral
-    'PCD-001', -- codigo_documento
-    'Plan de Clases Diario de Hardware', -- nombre_plan_clases_diario
-    1, -- fk_componente_curricular
-    'Ejes de hardware', -- ejes
-    1, -- fk_asignatura (Hardware)
-    1, -- fk_profesor
-    1, -- fk_periodo
-    'Competencias en hardware', -- competencias
-    'BOA de hardware', -- BOA
-    '2023-10-15', -- fecha_inicio
-    '2023-10-20', -- fecha_fin
-    'Comprender los conceptos básicos de hardware', -- objetivo_aprendizaje
-    'Introducción a los componentes de hardware', -- tema_contenido
-    'El estudiante identifica los componentes de hardware', -- indicador_logro
-    'Revisar conceptos previos', -- tareas_iniciales
-    'Identificar componentes de hardware', -- tareas_desarrollo
-    'Presentación de los componentes identificados', -- tareas_sintesis
-    'Sumativa', -- tipo_evaluacion
-    'Evaluación por proyecto', -- estrategia_evaluacion
-    'Rúbrica', -- instrumento_evaluacion
-    'Lista de componentes identificados', -- evidencias_aprendizaje
-    'Precisión en la identificación', -- criterios_aprendizaje
-    'Uso correcto de terminología', -- indicadores_aprendizaje
-    'Básico' -- nivel_aprendizaje
-);
-------------------------------------------------------------------------------------------------------------------------------------------
-
-------------------------------------------------PROCEDIMIENTOS ALMACENADOS------------------------------------------------
--- Iniciar Sesión
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_LoginUsuario')
-DROP PROCEDURE usp_LoginUsuario
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerDetalleUsuario')
-DROP PROCEDURE usp_ObtenerDetalleUsuario
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerPermisos')
-DROP PROCEDURE usp_ObtenerPermisos
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ActualizarPermisos')
-DROP PROCEDURE usp_ActualizarPermisos
-GO
-
--- Usuario
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerUsuario')
-DROP PROCEDURE usp_ObtenerUsuario
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_RegistrarUsuario')
-DROP PROCEDURE usp_RegistrarUsuario
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ModificarUsuario')
-DROP PROCEDURE usp_ModificarUsuario
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_EliminarUsuario')
-DROP PROCEDURE usp_EliminarUsuario
-GO
-
--- Roles
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerRoles')
-DROP PROCEDURE usp_ObtenerRoles
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_RegistrarRol')
-DROP PROCEDURE usp_RegistrarRol
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ModificarRol')
-DROP PROCEDURE usp_ModificarRol
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_EliminarRol')
-DROP PROCEDURE usp_EliminarRol
-GO
-
-CREATE PROCEDURE usp_LoginUsuario(    
-	@Usuario VARCHAR(60),
-    @Clave VARCHAR(100),
-	@IdUsuario INT OUTPUT,
-    @Mensaje VARCHAR(255) OUTPUT
-)   
-AS
-BEGIN
-    SET @IdUsuario = 0
-    SET @Mensaje = ''
-
-    -- Verificar si el usuario existe y está activo
-    IF EXISTS (SELECT * FROM USUARIOS WHERE usuario = @Usuario AND estado = 1)
-    BEGIN
-        -- Verificar si la contraseña es correcta
-        IF EXISTS (SELECT * FROM USUARIOS WHERE usuario = @Usuario AND contrasena = @Clave AND estado = 1)
-        BEGIN
-            SET @IdUsuario = (SELECT TOP 1 id_usuario FROM USUARIOS WHERE usuario = @Usuario AND contrasena = @Clave AND estado = 1)
-            SET @Mensaje = 'Inicio de sesión exitoso'
-        END
-        ELSE
-        BEGIN
-            SET @Mensaje = 'Contraseña incorrecta'
-        END
-    END
-    ELSE
-    BEGIN
-        SET @Mensaje = 'El usuario no existe o está inactivo'
-    END
-END
-GO
-
-DECLARE @IdUsuario INT
-DECLARE @Mensaje VARCHAR(255)
-
-
-EXEC usp_LoginUsuario
-    @Usuario = 'admin',
-    @Clave = 'admin',
-    @IdUsuario = @IdUsuario OUTPUT,
-    @Mensaje = @Mensaje OUTPUT
-
-PRINT 'ID Usuario: ' + CAST(@IdUsuario AS VARCHAR)
-PRINT 'Mensaje: ' + @Mensaje
-GO
-
-
-CREATE PROCEDURE usp_ObtenerDetalleUsuario
-    @IdUsuario INT
-AS
-BEGIN
-    SELECT 
-        u.*,
-        (SELECT * FROM ROL r WHERE r.id_rol = u.fk_rol FOR XML PATH(''), TYPE) AS 'DetalleRol',
-        (
-            SELECT m.nombre AS 'NombreMenu', m.icono,
-            (
-                SELECT sm.nombre AS 'NombreSubMenu', sm.controlador, sm.vista, sm.icono, p.estado
-                FROM PERMISOS p
-                INNER JOIN SUBMENU sm ON sm.id_submenu = p.fk_submenu
-                INNER JOIN MENU m ON m.id_menu = sm.fk_menu
-                WHERE p.fk_rol = u.fk_rol AND p.estado = 1
-                FOR XML PATH('SubMenu'), TYPE
-            ) AS 'DetalleSubMenu'
-            FROM MENU m
-            WHERE EXISTS (
-                SELECT 1
-                FROM PERMISOS p
-                INNER JOIN SUBMENU sm ON sm.id_submenu = p.fk_submenu
-                WHERE p.fk_rol = u.fk_rol AND sm.fk_menu = m.id_menu AND p.estado = 1
-            )
-            FOR XML PATH('Menu'), TYPE
-        ) AS 'DetalleMenu'
-    FROM USUARIOS u
-    WHERE u.id_usuario = @IdUsuario
-    FOR XML PATH(''), ROOT('Usuario')
-END
-GO
-
-CREATE PROCEDURE usp_ObtenerPermisos
-    @IdRol INT
-AS
-BEGIN
-    SELECT 
-        p.id_permisos,
-        m.nombre AS 'Menu',
-        sm.nombre AS 'SubMenu',
-        p.estado
-    FROM PERMISOS p
-    INNER JOIN SUBMENU sm ON sm.id_submenu = p.fk_submenu
-    INNER JOIN MENU m ON m.id_menu = sm.fk_menu
-    WHERE p.fk_rol = @IdRol
-END
-GO
-
-CREATE PROCEDURE usp_ActualizarPermisos
-    @Detalle XML,
-    @Resultado BIT OUTPUT
-AS
-BEGIN
-    BEGIN TRY
-        BEGIN TRANSACTION
-
-        DECLARE @permisos TABLE (id_permisos INT, estado BIT)
-
-        INSERT INTO @permisos (id_permisos, estado)
-        SELECT 
-            Node.Data.value('(IdPermisos)[1]', 'INT'),
-            Node.Data.value('(Activo)[1]', 'BIT')
-        FROM @Detalle.nodes('/DETALLE/PERMISO') Node(Data)
-
-        UPDATE p
-        SET p.estado = pe.estado
-        FROM PERMISOS p
-        INNER JOIN @permisos pe ON pe.id_permisos = p.id_permisos
-
-        COMMIT
-        SET @Resultado = 1
-    END TRY
-    BEGIN CATCH
-        ROLLBACK
-        SET @Resultado = 0
-    END CATCH
-END
-GO
-
-CREATE PROCEDURE usp_ObtenerUsuario
-AS
-BEGIN
-    SELECT 
-        u.id_usuario,
-        u.pri_nombre,
-        u.seg_nombre,
-        u.pri_apellido,
-        u.seg_apellido,
-        u.usuario,
-        u.correo,
-        u.fk_rol,
-        u.estado,
-        u.fecha_registro,
-        r.descripcion AS 'DescripcionRol'
-    FROM USUARIOS u
-    INNER JOIN ROL r ON r.id_rol = u.fk_rol
-END
-GO
-
-CREATE PROCEDURE usp_RegistrarUsuario(
-    @PriNombre VARCHAR(60),
-    @SegNombre VARCHAR(60),
-    @PriApellido VARCHAR(60),
-    @SegApellido VARCHAR(60),
-    @Usuario VARCHAR(50),
-    @Clave VARCHAR(100),
-    @Correo VARCHAR(60),
-    @Telefono INT,
-    @FkRol INT,
-    @Estado BIT,    
-    @Resultado INT OUTPUT,
-    @Mensaje VARCHAR(255) OUTPUT
-)
-AS
-BEGIN
-    SET @Resultado = 0
-    SET @Mensaje = ''
-
-    -- Verificar si el nombre de usuario ya existe
-    IF EXISTS (SELECT * FROM USUARIOS WHERE usuario = @Usuario)
-    BEGIN
-        SET @Mensaje = 'El nombre de usuario ya está en uso'
-        RETURN
-    END
-
-    -- Verificar si el correo electrónico ya existe
-    IF EXISTS (SELECT * FROM USUARIOS WHERE correo = @Correo)
-    BEGIN
-        SET @Mensaje = 'El correo electrónico ya está registrado'
-        RETURN
-    END
-
-    -- Insertar el nuevo usuario
-    INSERT INTO USUARIOS (pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, telefono, fk_rol, estado)
-    VALUES (@PriNombre, @SegNombre, @PriApellido, @SegApellido, @Usuario, CONVERT(VARBINARY(64), @Clave), @Correo, @Telefono, @FkRol, @Estado)
-
-    SET @Resultado = SCOPE_IDENTITY()
-    SET @Mensaje = 'Usuario registrado exitosamente'
-END
-GO
-
-CREATE PROCEDURE usp_ModificarUsuario
-    @IdUsuario INT,
-    @PriNombre VARCHAR(60),
-    @SegNombre VARCHAR(60),
-    @PriApellido VARCHAR(60),
-    @SegApellido VARCHAR(60),
-    @Usuario VARCHAR(50),
-    @Clave VARCHAR(100),
-    @Correo VARCHAR(60),
-    @Telefono INT,
-    @FkRol INT,
-    @Estado BIT,
-
-    @Resultado INT OUTPUT,
-    @Mensaje VARCHAR(255) OUTPUT
-AS
-BEGIN
-    SET @Resultado = 0
-    SET @Mensaje = ''
-
-    -- Verificar si el usuario existe
-    IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
-    BEGIN
-        SET @Mensaje = 'El usuario no existe'
-        RETURN
-    END
-
-    -- Verificar si el nombre de usuario ya existe (excluyendo al usuario actual)
-    IF EXISTS (SELECT 1 FROM USUARIOS WHERE usuario = @Usuario AND id_usuario != @IdUsuario)
-    BEGIN
-        SET @Mensaje = 'El nombre de usuario ya está en uso'
-        RETURN
-    END
-
-    -- Verificar si el correo electrónico ya existe (excluyendo al usuario actual)
-    IF EXISTS (SELECT 1 FROM USUARIOS WHERE correo = @Correo AND id_usuario != @IdUsuario)
-    BEGIN
-        SET @Mensaje = 'El correo electrónico ya está registrado'
-        RETURN
-    END
-
-    -- Actualizar el usuario
-    UPDATE USUARIOS
-    SET 
-        pri_nombre = @PriNombre,
-        seg_nombre = @SegNombre,
-        pri_apellido = @PriApellido,
-        seg_apellido = @SegApellido,
-        usuario = @Usuario,
-        contrasena = CONVERT(VARBINARY(64), @Clave),
-        correo = @Correo,
-        telefono = @Telefono,
-        fk_rol = @FkRol,
-        estado = @Estado
-    WHERE id_usuario = @IdUsuario
-
-    SET @Resultado = 1
-    SET @Mensaje = 'Usuario actualizado exitosamente'
-END
-GO
-
-CREATE PROCEDURE usp_EliminarUsuario
-    @IdUsuario INT,
-    @Resultado BIT OUTPUT
-AS
-BEGIN
-    SET @Resultado = 0
-    
-    IF EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
-    BEGIN
-        DELETE FROM USUARIOS WHERE id_usuario = @IdUsuario
-        SET @Resultado = 1
-    END
-END
-GO
-
-CREATE PROCEDURE usp_ObtenerRoles
-AS
-BEGIN
-    SELECT id_rol, descripcion, estado FROM ROL
-END
-GO
-
-CREATE PROCEDURE usp_RegistrarRol
-    @Descripcion VARCHAR(60),
-    @Resultado BIT OUTPUT
-AS
-BEGIN
-    SET @Resultado = 1
-    IF NOT EXISTS (SELECT * FROM ROL WHERE descripcion = @Descripcion)
-    BEGIN
-        DECLARE @IdRol INT
-        INSERT INTO ROL (descripcion) VALUES (@Descripcion)
-        SET @IdRol = SCOPE_IDENTITY()
-
-        INSERT INTO PERMISOS (fk_rol, fk_submenu, estado)
-        SELECT @IdRol, id_submenu, 0 FROM SUBMENU
-    END
-    ELSE
-        SET @Resultado = 0
-END
-GO
-
-CREATE PROCEDURE usp_ModificarRol
-    @IdRol INT,
-    @Descripcion VARCHAR(60),
-    @Estado BIT,
-    @Resultado BIT OUTPUT
-AS
-BEGIN
-    SET @Resultado = 1
-    IF NOT EXISTS (SELECT * FROM ROL WHERE descripcion = @Descripcion AND id_rol != @IdRol)
-    BEGIN
-        UPDATE ROL
-        SET 
-            descripcion = @Descripcion,
-            estado = @Estado
-        WHERE id_rol = @IdRol
-    END
-    ELSE
-        SET @Resultado = 0
-END
-GO
-
-CREATE PROCEDURE usp_EliminarRol
-    @IdRol INT,
-    @Resultado BIT OUTPUT
-AS
-BEGIN
-    SET @Resultado = 1
-    IF NOT EXISTS (SELECT * FROM USUARIOS WHERE fk_rol = @IdRol)
-    BEGIN
-        DELETE FROM PERMISOS WHERE fk_rol = @IdRol
-        DELETE FROM ROL WHERE id_rol = @IdRol
-    END
-    ELSE
-        SET @Resultado = 0
-END
-GO
-
-select * from USUARIOS

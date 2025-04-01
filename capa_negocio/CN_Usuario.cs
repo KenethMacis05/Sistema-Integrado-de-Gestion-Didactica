@@ -10,12 +10,12 @@ namespace capa_negocio
 {
     public class CN_Usuario
     {
-        private CD_Usuarios cd_usuario = new CD_Usuarios();
+        private CD_Usuarios CD_Usuarios = new CD_Usuarios();
 
         //Listar usuarios
         public List<USUARIOS> Listar()
         {
-            return cd_usuario.Listar();
+            return CD_Usuarios.Listar();
         }
 
         //Registrar usuario
@@ -23,7 +23,7 @@ namespace capa_negocio
         {
             mensaje = string.Empty;
 
-            if (string.IsNullOrEmpty(usuario.pri_nombre) || string.IsNullOrEmpty(usuario.pri_apellido) || string.IsNullOrEmpty(usuario.usuario) || string.IsNullOrEmpty(usuario.contrasena) || string.IsNullOrEmpty(usuario.correo))
+            if (string.IsNullOrEmpty(usuario.pri_nombre) || string.IsNullOrEmpty(usuario.pri_apellido) || string.IsNullOrEmpty(usuario.usuario) || string.IsNullOrEmpty(usuario.correo))
             {
                 mensaje = "Por favor, complete todos los campos.";
                 return 0;
@@ -48,7 +48,7 @@ namespace capa_negocio
                 if (resultado)
                 {
                     usuario.contrasena = Encriptar.GetSHA256(clave);
-                    return cd_usuario.RegistrarUsuario(usuario, out mensaje);
+                    return CD_Usuarios.RegistrarUsuario(usuario, out mensaje);
                 }
                 else
                 {
@@ -76,7 +76,7 @@ namespace capa_negocio
             }
             if (string.IsNullOrEmpty(mensaje))
             {
-                return cd_usuario.ActualizarUsuario(usuario, out mensaje) ? 1 : 0;
+                return CD_Usuarios.ActualizarUsuario(usuario, out mensaje) ? 1 : 0;
             }
             else
             {
@@ -87,7 +87,7 @@ namespace capa_negocio
         //Eliminar usuario
         public int Eliminar(int id_usuario, out string mensaje)
         {
-            return cd_usuario.EliminarUsuario(id_usuario, out mensaje) ? 1 : 0;
+            return CD_Usuarios.EliminarUsuario(id_usuario, out mensaje) ? 1 : 0;
         }
     }
 }

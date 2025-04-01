@@ -19,8 +19,6 @@ namespace modulo_admin.Controllers
 
         public ActionResult Index()
         {
-
-
             if (Session["UsuarioAutenticado"] != null)
             {
                 SesionUsuario = (USUARIOS)Session["UsuarioAutenticado"];
@@ -62,12 +60,29 @@ namespace modulo_admin.Controllers
         [HttpPost]
         public JsonResult GuardarUsuario(USUARIOS usuario)
         {
-            Object resultado;
-            string mensaje = string.Empty;            
+            Object resultado = null;
+            string mensaje = string.Empty;
 
             if (usuario.id_usuario == 0)
             {
-                resultado = new CD_Usuarios().RegistrarUsuario(usuario, out mensaje);
+                string clave = CN_Recursos.GenerarClave();
+
+                string asunto = "Creación de usuario";
+                string mensaje_correo = "<h3>Su cuenta fue creada correctamente</h3></br><p>Su contraseña para acceder es: !clave!</p>";
+                mensaje_correo = mensaje_correo.Replace("!clave!", clave);
+
+                bool correo = CN_Recursos.EnviarCorreo(usuario.correo, asunto, mensaje_correo);
+
+                if (correo)
+                {
+                    usuario.contrasena = Encriptar.GetSHA256(clave);
+                    resultado = new CD_Usuarios().RegistrarUsuario(usuario, out mensaje);
+                }
+                else
+                {
+                    mensaje = "Ocurrió un error al enviar el correo.";
+                    return Json(new { Resultado = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                }
             }
             else
             {
