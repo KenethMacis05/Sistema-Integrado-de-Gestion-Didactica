@@ -13,6 +13,7 @@ namespace modulo_admin
             
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.bundle.js",
+                      "~/Scripts/bootstrap.min.js",
                       "~/Scripts/bootstrap.bundle.min.js",
                       "~/Scripts/bootstrap.js"));
 

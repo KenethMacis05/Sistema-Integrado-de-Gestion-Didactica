@@ -41,7 +41,7 @@ namespace capa_negocio
                 smtp.Send(mail);
                 resultado = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 resultado = false;
             }

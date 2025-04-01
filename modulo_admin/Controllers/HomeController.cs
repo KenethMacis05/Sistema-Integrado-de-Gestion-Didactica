@@ -16,6 +16,7 @@ namespace modulo_admin.Controllers
     public class HomeController : Controller
     {
         private static USUARIOS SesionUsuario;
+        CN_Usuario CN_Usuario = new CN_Usuario();
 
         public ActionResult Index()
         {
@@ -52,54 +53,37 @@ namespace modulo_admin.Controllers
         public JsonResult ListarUsuarios()
         {
             List<USUARIOS> lst = new List<USUARIOS>();
-            lst = new CN_Usuario().Listar();
+            lst = CN_Usuario.Listar();
 
             return Json(new { data = lst}, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
+        [HttpPost]        
         public JsonResult GuardarUsuario(USUARIOS usuario)
-        {
-            Object resultado = null;
+        {            
             string mensaje = string.Empty;
+            int resultado = 0;
 
             if (usuario.id_usuario == 0)
-            {
-                string clave = CN_Recursos.GenerarClave();
-
-                string asunto = "Creación de usuario";
-                string mensaje_correo = "<h3>Su cuenta fue creada correctamente</h3></br><p>Su contraseña para acceder es: !clave!</p>";
-                mensaje_correo = mensaje_correo.Replace("!clave!", clave);
-
-                bool correo = CN_Recursos.EnviarCorreo(usuario.correo, asunto, mensaje_correo);
-
-                if (correo)
-                {
-                    usuario.contrasena = Encriptar.GetSHA256(clave);
-                    resultado = new CD_Usuarios().RegistrarUsuario(usuario, out mensaje);
-                }
-                else
-                {
-                    mensaje = "Ocurrió un error al enviar el correo.";
-                    return Json(new { Resultado = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
-                }
+            {                
+                resultado = CN_Usuario.Registra(usuario, out mensaje);
             }
             else
             {
-                resultado = new CD_Usuarios().ActualizarUsuario(usuario, out mensaje);
+                resultado = CN_Usuario.Editar(usuario, out mensaje);
             }
+
             return Json(new { Resultado = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult EliminarUsuario(int id_usuario)
-        {
-            bool respuesta = false;
+        {            
             string mensaje = string.Empty;
 
-            respuesta = new CD_Usuarios().EliminarUsuario(id_usuario, out mensaje);
-            
-            return Json(new { Respuesta = respuesta, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            int resultado = CN_Usuario.Eliminar(id_usuario, out mensaje);
+
+            return Json(new { Respuesta = (resultado == 1), Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CerrarSesion()

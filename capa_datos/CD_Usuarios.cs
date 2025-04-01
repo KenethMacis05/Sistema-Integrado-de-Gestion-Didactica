@@ -212,8 +212,7 @@ namespace capa_datos
                     cmd.Parameters.AddWithValue("SegNombre", usuario.seg_nombre);
                     cmd.Parameters.AddWithValue("PriApellido", usuario.pri_apellido ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("SegApellido", usuario.seg_apellido);
-                    cmd.Parameters.AddWithValue("Usuario", usuario.usuario ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("Clave", usuario.contrasena ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("Usuario", usuario.usuario ?? (object)DBNull.Value);                    
                     cmd.Parameters.AddWithValue("Correo", usuario.correo ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("Telefono", usuario.telefono);
                     cmd.Parameters.AddWithValue("FkRol", usuario.fk_rol);

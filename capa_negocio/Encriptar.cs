@@ -12,13 +12,19 @@ namespace capa_negocio
         //Encriptar contraseña con SHA256
         public static string GetSHA256(string str)
         {
-            SHA256 sha256 = System.Security.Cryptography.SHA256Managed.Create();
-            ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-            byte[] stream = null;
-            StringBuilder sb = new System.Text.StringBuilder();
-            stream = sha256.ComputeHash(encoding.GetBytes(str));
-            for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
-            return sb.ToString();
+            if (string.IsNullOrEmpty(str)) return string.Empty;
+
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(str));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
     }
 }
