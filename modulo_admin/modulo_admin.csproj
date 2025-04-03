@@ -187,7 +187,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccesoController.cs" />
     <Compile Include="Controllers\ArchivoController.cs" />
-    <Compile Include="Controllers\Carpeta.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PlanificacionController.cs" />
     <Compile Include="Filters\VerificarSession.cs" />
@@ -553,7 +552,6 @@
     <Content Include="Views\Archivo\GestionArchivos.cshtml" />
     <Content Include="Views\Archivo\CarpetasCompartidas.cshtml" />
     <Content Include="Views\Archivo\ArchivosCompartidos.cshtml" />
-    <Content Include="Views\Carpeta\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

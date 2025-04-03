@@ -29,7 +29,7 @@ DROP PROCEDURE usp_ModificarUsuario
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ModificarContrasena')
-DROP PROCEDURE usp_ModificarUsuario
+DROP PROCEDURE usp_ModificarContrasena
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_EliminarUsuario')

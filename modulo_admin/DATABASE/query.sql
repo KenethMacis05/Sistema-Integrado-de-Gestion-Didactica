@@ -275,3 +275,6 @@ ORDER BY
     D.fecha_subida DESC;
 
 
+EXEC sp_sproc_columns 
+    @procedure_name = 'usp_ModificarUsuario',
+    @procedure_owner = 'dbo'; -- Esquema por defecto
