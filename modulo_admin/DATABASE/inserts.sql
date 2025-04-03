@@ -42,7 +42,7 @@ VALUES
 
 	('admin', 'admin', 'admin', 'admin', 'admin', 
         '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 
-        'c', 87654321,
+        'admin@gmail.com', 87654321,
         (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'));
 
 GO
