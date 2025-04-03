@@ -187,3 +187,91 @@ JOIN
     Semestre sem ON per.fk_semestre = sem.id_semestre;
 
 GO
+
+-- Consultas para verificar los registros de la tabla CARPETA
+SELECT TOP 10 nombre, fecha_registro
+FROM CARPETA 
+WHERE fk_id_usuario = 2
+ORDER BY fecha_registro DESC
+
+-- Consultas para verificar los registros de la tabla ARCHIVO
+SELECT TOP 10 
+    A.nombre AS nombre_archivo,
+    A.tipo,
+    A.fecha_subida,
+    C.nombre AS nombre_carpeta
+FROM 
+    ARCHIVO A
+INNER JOIN 
+    CARPETA C ON A.fk_id_carpeta = C.id_carpeta
+WHERE 
+    A.fk_id_carpeta = 1
+ORDER BY 
+    A.fecha_subida DESC;
+
+-- Consultas para verificar los registros de la tabla DETALLEARCHIVO
+-- Detalles con información de archivo y carpeta
+SELECT 
+    D.id_detalle_archivo,
+    D.correo,
+    U.pri_nombre AS nombre_usuario,
+    A.nombre AS nombre_archivo,
+    A.tipo AS tipo_archivo,
+    C.nombre AS nombre_carpeta,
+    D.fecha_subida
+FROM 
+    DETALLEARCHIVO D
+INNER JOIN ARCHIVO A ON D.fk_id_archivo = A.id_archivo
+INNER JOIN CARPETA C ON D.fk_id_carpeta = C.id_carpeta
+INNER JOIN USUARIOS U ON D.fk_id_usuario = U.id_usuario;
+
+-- Archivos compartidos por correo electrónico
+SELECT 
+    D.correo,
+    COUNT(D.id_detalle_archivo) AS total_archivos_compartidos
+FROM 
+    DETALLEARCHIVO D
+GROUP BY 
+    D.correo
+ORDER BY 
+    total_archivos_compartidos DESC;
+
+-- Detalles de archivos en una carpeta específica
+SELECT 
+    D.id_detalle_archivo,
+    D.correo,
+    A.nombre AS nombre_archivo,
+    D.fecha_subida
+FROM 
+    DETALLEARCHIVO D
+INNER JOIN ARCHIVO A ON D.fk_id_archivo = A.id_archivo
+WHERE 
+    D.fk_id_carpeta = 2;
+
+-- Archivos compartidos por un usuario específico
+SELECT 
+    D.correo,
+    A.nombre AS nombre_archivo,
+    C.nombre AS nombre_carpeta,
+    D.fecha_subida
+FROM 
+    DETALLEARCHIVO D
+INNER JOIN ARCHIVO A ON D.fk_id_archivo = A.id_archivo
+INNER JOIN CARPETA C ON D.fk_id_carpeta = C.id_carpeta
+WHERE 
+    D.fk_id_usuario = 1;
+
+-- Últimos 10 archivos compartidos
+SELECT TOP 10
+    D.correo,
+    A.nombre AS nombre_archivo,
+    C.nombre AS nombre_carpeta,
+    D.fecha_subida
+FROM 
+    DETALLEARCHIVO D
+INNER JOIN ARCHIVO A ON D.fk_id_archivo = A.id_archivo
+INNER JOIN CARPETA C ON D.fk_id_carpeta = C.id_carpeta
+ORDER BY 
+    D.fecha_subida DESC;
+
+

@@ -42,7 +42,7 @@ VALUES
 
 	('admin', 'admin', 'admin', 'admin', 'admin', 
         '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 
-        'admin@gmail.com', 87654321,
+        'c', 87654321,
         (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'));
 
 GO
@@ -85,6 +85,29 @@ WHERE fk_menu IN (
     WHERE nombre IN ('Matriz de Integracion', 'Plan Didactico Semestral', 'Plan de Clases Diario')
 );
 
+GO
+
+--------------------------------------------------------------------------------------------------------------------
+
+-- (1) REGISTROS EN TABLA CARPETA
+INSERT INTO CARPETA (nombre, fk_id_usuario) 
+    VALUES ('Fotos', 1), ('Documentos', 1), ('Videos', 1), ('Música', 1),
+           ('Fotos', 2), ('Documentos', 2), ('Videos', 2), ('Música', 2)
+GO
+
+-- (2) REGISTROS EN TABLA ARCHIVO
+INSERT INTO ARCHIVO (nombre, tipo, fk_id_carpeta) 
+    VALUES ('foto1.jpg', 'imagen', 1), ('documento1.pdf', 'documento', 2), 
+           ('video1.mp4', 'video', 3), ('musica1.mp3', 'audio', 4),
+           ('foto2.jpg', 'imagen', 5), ('documento2.pdf', 'documento', 6), 
+           ('video2.mp4', 'video', 7), ('musica2.mp3', 'audio', 8)
+GO
+
+-- (3) REGISTROS EN TABLA DETALLEARCHIVO
+INSERT INTO DETALLEARCHIVO (correo, fk_id_archivo, fk_id_carpeta, fk_id_usuario)
+VALUES 
+    ('ken123oficial@gmail.com', 1, 1, 1),
+    ('admin@gmail.com', 2, 2, 2)
 GO
 --------------------------------------------------------------------------------------------------------------------
 

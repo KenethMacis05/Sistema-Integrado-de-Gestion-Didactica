@@ -121,6 +121,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ARCHIVO.cs" />
+    <Compile Include="CARPETA.cs" />
+    <Compile Include="DETALLEARCHIVO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="USUARIOS.cs" />
   </ItemGroup>
