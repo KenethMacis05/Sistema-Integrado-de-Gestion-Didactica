@@ -21,8 +21,11 @@ namespace capa_datos
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    string query = "SELECT * FROM CARPETA WHERE fk_id_usuario = @id_usuario";
+                    string query = "SELECT TOP 10 * FROM CARPETA WHERE fk_id_usuario = @id_usuario ORDER BY fecha_registro DESC";
+            
                     SqlCommand cmd = new SqlCommand(query, conexion);
+                    cmd.Parameters.AddWithValue("@id_usuario", id_usuario); // Agregar esta línea
+
                     cmd.CommandType = CommandType.Text;
 
                     conexion.Open();
@@ -38,7 +41,7 @@ namespace capa_datos
                                     nombre = dr["nombre"].ToString(),
                                     fecha_registro = Convert.ToDateTime(dr["fecha_registro"]),
                                     estado = Convert.ToBoolean(dr["estado"]),
-                                    fk_id_usuario = Convert.ToInt32(dr["fk_id_usuario"])
+                                    fk_id_usuario = new USUARIOS() { id_usuario = Convert.ToInt32(dr["fk_id_usuario"]) }
                                 }
                             );
                         }

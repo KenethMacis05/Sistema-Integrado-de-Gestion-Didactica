@@ -23,12 +23,15 @@ namespace modulo_admin.Controllers
             return View();
         }
 
-        //Usuarios
+        #region Usuarios
+
+        // Vista a la vista de usuarios
         public ActionResult Usuario()
         {
             return View();
         }
 
+        // Metodo para listar los usuarios
         [HttpGet]
         public JsonResult ListarUsuarios()
         {
@@ -38,6 +41,7 @@ namespace modulo_admin.Controllers
             return Json(new { data = lst }, JsonRequestBehavior.AllowGet);
         }
 
+        // Metodo para Guardar los usuarios
         [HttpPost]
         public JsonResult GuardarUsuario(USUARIOS usuario)
         {
@@ -46,16 +50,19 @@ namespace modulo_admin.Controllers
 
             if (usuario.id_usuario == 0)
             {
+                // Crear nuevo usuario
                 resultado = CN_Usuario.Registra(usuario, out mensaje);
             }
             else
             {
+                // Editar usuario existente
                 resultado = CN_Usuario.Editar(usuario, out mensaje);
             }
 
             return Json(new { Resultado = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
+        // Metodo para borrar usuarios
         [HttpPost]
         public JsonResult EliminarUsuario(int id_usuario)
         {
@@ -66,6 +73,9 @@ namespace modulo_admin.Controllers
             return Json(new { Respuesta = (resultado == 1), Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
+        #endregion
+
+        // Metodo para obtener los datos del usuario
         public ActionResult CerrarSesion()
         {
             Session["UsuarioAutenticado"] = null;

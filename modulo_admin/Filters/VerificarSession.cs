@@ -46,6 +46,7 @@ namespace modulo_admin.Filters
                 sesionUsuario = sesionUsuario ?? new USUARIOS(); // Si es null, crea uno nuevo
                 controller.ViewBag.NombreUsuario = $"{sesionUsuario.pri_nombre} {sesionUsuario.pri_apellido}";
                 controller.ViewBag.RolUsuario = sesionUsuario.descripcion;
+                controller.ViewBag.idUsuario = sesionUsuario.id_usuario;
             }
             catch (Exception)
             {

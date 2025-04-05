@@ -21,6 +21,7 @@ namespace modulo_admin
                         "~/Scripts/DataTables/jquery.dataTables.js",
                         "~/Scripts/DataTables/dataTables.responsive.js",
                         "~/Scripts/LoadingOverlay/loadingoverlay.min.js",
+                        "~/Scripts/metodosGlobales.js",
                         "~/Scripts/sweetalert2.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

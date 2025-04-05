@@ -514,9 +514,11 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\LoadingOverlay\loadingoverlay.min.js" />
+    <Content Include="Scripts\metodosGlobales.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\sweetalert.min.js" />
     <Content Include="Scripts\sweetalert2.min.js" />
+    <Content Include="Scripts\Views\Archivos.js" />
     <Content Include="Scripts\Views\Usuarios.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

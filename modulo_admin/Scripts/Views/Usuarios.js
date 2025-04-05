@@ -52,6 +52,7 @@ $("#datatable tbody").on("click", '.btn-editar', function () {
     abrirModal(data)
 });
 
+//Boton eliminar usuario
 $("#datatable tbody").on("click", '.btn-eliminar', function () {
     const usuarioseleccionado = $(this).closest("tr");
     const data = dataTable.row(usuarioseleccionado).data();    
@@ -235,15 +236,15 @@ function Guardar() {
     });
 }
 
-jQuery.ajax({
-    url: listarUsuariosUrl,
-    type: "GET",
-    dataType: "json",
-    contentType: "application/json; charset=utf-8",
-    success: function (data) {
-        console.log(data)
-    }
-})
+//jQuery.ajax({
+//    url: listarUsuariosUrl,
+//    type: "GET",
+//    dataType: "json",
+//    contentType: "application/json; charset=utf-8",
+//    success: function (data) {
+//        console.log(data)
+//    }
+//})
 
 let dataTable;
 

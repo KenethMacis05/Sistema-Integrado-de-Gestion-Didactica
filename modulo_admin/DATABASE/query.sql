@@ -189,7 +189,7 @@ JOIN
 GO
 
 -- Consultas para verificar los registros de la tabla CARPETA
-SELECT TOP 10 nombre, fecha_registro
+SELECT TOP 10 *
 FROM CARPETA 
 WHERE fk_id_usuario = 2
 ORDER BY fecha_registro DESC
