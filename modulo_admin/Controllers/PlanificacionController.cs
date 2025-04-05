@@ -1,4 +1,5 @@
-﻿using System;
+﻿using modulo_admin.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +7,7 @@ using System.Web.Mvc;
 
 namespace modulo_admin.Controllers
 {
+    [VerificarSession]
     public class PlanificacionController : Controller
     {
         // GET: Planificacion

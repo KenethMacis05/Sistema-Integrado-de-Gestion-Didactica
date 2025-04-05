@@ -270,3 +270,43 @@
         opacity: 1;
     }
 }
+
+/*Estilos de carpetas*/
+
+.file-manager-group {
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 10px;
+}
+
+    .file-manager-group:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        border-color: var(--bs-primary) !important;
+    }
+
+    .file-manager-group .card-body {
+        cursor: pointer;
+        position: relative;
+    }
+
+.file-manager-group-title {
+    transition: color 0.2s ease;
+}
+
+.file-manager-group:hover .file-manager-group-title {
+    color: var(--bs-primary) !important;
+}
+
+.file-manager-recent-file-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.file-manager-group:hover .file-manager-recent-file-actions {
+    opacity: 1;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}

@@ -18,6 +18,7 @@ namespace capa_entidad
         public int telefono { get; set; }
         public string correo { get; set; }
         public int fk_rol { get; set; }
+        public string descripcion { get; set; }
         public bool estado { get; set; }
         public bool reestablecer { get; set; }
 

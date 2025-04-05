@@ -12,21 +12,46 @@ namespace modulo_admin.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var oUsuario = (USUARIOS)HttpContext.Current.Session["UsuarioAutenticado"];
-            if (oUsuario == null)
+            var controller = filterContext.Controller as Controller;
+            USUARIOS sesionUsuario = null;
+
+            // Verificar si hay sesión activa
+            if (controller != null)
             {
-                if (filterContext.Controller is AccesoController == false)
+                sesionUsuario = (USUARIOS)controller.Session["UsuarioAutenticado"];
+            }
+
+            // Redirigir si no hay sesión y no está en AccesoController
+            if (sesionUsuario == null)
+            {
+                if (!(controller is AccesoController))
                 {
-                    filterContext.HttpContext.Response.Redirect("~/Acceso/Index");
+                    filterContext.Result = new RedirectResult("~/Acceso/Index");
+                    return;
                 }
             }
             else
             {
-                if (filterContext.Controller is AccesoController == true)
+                // Redirigir si ya está autenticado y trata de acceder a AccesoController
+                if (controller is AccesoController)
                 {
-                    filterContext.HttpContext.Response.Redirect("~/Home/Index");
+                    filterContext.Result = new RedirectResult("~/Home/Index");
+                    return;
                 }
             }
+
+            // Asignar valores al ViewBag (incluye casos donde sesionUsuario es null)
+            try
+            {
+                sesionUsuario = sesionUsuario ?? new USUARIOS(); // Si es null, crea uno nuevo
+                controller.ViewBag.NombreUsuario = $"{sesionUsuario.pri_nombre} {sesionUsuario.pri_apellido}";
+                controller.ViewBag.RolUsuario = sesionUsuario.descripcion;
+            }
+            catch (Exception)
+            {
+                controller.ViewBag.Mensaje = "Error al cargar los datos del usuario";
+            }
+
             base.OnActionExecuting(filterContext);
         }
     }

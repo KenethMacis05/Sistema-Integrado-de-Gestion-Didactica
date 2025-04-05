@@ -62,7 +62,7 @@ namespace capa_datos
         {
             using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
             {
-                string query = "SELECT id_usuario, pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, correo, telefono, fk_rol, estado, reestablecer FROM USUARIOS WHERE id_usuario = @idUsuario";
+                string query = "SELECT u.id_usuario, u.pri_nombre, u.seg_nombre, u.pri_apellido, u.seg_apellido, u.usuario, u.correo, u.telefono, u.fk_rol, r.descripcion, u.estado, u.reestablecer FROM USUARIOS u INNER JOIN ROL r ON r.id_rol = u.fk_rol WHERE id_usuario = @idUsuario";
 
                 SqlCommand cmd = new SqlCommand(query, conexion);
                 cmd.CommandType = CommandType.Text;
@@ -85,6 +85,7 @@ namespace capa_datos
                             correo = dr["correo"].ToString(),
                             telefono = Convert.ToInt32(dr["telefono"]),
                             fk_rol = Convert.ToInt32(dr["fk_rol"]),
+                            descripcion = dr["descripcion"].ToString(),
                             estado = Convert.ToBoolean(dr["estado"]),
                             reestablecer = Convert.ToBoolean(dr["reestablecer"])
                         };

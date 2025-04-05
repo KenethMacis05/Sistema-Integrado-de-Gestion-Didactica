@@ -13,7 +13,6 @@ namespace modulo_admin
             
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.bundle.js",
-                      "~/Scripts/bootstrap.min.js",
                       "~/Scripts/bootstrap.bundle.min.js",
                       "~/Scripts/bootstrap.js"));
 
@@ -22,13 +21,13 @@ namespace modulo_admin
                         "~/Scripts/DataTables/jquery.dataTables.js",
                         "~/Scripts/DataTables/dataTables.responsive.js",
                         "~/Scripts/LoadingOverlay/loadingoverlay.min.js",
-                        "~/Scripts/sweetalert.min.js"));
+                        "~/Scripts/sweetalert2.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/DataTables/css/jquery.dataTables.css",
                       "~/Content/DataTables/css/responsive.dataTables.css",
-                      "~/Content/sweetalert.css",
+                      "~/Content/sweetalert2.css",
                       "~/Content/Site.css"));                         
         }
     }

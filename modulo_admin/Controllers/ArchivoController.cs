@@ -1,4 +1,5 @@
-﻿using System;
+﻿using modulo_admin.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,16 +7,19 @@ using System.Web.Mvc;
 
 namespace modulo_admin.Controllers
 {
+    [VerificarSession]
     public class ArchivoController : Controller
     {
         // GET: Archivo
         public ActionResult GestionArchivos()
         {
             return View();
-        }public ActionResult CarpetasCompartidas()
+        }
+        public ActionResult CarpetasCompartidas()
         {
             return View();
-        }public ActionResult ArchivosCompartidos()
+        }
+        public ActionResult ArchivosCompartidos()
         {
             return View();
         }

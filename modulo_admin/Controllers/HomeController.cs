@@ -19,35 +19,15 @@ namespace modulo_admin.Controllers
         CN_Usuario CN_Usuario = new CN_Usuario();
 
         public ActionResult Index()
-        {
-            if (Session["UsuarioAutenticado"] != null)
-            {
-                SesionUsuario = (USUARIOS)Session["UsuarioAutenticado"];
-            }
-            else
-            {
-                SesionUsuario = new USUARIOS();
-            }
-
-            try
-            {                
-                ViewBag.NombreUsuario = SesionUsuario.pri_nombre + " " + SesionUsuario.pri_apellido;                
-            }
-            catch (Exception)
-            {                                
-                ViewBag.Mensaje = "Ocurrió un error al cargar los datos del usuario";
-                return View();
-            }
-
+        {           
             return View();
         }
-        
 
         //Usuarios
         public ActionResult Usuario()
         {
             return View();
-        }               
+        }
 
         [HttpGet]
         public JsonResult ListarUsuarios()
@@ -55,17 +35,17 @@ namespace modulo_admin.Controllers
             List<USUARIOS> lst = new List<USUARIOS>();
             lst = CN_Usuario.Listar();
 
-            return Json(new { data = lst}, JsonRequestBehavior.AllowGet);
+            return Json(new { data = lst }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]        
+        [HttpPost]
         public JsonResult GuardarUsuario(USUARIOS usuario)
-        {            
+        {
             string mensaje = string.Empty;
             int resultado = 0;
 
             if (usuario.id_usuario == 0)
-            {                
+            {
                 resultado = CN_Usuario.Registra(usuario, out mensaje);
             }
             else
@@ -78,7 +58,7 @@ namespace modulo_admin.Controllers
 
         [HttpPost]
         public JsonResult EliminarUsuario(int id_usuario)
-        {            
+        {
             string mensaje = string.Empty;
 
             int resultado = CN_Usuario.Eliminar(id_usuario, out mensaje);
