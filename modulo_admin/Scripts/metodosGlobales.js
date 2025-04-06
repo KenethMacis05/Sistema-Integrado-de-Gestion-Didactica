@@ -33,3 +33,12 @@ function formatASPNetDate(jsonDate) {
 
     return 'Fecha no disponible';
 }
+
+// Configuración de SweetAlert2
+const swalConfig = {
+    confirmButtonColor: "#3085d6",
+    customClass: {
+        popup: 'custom-success-alerta',
+        confirmButton: 'custom-confirmar-button',
+    }
+};

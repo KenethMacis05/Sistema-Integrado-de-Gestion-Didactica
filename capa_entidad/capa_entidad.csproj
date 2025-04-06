@@ -124,7 +124,10 @@
     <Compile Include="ARCHIVO.cs" />
     <Compile Include="CARPETA.cs" />
     <Compile Include="DETALLEARCHIVO.cs" />
+    <Compile Include="MENU.cs" />
+    <Compile Include="PERMISOS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ROL.cs" />
     <Compile Include="USUARIOS.cs" />
   </ItemGroup>
   <ItemGroup>

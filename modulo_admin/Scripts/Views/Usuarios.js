@@ -1,17 +1,21 @@
 ﻿const listarUsuariosUrl = config.listarUsuariosUrl;
 const guardarUsuariosUrl = config.guardarUsuariosUrl;
 const eliminarUsuariosUrl = config.eliminarUsuariosUrl;
-
+let dataTable;
 var filaSeleccionada
 
+//jQuery.ajax({
+//    url: listarUsuariosUrl,
+//    type: "GET",
+//    dataType: "json",
+//    contentType: "application/json; charset=utf-8",
+//    success: function (data) {
+//        console.log(data)
+//    }
+//})
+
 // Configuración común para todas las alertas
-const swalConfig = {
-    confirmButtonColor: "#3085d6",
-    customClass: {
-        popup: 'custom-success-alerta',
-        confirmButton: 'custom-confirmar-button',
-    }
-};
+
 
 //Abrir modal
 function abrirModal(json) {
@@ -236,18 +240,6 @@ function Guardar() {
     });
 }
 
-//jQuery.ajax({
-//    url: listarUsuariosUrl,
-//    type: "GET",
-//    dataType: "json",
-//    contentType: "application/json; charset=utf-8",
-//    success: function (data) {
-//        console.log(data)
-//    }
-//})
-
-let dataTable;
-
 const dataTableOptions = {
     lengthMenu: [5, 10, 15, 20, 100, 200, 500],
     pageLength: 5,
@@ -275,9 +267,7 @@ const dataTableOptions = {
         type: "GET",
         dataType: "json"
     },
-
-    
-
+   
     columns: [
         { data: "usuario" },
         {
@@ -315,152 +305,3 @@ const dataTableOptions = {
 $(document).ready(function () {
     dataTable = $("#datatable").DataTable(dataTableOptions);
 });
-
-///////////////////////////////////////////////
-
-//== Class definition
-var SweetAlert2Demo = (function () {
-    //== Demos
-    var initDemos = function () {
-        // Alerta de advertencia
-        document.getElementById("alertWarning").addEventListener("click", function () {
-            Swal.fire({
-                title: "¡Atención!",
-                text: "Esta acción no se puede deshacer. ¿Estás seguro de continuar?",
-                icon: "warning",
-                confirmButtonText: "Sí, continuar",
-                confirmButtonClass: "btn btn-warning",
-                showCancelButton: true,
-                cancelButtonText: "Cancelar",
-            });
-        });
-
-        // Alerta de error al eliminar usuario
-        document.getElementById("alertErrorDeleteUser").addEventListener("click", function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al eliminar usuario',
-                text: 'No se pudo eliminar el usuario. Por favor, inténtalo de nuevo más tarde.',
-                confirmButtonText: "Entendido",
-                confirmButtonColor: "#3085d6",
-                customClass: {
-                    popup: 'custom-success-alerta',
-                    confirmButton: 'custom-confirmar-button',
-                }
-            }).then(() => {
-                window.location.href = '#';
-            });
-        });
-
-        // Alerta de éxito al crear usuario
-        document.getElementById("alertCreateUser").addEventListener("click", function () {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Usuario creado!',
-                text: 'El usuario se ha creado correctamente.',
-                confirmButtonText: "Aceptar",
-                confirmButtonColor: "#3085d6",
-                customClass: {
-                    popup: 'custom-success-alerta',
-                    confirmButton: 'custom-confirmar-button',
-                }
-            }).then(() => {
-                window.location.href = '#';
-            });
-        });
-
-        // Alerta informativa
-        document.getElementById("alertInfo").addEventListener("click", function () {
-            Swal.fire({
-                title: "Información importante",
-                text: "Este proceso puede tardar unos minutos. Por favor, no cierres la ventana.",
-                icon: "info",
-                confirmButtonText: "Entendido",
-                confirmButtonClass: "btn btn-info",
-            });
-        });
-
-        // Alerta de error en la base de datos
-        document.getElementById("alertErrorDataBase").addEventListener("click", function () {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Error en la base de datos',
-                text: 'Hubo un problema al conectar con la base de datos. ¿Deseas volver a la pantalla anterior?',
-                confirmButtonText: "Sí, volver",
-                cancelButtonText: "No, quedarme aquí",
-                showCancelButton: true,
-                customClass: {
-                    popup: 'custom-success-alerta',
-                    confirmButton: 'custom-confirmar-button',
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '#';
-                }
-            });
-        });
-    };
-
-    return {
-        //== Init
-        init: function () {
-            initDemos();
-        },
-    };
-})();
-
-// Inicialización
-document.addEventListener("DOMContentLoaded", function () {
-    SweetAlert2Demo.init();
-});
-
-//== Class Initialization
-jQuery(document).ready(function () {
-    SweetAlert2Demo.init();
-});
-
-
-
-// Alerta de error al eliminar usuario
-function alertErrorCreateUser() {
-    Swal.fire({
-        icon: 'error',
-        title: 'Error al eliminar usuario',
-        text: 'No se pudo eliminar el usuario. Por favor, inténtalo de nuevo más tarde.',
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#3085d6",
-        customClass: {
-            popup: 'custom-success-alerta',
-            confirmButton: 'custom-confirmar-button',
-        }
-    }).then(() => {
-        window.location.href = '#';
-    });
-}
-
-
-//Alerta de: "¿Desea eliminar este usuario?"
-function alertDeleteUser() {
-    Swal.fire({
-        position: 'top-center',
-        icon: 'question',
-        title: "¿Desea eliminar este usuario?",
-        text: "Si acepta se eliminara el usuario",
-        showDenyButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "¡Sí, bórralo!",
-        denyButtonText: `Cancelar`,
-        customClass: {
-            popup: 'custom-alerta',
-            confirmButton: 'custom-confirmar-button',
-            denyButton: 'custom-cancelar-button',
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = '#';
-        } else if (result.isDenied) {
-            console.log("Error al eleminar el usuario")
-        }
-    });
-}

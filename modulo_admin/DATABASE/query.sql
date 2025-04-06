@@ -55,7 +55,6 @@ SELECT @Resultado AS Resultado
 DECLARE @IdUsuario INT
 DECLARE @Mensaje VARCHAR(255)
 
-
 EXEC usp_LoginUsuario
     @Usuario = 'admin',
     @Clave = 'admin',
@@ -65,6 +64,11 @@ EXEC usp_LoginUsuario
 PRINT 'ID Usuario: ' + CAST(@IdUsuario AS VARCHAR)
 PRINT 'Mensaje: ' + @Mensaje
 GO
+
+DecLARE @IdUsuario INT
+EXEC usp_ObtenerPermisos
+    @IdUsuario = 3
+    SELECT @Resultado AS Resultado, @Mensaje AS Mensaje
 
 DECLARE @Resultado INT, @Mensaje VARCHAR(255)
 EXEC usp_ModificarContrasena 
@@ -278,3 +282,22 @@ ORDER BY
 EXEC sp_sproc_columns 
     @procedure_name = 'usp_ModificarUsuario',
     @procedure_owner = 'dbo'; -- Esquema por defecto
+
+
+EXEC usp_ObtenerPermisosPorUsuario @IdUsuario = 2
+
+SELECT p.id_permisos, 
+       r.descripcion AS Rol,
+       m.nombre AS Menu,
+       CONCAT(m.vista, ' || ', m.controlador) AS Controlador,
+       p.estado
+FROM PERMISOS p 
+    INNER JOIN ROL r ON p.fk_rol = r.id_rol
+    INNER JOIN MENU m ON p.fk_menu = m.id_menu
+    WHERE p.fk_rol = 1
+
+
+insert into permisos (fk_rol, fk_menu)
+values (2, 1)
+
+select * from PERMISOS

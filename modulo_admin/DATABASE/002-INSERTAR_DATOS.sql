@@ -11,25 +11,21 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (2) REGISTROS EN TABLA MENU
-INSERT INTO MENU(nombre, icono) 
+INSERT INTO MENU(nombre, vista, controlador, icono) 
 VALUES
-    ('Usuario', 'fas fa-users'),
-    ('Matriz de Integracion', 'fas fa-table'),
-    ('Plan Didactico Semestral', 'fas fa-bookmark'),
-    ('Plan de Clases Diario', 'fas fa-boxes'),
-    ('Reportes', 'far fa-file-pdf');
+    ('Dashboard', 'Index', 'Home', 'fas fa-tachometer-alt'),
+    ('Usuario', 'Usuario', 'Home', 'fa-users'),
+    ('Gestor de archivos', 'GestionArchivos', 'Archivo', 'fas fa-cloud'),
+    ('Carpetas compartidas', 'CarpetasCompartidas', 'Archivo', 'fas fa-share-square'),
+    ('Archivos compartidos', 'ArchivosCompartidos', 'Archivo', 'fas fa-share-square'),
+    
+    ('Matriz de Integracion', 'Matriz_de_Integracion', 'Planificacion', 'fas fa-table'),
+    ('Plan Didactico Semestral', 'Plan_Didactico_Semestral', 'Planificacion', 'fas fa-bookmark'),
+    ('Plan de Clases Diario', 'Plan_de_Clases_Diario', 'Planificacion', 'fas fa-boxes'),
+    ('Reportes', 'Index', 'Reportes', 'far fa-file-pdf');
 
 GO
---------------------------------------------------------------------------------------------------------------------
 
--- (3) REGISTROS EN TABLA SUBMENU
-INSERT INTO SUBMENU(fk_menu, nombre, controlador, vista, icono) 
-VALUES
-    ((SELECT TOP 1 id_menu FROM MENU WHERE nombre = 'Usuario'), 'Rol', 'Usuario', 'Rol', 'fas fa-user-tag'),
-    ((SELECT TOP 1 id_menu FROM MENU WHERE nombre = 'Usuario'), 'Asignar Permisos', 'Usuario', 'Permisos', 'fas fa-user-lock'),
-    ((SELECT TOP 1 id_menu FROM MENU WHERE nombre = 'Usuario'), 'Usuarios', 'Usuario', 'Index', 'fas fa-users-cog');
-
-GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (4) REGISTROS EN TABLA USUARIOS
@@ -51,41 +47,40 @@ GO
 -- (5) REGISTROS EN TABLA PERMISOS
 
 -- ADMINISTRADOR tiene acceso a todos los menús y submenús
-INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
+INSERT INTO PERMISOS(fk_rol, fk_menu)
 SELECT 
     (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'), 
-    id_submenu, 
-    1 
-FROM SUBMENU;
+    id_menu
+FROM MENU;
 
 GO
 
--- INTEGRADOR tiene acceso a todo excepto el menú 'Usuario'
-INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
-SELECT 
-    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 
-    id_submenu, 
-    CASE 
-        WHEN (SELECT nombre FROM MENU WHERE id_menu = fk_menu) = 'Usuario' THEN 0 -- No tiene acceso al menú 'Usuario'
-        ELSE 1 -- Tiene acceso a todo lo demás
-    END 
-FROM SUBMENU;
+---- INTEGRADOR tiene acceso a todo excepto el menú 'Usuario'
+--INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
+--SELECT 
+--    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 
+--    id_submenu, 
+--    CASE 
+--        WHEN (SELECT nombre FROM MENU WHERE id_menu = fk_menu) = 'Usuario' THEN 0 -- No tiene acceso al menú 'Usuario'
+--        ELSE 1 -- Tiene acceso a todo lo demás
+--    END 
+--FROM SUBMENU;
 
-GO
+--GO
 
--- PROFESOR tiene acceso solo a los menús: Matriz de Integración, Plan Didáctico Semestral, Plan de Clases Diario
-INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
-SELECT 
-    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 
-    id_submenu, 
-    1 
-FROM SUBMENU
-WHERE fk_menu IN (
-    SELECT id_menu FROM MENU 
-    WHERE nombre IN ('Matriz de Integracion', 'Plan Didactico Semestral', 'Plan de Clases Diario')
-);
+---- PROFESOR tiene acceso solo a los menús: Matriz de Integración, Plan Didáctico Semestral, Plan de Clases Diario
+--INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
+--SELECT 
+--    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 
+--    id_submenu, 
+--    1 
+--FROM SUBMENU
+--WHERE fk_menu IN (
+--    SELECT id_menu FROM MENU 
+--    WHERE nombre IN ('Matriz de Integracion', 'Plan Didactico Semestral', 'Plan de Clases Diario')
+--);
 
-GO
+--GO
 
 --------------------------------------------------------------------------------------------------------------------
 

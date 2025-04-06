@@ -193,6 +193,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MenuHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilidades\Encriptar.cs" />
   </ItemGroup>
@@ -393,11 +394,11 @@
     <Content Include="Content\sweetalert2.css" />
     <Content Include="Content\v4-shims.css" />
     <Content Include="Content\v4-shims.min.css" />
-    <Content Include="DATABASE\basededatos.sql" />
-    <Content Include="DATABASE\inserts.sql" />
-    <Content Include="DATABASE\procedimientos_almacenados.sql" />
+    <Content Include="DATABASE\001-CREAR_DB.sql" />
+    <Content Include="DATABASE\002-INSERTAR_DATOS.sql" />
+    <Content Include="DATABASE\003-CREAR_PROCEDURES.sql" />
     <Content Include="DATABASE\query.sql" />
-    <Content Include="DATABASE\vistas.sql" />
+    <Content Include="DATABASE\004-CREAR_VIEWS.sql" />
     <Content Include="favicon.ico" />
     <Content Include="faviconUNAN.ico" />
     <Content Include="Global.asax" />
@@ -559,6 +560,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

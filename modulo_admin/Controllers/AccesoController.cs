@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Services.Description;
 using capa_datos;
 using capa_entidad;
+using capa_negocio;
 
 namespace modulo_admin.Controllers
 {
@@ -36,7 +37,7 @@ namespace modulo_admin.Controllers
                 {
                     Session["UsuarioAutenticado"] = usuarioAutenticado;
                     Session["RolUsuario"] = usuarioAutenticado.fk_rol;
-                    Session.Timeout = 30; // 30 minutos de inactividad
+                    Session.Timeout = 30; // 30 minutos de inactividad                    
 
                     return RedirectToAction("Index", "Home");
                 }

@@ -17,10 +17,20 @@ namespace modulo_admin.Controllers
     {
         private static USUARIOS SesionUsuario;
         CN_Usuario CN_Usuario = new CN_Usuario();
+        CN_Permisos CN_Permisos = new CN_Permisos();
 
         public ActionResult Index()
         {           
             return View();
+        }
+
+        [HttpGet]
+        public JsonResult ListarMenu()
+        {
+            List<MENU> lst = new List<MENU>();
+            lst = CN_Permisos.ListarPermisosPorUsuario(1);
+
+            return Json(new { data = lst }, JsonRequestBehavior.AllowGet);
         }
 
         #region Usuarios
@@ -75,10 +85,10 @@ namespace modulo_admin.Controllers
 
         #endregion
 
-        // Metodo para obtener los datos del usuario
         public ActionResult CerrarSesion()
         {
             Session["UsuarioAutenticado"] = null;
+            Session["RolUsuario"] = null;
             Session.Clear();
             Session.Abandon();
             return RedirectToAction("Index", "Acceso");

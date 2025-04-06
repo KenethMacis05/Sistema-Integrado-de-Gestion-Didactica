@@ -88,54 +88,24 @@ END
 GO
 --------------------------------------------------------------------------------------------------------------------
 
--- (2) PROCEDIMIENTO ALMACENADO PARA OBTENER EL DETALLE DE UN USUARIO
-CREATE PROCEDURE usp_ObtenerDetalleUsuario
+-- (3) PROCEDIMIENTO ALMACENADO PARA OBTENER LOS PERMISOS DE UN ROL DE UN USUARIO
+CREATE PROCEDURE usp_ObtenerPermisosPorUsuario
     @IdUsuario INT
 AS
 BEGIN
     SELECT 
-        u.*,
-        (SELECT * FROM ROL r WHERE r.id_rol = u.fk_rol FOR XML PATH(''), TYPE) AS 'DetalleRol',
-        (
-            SELECT m.nombre AS 'NombreMenu', m.icono,
-            (
-                SELECT sm.nombre AS 'NombreSubMenu', sm.controlador, sm.vista, sm.icono, p.estado
-                FROM PERMISOS p
-                INNER JOIN SUBMENU sm ON sm.id_submenu = p.fk_submenu
-                INNER JOIN MENU m ON m.id_menu = sm.fk_menu
-                WHERE p.fk_rol = u.fk_rol AND p.estado = 1
-                FOR XML PATH('SubMenu'), TYPE
-            ) AS 'DetalleSubMenu'
-            FROM MENU m
-            WHERE EXISTS (
-                SELECT 1
-                FROM PERMISOS p
-                INNER JOIN SUBMENU sm ON sm.id_submenu = p.fk_submenu
-                WHERE p.fk_rol = u.fk_rol AND sm.fk_menu = m.id_menu AND p.estado = 1
-            )
-            FOR XML PATH('Menu'), TYPE
-        ) AS 'DetalleMenu'
-    FROM USUARIOS u
-    WHERE u.id_usuario = @IdUsuario
-    FOR XML PATH(''), ROOT('Usuario')
-END
-GO
---------------------------------------------------------------------------------------------------------------------
-
--- (3) PROCEDIMIENTO ALMACENADO PARA OBTENER LOS PERMISOS DE UN ROL
-CREATE PROCEDURE usp_ObtenerPermisos
-    @IdRol INT
-AS
-BEGIN
-    SELECT 
-        p.id_permisos,
-        m.nombre AS 'Menu',
-        sm.nombre AS 'SubMenu',
-        p.estado
+        m.id_menu,
+        m.nombre,
+        m.controlador,
+        m.vista,
+        m.icono
     FROM PERMISOS p
-    INNER JOIN SUBMENU sm ON sm.id_submenu = p.fk_submenu
-    INNER JOIN MENU m ON m.id_menu = sm.fk_menu
-    WHERE p.fk_rol = @IdRol
+    INNER JOIN MENU m ON p.fk_menu = m.id_menu
+    INNER JOIN USUARIOS u ON p.fk_rol = u.fk_rol
+    WHERE u.id_usuario = @IdUsuario
+    AND p.estado = 1
+    AND m.estado = 1
+    ORDER BY m.nombre
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
@@ -377,8 +347,8 @@ BEGIN
         INSERT INTO ROL (descripcion) VALUES (@Descripcion)
         SET @IdRol = SCOPE_IDENTITY()
 
-        INSERT INTO PERMISOS (fk_rol, fk_submenu, estado)
-        SELECT @IdRol, id_submenu, 0 FROM SUBMENU
+        INSERT INTO PERMISOS (fk_rol, fk_menu, estado)
+        SELECT @IdRol, id_menu, 0 FROM MENU
     END
     ELSE
         SET @Resultado = 0
