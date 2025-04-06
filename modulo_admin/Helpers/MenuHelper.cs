@@ -12,11 +12,18 @@ namespace modulo_admin.Helpers
 
         public static MvcHtmlString GenerarMenu(this HtmlHelper html)
         {
-            int rol = Convert.ToInt32(html.ViewContext.HttpContext.Session["RolUsuario"]);
+            // Obtener el idUsuario desde ViewBag
+            var viewBag = html.ViewContext.Controller.ViewBag;
+            int? idUsuario = viewBag.idUsuario as int?;
+
+            if (!idUsuario.HasValue)
+            {
+                return new MvcHtmlString("");
+            }            
 
             // Obtener permisos del usuario
             CN_Permisos CN_Permisos = new CN_Permisos();
-            List<MENU> permisos = CN_Permisos.ListarPermisosPorUsuario(rol);
+            List<MENU> permisos = CN_Permisos.ListarPermisosPorUsuario(idUsuario.Value);
 
             if (permisos == null || permisos.Count == 0)
                 return new MvcHtmlString("");

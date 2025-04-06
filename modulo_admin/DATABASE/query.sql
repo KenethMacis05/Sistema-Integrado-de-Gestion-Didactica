@@ -284,7 +284,7 @@ EXEC sp_sproc_columns
     @procedure_owner = 'dbo'; -- Esquema por defecto
 
 
-EXEC usp_ObtenerPermisosPorUsuario @IdUsuario = 2
+EXEC usp_ObtenerPermisosPorUsuario @IdUsuario = 1
 
 SELECT p.id_permisos, 
        r.descripcion AS Rol,
