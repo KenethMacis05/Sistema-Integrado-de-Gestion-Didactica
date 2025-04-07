@@ -12,6 +12,8 @@ namespace modulo_admin.Helpers
 
         public static MvcHtmlString GenerarMenu(this HtmlHelper html)
         {
+            CN_Menu CN_Menu = new CN_Menu();
+
             // Obtener el idUsuario desde ViewBag
             var viewBag = html.ViewContext.Controller.ViewBag;
             int? idUsuario = viewBag.idUsuario as int?;
@@ -19,29 +21,29 @@ namespace modulo_admin.Helpers
             if (!idUsuario.HasValue)
             {
                 return new MvcHtmlString("");
-            }            
+            }
 
             // Obtener permisos del usuario
             CN_Permisos CN_Permisos = new CN_Permisos();
-            List<MENU> permisos = CN_Permisos.ListarPermisosPorUsuario(idUsuario.Value);
+            List<MENU> menu = CN_Menu.ListarMenuPorUsuario(idUsuario.Value);
 
-            if (permisos == null || permisos.Count == 0)
+            if (menu == null || menu.Count == 0)
                 return new MvcHtmlString("");
-           
-            var sb = new StringBuilder();            
 
-            foreach (var menu in permisos)
+            var sb = new StringBuilder();
+
+            foreach (var iten in menu)
             {
                 sb.Append($@"                            
-                           <a class='nav-link esp-link esp-link-hover' href='/{menu.controlador}/{menu.vista}'>
-                               <div class='sb-nav-link-icon'>
-                                   <i class='{menu.icono}'></i>
-                               </div>
-                                   {menu.nombre}
-                           </a>"                            
+                               <a class='nav-link esp-link esp-link-hover' href='/{iten.Controller.controlador}/{iten.Controller.accion}'>
+                                   <div class='sb-nav-link-icon'>
+                                       <i class='{iten.icono}'></i>
+                                   </div>
+                                       {iten.nombre}
+                               </a>"
                  );
             }
-            
+
             return new MvcHtmlString(sb.ToString());
         }
 

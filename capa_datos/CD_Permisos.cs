@@ -13,38 +13,36 @@ namespace capa_datos
 {
     public class CD_Permisos
     {
-        public List<MENU> ObtenerPermisosPorUsuario(int IdUsuario)
-        {            
-            List<MENU> lst = new List<MENU>();
+        public bool VerificarPermiso(int IdUsuario, string controlador, string accion)
+        {
+            bool tienePermiso = false;
 
             try
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    SqlCommand cmd = new SqlCommand("usp_ObtenerPermisosPorUsuario", conexion);
+                    SqlCommand cmd = new SqlCommand("usp_VerificarPermiso", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("IdUsuario", IdUsuario);
+                    cmd.Parameters.AddWithValue("Controlador", controlador);
+                    cmd.Parameters.AddWithValue("Accion", accion);
+
                     conexion.Open();
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    while (dr.Read())
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        lst.Add(new MENU()
+                        if (dr.Read())
                         {
-                            id_menu = Convert.ToInt32(dr["id_menu"]),
-                            nombre = dr["nombre"].ToString(),
-                            controlador = dr["controlador"].ToString(),
-                            vista = dr["vista"].ToString(),
-                            icono = dr["icono"].ToString()
-                        });
+                            tienePermiso = Convert.ToBoolean(dr["tiene_permiso"]);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener los permisos del usuario: " + ex.Message);
+                throw new Exception("Error al verificar permiso: " + ex.Message);
             }
-            
-            return lst;
+
+            return tienePermiso;
         }
     }
 }

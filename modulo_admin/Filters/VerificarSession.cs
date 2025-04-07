@@ -1,4 +1,5 @@
 ﻿using capa_entidad;
+using capa_negocio;
 using modulo_admin.Controllers;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,27 @@ namespace modulo_admin.Filters
             catch (Exception)
             {
                 controller.ViewBag.Mensaje = "Error al cargar los datos del usuario";
+            }
+
+            // Obtener información de la ruta solicitada
+            string controlador = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
+            string vista = filterContext.ActionDescriptor.ActionName;
+
+            // No verificar permisos para Home/Index ni Home/SinPermisos
+            if (!
+                (controlador.Equals("Home", StringComparison.OrdinalIgnoreCase) &&                                  
+                 (vista.Equals("Index", StringComparison.OrdinalIgnoreCase) ||
+                  vista.Equals("CerrarSesion", StringComparison.OrdinalIgnoreCase))))
+            {
+                //  
+                CN_Permisos CN_Permisos = new CN_Permisos();
+                bool tienePermiso = CN_Permisos.VerificarPermiso(sesionUsuario.id_usuario, controlador, vista);
+
+                if (!tienePermiso)
+                {
+                    filterContext.Result = new RedirectResult("~/Home/Index");
+                    return;
+                }
             }
 
             base.OnActionExecuting(filterContext);

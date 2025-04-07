@@ -11,9 +11,23 @@ namespace capa_negocio
     {
         private CD_Permisos CD_Permisos = new CD_Permisos();
 
-        public List<capa_entidad.MENU> ListarPermisosPorUsuario(int IdUsuario)
+        public bool VerificarPermiso(int IdUsuario, string controlador, string vista)
         {
-            return CD_Permisos.ObtenerPermisosPorUsuario(IdUsuario);
+            // Validaciones básicas
+            if (IdUsuario <= 0)
+                return false;
+
+            if (string.IsNullOrEmpty(controlador) || string.IsNullOrEmpty(vista))
+                return false;
+
+            try
+            {
+                return CD_Permisos.VerificarPermiso(IdUsuario, controlador, vista);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

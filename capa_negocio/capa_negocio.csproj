@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CN_Carpeta.cs" />
+    <Compile Include="CN_Menu.cs" />
     <Compile Include="CN_Permisos.cs" />
     <Compile Include="CN_Recursos.cs" />
     <Compile Include="CN_Usuario.cs" />

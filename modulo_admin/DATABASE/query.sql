@@ -80,118 +80,6 @@ EXEC usp_ModificarContrasena
 
 SELECT @Resultado AS Resultado, @Mensaje AS Mensaje
 
-
--- Vista de Matrices de Integración
-SELECT 
-    mic.id_matriz_integracion,
-    mic.codigo_documento,
-    mic.nombre_matriz_integracion_componente,
-    mic.competencias,
-    mic.objetivo_anio,
-    mic.objetivo_semestre,
-    mic.objetivo_integrador,
-    mic.accion_integradora,
-    mic.tipo_evaluacion,
-    mic.fecha_registro,
-    
-    -- Datos del profesor
-    u.id_usuario AS profesor_id,
-    u.pri_nombre + ' ' + ISNULL(u.seg_nombre + ' ', '') + 
-    u.pri_apellido + ' ' + ISNULL(u.seg_apellido, '') AS profesor_nombre_completo,
-    u.usuario AS profesor_usuario,
-    u.correo AS profesor_email,
-    
-    -- Lista de asignaturas integradas (como cadena concatenada)
-    STUFF((
-        SELECT ', ' + a.nombre 
-        FROM MatrizAsignatura ma
-        JOIN Asignatura a ON ma.fk_asignatura = a.id_asignatura
-        WHERE ma.fk_matriz_integracion = mic.id_matriz_integracion
-        FOR XML PATH('')
-    ), 1, 2, '') AS asignaturas_integradas,
-    
-    -- Detalle de cada asignatura (como subconsulta)
-    (
-        SELECT 
-            a.id_asignatura,
-            a.nombre,
-            ma.descripcion
-        FROM 
-            MatrizAsignatura ma
-        JOIN 
-            Asignatura a ON ma.fk_asignatura = a.id_asignatura
-        WHERE 
-            ma.fk_matriz_integracion = mic.id_matriz_integracion
-        FOR JSON PATH
-    ) AS detalle_asignaturas_json
-
-FROM 
-    MatrizIntegracionComponentes mic
-JOIN 
-    Usuarios u ON mic.fk_profesor = u.id_usuario
-ORDER BY 
-    mic.fecha_registro DESC;
-
--- Vista de Planes Semestrales
-SELECT 
-    pds.id_plan_didactico_semestral,
-    pds.codigo_documento,
-    pds.nombre_plan_didactico_semestral,
-    pds.fecha_inicio,
-    pds.fecha_fin,
-    pds.eje_disiplinar,
-    pds.curriculum,
-    pds.competencias,
-    pds.objetivo_integrador,
-    pds.eje_transversal,
-    pds.bibliografia,
-    pds.fecha_registro,
-    
-    -- Datos de MatrizIntegracionComponentes
-    mic.nombre_matriz_integracion_componente AS matriz_integracion,
-    
-    -- Datos de Asignatura
-    a.nombre AS asignatura,
-    
-    -- Datos de ComponenteCurricular (con joins a las tablas relacionadas)
-    cc.id_componente_curricular,
-    asignatura_cc.nombre AS asignatura_componente,
-    car.nombre AS carrera,
-    dep.nombre AS departamento,
-    area.nombre AS area_conocimiento,
-    
-    -- Datos de Periodo (año y semestre)
-    per.anio,
-    sem.descripcion AS semestre,
-    
-    -- Datos del Profesor
-    u.pri_nombre + ' ' + ISNULL(u.seg_nombre + ' ', '') + u.pri_apellido + ' ' + ISNULL(u.seg_apellido, '') AS profesor
-
-FROM 
-    PlanDidacticoSemestral pds
-JOIN 
-    MatrizIntegracionComponentes mic ON pds.fk_matriz_integracion = mic.id_matriz_integracion
-JOIN 
-    Usuarios u ON pds.fk_profesor = u.id_usuario
-JOIN 
-    Asignatura a ON pds.fk_asignatura = a.id_asignatura
-JOIN 
-    ComponenteCurricular cc ON pds.fk_componente_curricular = cc.id_componente_curricular
-JOIN 
-    Asignatura asignatura_cc ON cc.fk_asignatura = asignatura_cc.id_asignatura
-JOIN 
-    Carrera car ON cc.fk_carrera = car.id_carrera
-JOIN 
-    Departamento dep ON cc.fk_departamento = dep.id_departamento
-JOIN 
-    AreaConocimiento area ON cc.fk_area = area.id_area
-JOIN 
-    Periodo per ON pds.fk_anio_semestre = per.id_periodo
-JOIN 
-    Semestre sem ON per.fk_semestre = sem.id_semestre;
-
-GO
-
 -- Consultas para verificar los registros de la tabla CARPETA
 SELECT TOP 10 *
 FROM CARPETA 
@@ -284,7 +172,12 @@ EXEC sp_sproc_columns
     @procedure_owner = 'dbo'; -- Esquema por defecto
 
 
-EXEC usp_ObtenerPermisosPorUsuario @IdUsuario = 1
+EXEC usp_ObtenerPermisosPorUsuario @IdUsuario = 2
+
+EXEC usp_VerificarPermiso 
+    @id_usuario = 2, 
+    @controlador = 'Archivo', 
+    @vista = 'ListarCarpetas'
 
 SELECT p.id_permisos, 
        r.descripcion AS Rol,
@@ -300,4 +193,4 @@ FROM PERMISOS p
 insert into permisos (fk_rol, fk_menu)
 values (2, 1)
 
-select * from PERMISOS
+select m.* from MENU m INNER JOIN 

@@ -10,20 +10,45 @@ VALUES
 GO
 --------------------------------------------------------------------------------------------------------------------
 
--- (2) REGISTROS EN TABLA MENU
-INSERT INTO MENU(nombre, vista, controlador, icono) 
+-- (2) REGISTROS EN TABLA CONTROLLER
+INSERT INTO CONTROLLER (controlador, accion, descripcion, tipo) 
 VALUES
-    ('Dashboard', 'Index', 'Home', 'fas fa-tachometer-alt'),
-    ('Usuario', 'Usuario', 'Home', 'fa-users'),
-    ('Gestor de archivos', 'GestionArchivos', 'Archivo', 'fas fa-cloud'),
-    ('Carpetas compartidas', 'CarpetasCompartidas', 'Archivo', 'fas fa-share-square'),
-    ('Archivos compartidos', 'ArchivosCompartidos', 'Archivo', 'fas fa-share-square'),
+    -- Vistas principales
+    ('Home', 'Index', 'Dashboard principal', 'Vista'),
+    ('Home', 'Usuario', 'Vista de gestión de usuarios', 'Vista'),
+    ('Archivo', 'GestionArchivos', 'Gestor de archivos', 'Vista'),
+    ('Archivo', 'CarpetasCompartidas', 'Carpetas compartidas', 'Vista'),
+    ('Archivo', 'ArchivosCompartidos', 'Archivos compartidos', 'Vista'),
+    ('Planificacion', 'Matriz_de_Integracion', 'Matriz de Integración', 'Vista'),
+    ('Planificacion', 'Plan_Didactico_Semestral', 'Plan Didáctico Semestral', 'Vista'),
+    ('Planificacion', 'Plan_de_Clases_Diario', 'Plan de Clases Diario', 'Vista'),
+    ('Reportes', 'Index', 'Reportes del sistema', 'Vista'),
     
-    ('Matriz de Integracion', 'Matriz_de_Integracion', 'Planificacion', 'fas fa-table'),
-    ('Plan Didactico Semestral', 'Plan_Didactico_Semestral', 'Planificacion', 'fas fa-bookmark'),
-    ('Plan de Clases Diario', 'Plan_de_Clases_Diario', 'Planificacion', 'fas fa-boxes'),
-    ('Reportes', 'Index', 'Reportes', 'far fa-file-pdf');
+    -- Acciones API/AJAX
+    -- HomeController
+    ('Home', 'ListarUsuarios', 'Obtener listado de usuarios', 'API'),
+    ('Home', 'GuardarUsuario', 'Guardar usuario', 'API'),
+    ('Home', 'EliminarUsuario', 'Guardar usuario', 'API'),
 
+    -- ArchivoController
+    ('Archivo', 'ListarCarpetas', 'Subir archivo al sistema', 'API'),
+    ('Archivo', 'SubirArchivo', 'Subir archivo al sistema', 'API'),
+    ('Planificacion', 'GenerarPlan', 'Generar planificación', 'API');
+GO
+--------------------------------------------------------------------------------------------------------------------
+
+-- (3) REGISTROS EN TABLA MENU
+INSERT INTO MENU (nombre, fk_controlador, icono, orden) 
+VALUES
+    ('Dashboard', 1, 'fas fa-tachometer-alt', 1),
+    ('Usuario', 2, 'fa fa-users', 2),
+    ('Gestor de archivos', 3, 'fas fa-cloud', 3),
+    ('Carpetas compartidas', 4, 'fas fa-share-square', 4),
+    ('Archivos compartidos', 5, 'fas fa-share-square', 5),
+    ('Matriz de Integracion', 6, 'fas fa-table', 6),
+    ('Plan Didactico Semestral', 7, 'fas fa-bookmark', 7),
+    ('Plan de Clases Diario', 8, 'fas fa-boxes', 8),
+    ('Reportes', 9, 'far fa-file-pdf', 9);
 GO
 
 --------------------------------------------------------------------------------------------------------------------
@@ -46,42 +71,42 @@ GO
 
 -- (5) REGISTROS EN TABLA PERMISOS
 
--- ADMINISTRADOR tiene acceso a todos los menús y submenús
-INSERT INTO PERMISOS(fk_rol, fk_menu)
+INSERT INTO PERMISOS (fk_rol, fk_controlador)
+SELECT 
+    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'), 
+    id_controlador
+FROM CONTROLLER;
+GO
+
+-- PROFESOR tiene acceso básico
+INSERT INTO PERMISOS (fk_rol, fk_controlador)
+VALUES
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 1), -- Home/Index
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 6), -- Matriz Integración
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 7), -- Plan Didáctico
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 8); -- Plan Clases
+GO
+
+--------------------------------------------------------------------------------------------------------------------
+
+-- (6) REGISTROS EN TABLA ROL_MENU
+
+-- ADMINISTRADOR ve todos los menús
+INSERT INTO MENU_ROL (fk_rol, fk_menu)
 SELECT 
     (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'), 
     id_menu
 FROM MENU;
-
 GO
 
----- INTEGRADOR tiene acceso a todo excepto el menú 'Usuario'
---INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
---SELECT 
---    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 
---    id_submenu, 
---    CASE 
---        WHEN (SELECT nombre FROM MENU WHERE id_menu = fk_menu) = 'Usuario' THEN 0 -- No tiene acceso al menú 'Usuario'
---        ELSE 1 -- Tiene acceso a todo lo demás
---    END 
---FROM SUBMENU;
-
---GO
-
----- PROFESOR tiene acceso solo a los menús: Matriz de Integración, Plan Didáctico Semestral, Plan de Clases Diario
---INSERT INTO PERMISOS(fk_rol, fk_submenu, estado)
---SELECT 
---    (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 
---    id_submenu, 
---    1 
---FROM SUBMENU
---WHERE fk_menu IN (
---    SELECT id_menu FROM MENU 
---    WHERE nombre IN ('Matriz de Integracion', 'Plan Didactico Semestral', 'Plan de Clases Diario')
---);
-
---GO
-
+-- PROFESOR ve solo algunos menús
+INSERT INTO MENU_ROL (fk_rol, fk_menu)
+VALUES
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 1), -- Dashboard
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 6), -- Matriz Integración
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 7), -- Plan Didáctico
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 8); -- Plan Clases
+GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (1) REGISTROS EN TABLA CARPETA

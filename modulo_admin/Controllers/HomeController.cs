@@ -17,7 +17,7 @@ namespace modulo_admin.Controllers
     {
         private static USUARIOS SesionUsuario;
         CN_Usuario CN_Usuario = new CN_Usuario();
-        CN_Permisos CN_Permisos = new CN_Permisos();
+        CN_Menu CN_Menu = new CN_Menu();
 
         public ActionResult Index()
         {           
@@ -28,7 +28,7 @@ namespace modulo_admin.Controllers
         public JsonResult ListarMenu()
         {
             List<MENU> lst = new List<MENU>();
-            lst = CN_Permisos.ListarPermisosPorUsuario(1);
+            lst = CN_Menu.ListarMenuPorUsuario(1);
 
             return Json(new { data = lst }, JsonRequestBehavior.AllowGet);
         }

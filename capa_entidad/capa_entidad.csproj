@@ -123,6 +123,7 @@
   <ItemGroup>
     <Compile Include="ARCHIVO.cs" />
     <Compile Include="CARPETA.cs" />
+    <Compile Include="CONTROLLER.cs" />
     <Compile Include="DETALLEARCHIVO.cs" />
     <Compile Include="MENU.cs" />
     <Compile Include="PERMISOS.cs" />

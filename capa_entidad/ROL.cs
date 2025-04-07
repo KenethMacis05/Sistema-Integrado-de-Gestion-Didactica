@@ -11,7 +11,7 @@ namespace capa_entidad
     {        
         public int id_rol { get; set; }
         public string descripcion { get; set; }
-        public bool estado { get; set; }
-        public DateTime fecha_registro { get; set; }
+        public bool estado { get; set; } = true;
+        public DateTime fecha_registro { get; set; } = DateTime.Now;
     }
 }

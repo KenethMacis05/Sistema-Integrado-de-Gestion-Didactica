@@ -11,10 +11,13 @@ namespace capa_entidad
     public class PERMISOS
     {
         public int id_permisos { get; set; }
-        public ROL fk_rol { get; set; }
-        public MENU fk_menu { get; set; }
-        public List<MENU> menus { get; set; }
-        public bool estado { get; set; }
-        public DateTime fecha_registro { get; set; }        
+        public int fk_rol { get; set; }
+        public int fk_controlador { get; set; }
+        public bool estado { get; set; } = true;
+
+        // Propiedades de navegación (opcionales)
+        public DateTime fecha_registro { get; set; } = DateTime.Now;
+        public virtual ROL Rol { get; set; }
+        public virtual CONTROLLER Controller { get; set; }
     }
 }

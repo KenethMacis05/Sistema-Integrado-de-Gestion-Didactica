@@ -89,58 +89,122 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (3) PROCEDIMIENTO ALMACENADO PARA OBTENER LOS PERMISOS DE UN ROL DE UN USUARIO
-CREATE PROCEDURE usp_ObtenerPermisosPorUsuario
+CREATE OR ALTER PROCEDURE usp_ObtenerMenuPorUsuario
     @IdUsuario INT
 AS
 BEGIN
+    SET NOCOUNT ON;
+    
+    -- Verificar si el usuario existe y está activo
+    IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario AND estado = 1)
+    BEGIN
+        RAISERROR('Usuario no encontrado o inactivo', 16, 1);
+        RETURN;
+    END
+    
+    -- Obtener menús asignados al rol del usuario (solo tipo Vista)
     SELECT 
         m.id_menu,
         m.nombre,
-        m.controlador,
-        m.vista,
-        m.icono
-    FROM PERMISOS p
-    INNER JOIN MENU m ON p.fk_menu = m.id_menu
-    INNER JOIN USUARIOS u ON p.fk_rol = u.fk_rol
+        c.controlador,
+        c.accion AS vista,
+        m.icono,
+        m.orden
+    FROM MENU_ROL mr
+    INNER JOIN MENU m ON mr.fk_menu = m.id_menu
+    LEFT JOIN CONTROLLER c ON m.fk_controlador = c.id_controlador
+    INNER JOIN USUARIOS u ON mr.fk_rol = u.fk_rol
     WHERE u.id_usuario = @IdUsuario
-    AND p.estado = 1
+    AND mr.estado = 1
     AND m.estado = 1
-    ORDER BY m.nombre
+    AND (c.tipo = 'Vista' OR c.tipo IS NULL) -- Solo vistas o menús padres
+    AND (
+        m.fk_controlador IS NULL 
+        OR 
+        EXISTS (
+            SELECT 1 FROM PERMISOS p 
+            WHERE p.fk_rol = u.fk_rol 
+            AND p.fk_controlador = m.fk_controlador
+            AND p.estado = 1
+        )
+    )
+    ORDER BY m.orden;
+END
+GO
+
+-- PROCEDIMIENTO ALMACENADO PARA VERIFICAR LOS PERMISOS DE UN USUARIO
+CREATE OR ALTER PROCEDURE usp_VerificarPermiso
+    @IdUsuario INT,
+    @Controlador VARCHAR(60),
+    @Accion VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @TienePermiso BIT = 0;
+    DECLARE @IdRol INT;
+    
+    -- Obtener el rol del usuario
+    SELECT @IdRol = fk_rol 
+    FROM USUARIOS 
+    WHERE id_usuario = @IdUsuario AND estado = 1;
+    
+    -- Si no encuentra usuario o está inactivo
+    IF @IdRol IS NULL
+    BEGIN
+        SELECT @TienePermiso AS tiene_permiso;
+        RETURN;
+    END;
+    
+    -- Verificar si la acción es pública (no requiere permiso)
+    IF (@Controlador = 'Home' AND @Accion = 'Index')
+    BEGIN
+        SET @TienePermiso = 1;
+    END
+    ELSE
+    BEGIN
+        -- Verificar permiso en la tabla de permisos
+        IF EXISTS (
+            SELECT 1 
+            FROM PERMISOS p
+            INNER JOIN CONTROLLER c ON p.fk_controlador = c.id_controlador
+            WHERE p.fk_rol = @IdRol
+            AND c.controlador = @Controlador
+            AND c.accion = @Accion
+            AND p.estado = 1            
+        )
+        BEGIN
+            SET @TienePermiso = 1;
+        END;
+    END;
+    
+    SELECT @TienePermiso AS tiene_permiso;
+END
+GO
+
+CREATE PROCEDURE usp_ObtenerControllersPorRol
+    @IdRol INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT DISTINCT
+        c.id_controlador,
+        c.controlador,
+        c.accion,
+        c.descripcion,
+        c.tipo       
+    FROM PERMISOS p
+    INNER JOIN CONTROLLER c ON p.fk_controlador = c.id_controlador
+    WHERE p.fk_rol = @IdRol
+    AND p.estado = 1    
+    ORDER BY c.controlador, c.accion;
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (4) PROCEDIMIENTO ALMACENADO PARA ACTUALIZAR LOS PERMISOS DE UN ROL
-CREATE PROCEDURE usp_ActualizarPermisos
-    @Detalle XML,
-    @Resultado BIT OUTPUT
-AS
-BEGIN
-    BEGIN TRY
-        BEGIN TRANSACTION
 
-        DECLARE @permisos TABLE (id_permisos INT, estado BIT)
-
-        INSERT INTO @permisos (id_permisos, estado)
-        SELECT 
-            Node.Data.value('(IdPermisos)[1]', 'INT'),
-            Node.Data.value('(Activo)[1]', 'BIT')
-        FROM @Detalle.nodes('/DETALLE/PERMISO') Node(Data)
-
-        UPDATE p
-        SET p.estado = pe.estado
-        FROM PERMISOS p
-        INNER JOIN @permisos pe ON pe.id_permisos = p.id_permisos
-
-        COMMIT
-        SET @Resultado = 1
-    END TRY
-    BEGIN CATCH
-        ROLLBACK
-        SET @Resultado = 0
-    END CATCH
-END
-GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (5) PROCEDIMIENTO ALMACENADO PARA OBTENER TODOS LOS USUARIOS
@@ -335,25 +399,7 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (11) PROCEDIMIENTO ALMACENADO PARA REGISTRAR UN NUEVO ROL
-CREATE PROCEDURE usp_RegistrarRol
-    @Descripcion VARCHAR(60),
-    @Resultado BIT OUTPUT
-AS
-BEGIN
-    SET @Resultado = 1
-    IF NOT EXISTS (SELECT * FROM ROL WHERE descripcion = @Descripcion)
-    BEGIN
-        DECLARE @IdRol INT
-        INSERT INTO ROL (descripcion) VALUES (@Descripcion)
-        SET @IdRol = SCOPE_IDENTITY()
 
-        INSERT INTO PERMISOS (fk_rol, fk_menu, estado)
-        SELECT @IdRol, id_menu, 0 FROM MENU
-    END
-    ELSE
-        SET @Resultado = 0
-END
-GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (12) PROCEDIMIENTO ALMACENADO PARA MODIFICAR LOS DATOS DE UN ROL
