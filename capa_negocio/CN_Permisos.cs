@@ -12,8 +12,7 @@ namespace capa_negocio
         private CD_Permisos CD_Permisos = new CD_Permisos();
 
         public bool VerificarPermiso(int IdUsuario, string controlador, string vista)
-        {
-            // Validaciones básicas
+        {            
             if (IdUsuario <= 0)
                 return false;
 

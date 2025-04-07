@@ -38,7 +38,7 @@ namespace capa_negocio
                 return 0;
             }
 
-            string clave = CN_Recursos.GenerarClave();
+            string clave = CN_Recursos.GenerarPassword();
             string asunto = "Creación de usuario";
             string mensaje_correo = $"<h3>Su cuenta fue creada correctamente</h3><br><p>Su contraseña para acceder es: {clave}</p>";
 
@@ -50,7 +50,7 @@ namespace capa_negocio
                 return 0;
             }
 
-            usuario.contrasena = Encriptar.GetSHA256(clave);
+            usuario.contrasena = CN_Recursos.EncriptarPassword(clave);
             int resultado = CD_Usuarios.RegistrarUsuario(usuario, out mensaje);
 
             return resultado > 0 ? 1 : 0;

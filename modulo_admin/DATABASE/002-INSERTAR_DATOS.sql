@@ -15,7 +15,7 @@ INSERT INTO CONTROLLER (controlador, accion, descripcion, tipo)
 VALUES
     -- Vistas principales
     ('Home', 'Index', 'Dashboard principal', 'Vista'),
-    ('Home', 'Usuario', 'Vista de gestión de usuarios', 'Vista'),
+    ('Usuario', 'Index', 'Vista de gestión de usuarios', 'Vista'),
     ('Archivo', 'GestionArchivos', 'Gestor de archivos', 'Vista'),
     ('Archivo', 'CarpetasCompartidas', 'Carpetas compartidas', 'Vista'),
     ('Archivo', 'ArchivosCompartidos', 'Archivos compartidos', 'Vista'),
@@ -26,12 +26,14 @@ VALUES
     
     -- Acciones API/AJAX
     -- HomeController
-    ('Home', 'ListarUsuarios', 'Obtener listado de usuarios', 'API'),
-    ('Home', 'GuardarUsuario', 'Guardar usuario', 'API'),
-    ('Home', 'EliminarUsuario', 'Guardar usuario', 'API'),
+    ('Usuario', 'ListarUsuarios', 'Obtener listado de usuarios', 'API'),
+    ('Usuario', 'GuardarUsuario', 'Guardar/Editar usuario', 'API'),
+    ('Usuario', 'EliminarUsuario', 'Eliminar usuario', 'API'),
 
     -- ArchivoController
-    ('Archivo', 'ListarCarpetas', 'Subir archivo al sistema', 'API'),
+    ('Archivo', 'ListarCarpetas', 'Listar carpetas por el id de usuario', 'API'),
+    ('Archivo', 'GuardarCarpeta', 'Guardar/Actualizar carpeta', 'API'),
+    ('Archivo', 'EliminarCarpeta', 'Eliminar carpeta', 'API'),
     ('Archivo', 'SubirArchivo', 'Subir archivo al sistema', 'API'),
     ('Planificacion', 'GenerarPlan', 'Generar planificación', 'API');
 GO

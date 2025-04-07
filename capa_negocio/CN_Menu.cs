@@ -12,6 +12,16 @@ namespace capa_negocio
     {
         private CD_Menu CD_Menu = new CD_Menu();
 
+        public int Editar(MENU menu, out string mensaje)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Eliminar(int id_menu, out string mensaje)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<MENU> ListarMenuPorUsuario(int IdUsuario)
         {
             try
@@ -23,6 +33,11 @@ namespace capa_negocio
             {
                 throw new Exception($"Error al obtener menú: {ex.Message}");
             }
+        }
+
+        public int Registra(MENU menu, out string mensaje)
+        {
+            throw new NotImplementedException();
         }
     }
 }

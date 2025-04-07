@@ -23,8 +23,7 @@ namespace modulo_admin.Helpers
                 return new MvcHtmlString("");
             }
 
-            // Obtener permisos del usuario
-            CN_Permisos CN_Permisos = new CN_Permisos();
+            // Obtener menu del rol del usuario            
             List<MENU> menu = CN_Menu.ListarMenuPorUsuario(idUsuario.Value);
 
             if (menu == null || menu.Count == 0)
@@ -35,17 +34,15 @@ namespace modulo_admin.Helpers
             foreach (var iten in menu)
             {
                 sb.Append($@"                            
-                               <a class='nav-link esp-link esp-link-hover' href='/{iten.Controller.controlador}/{iten.Controller.accion}'>
-                                   <div class='sb-nav-link-icon'>
-                                       <i class='{iten.icono}'></i>
-                                   </div>
-                                       {iten.nombre}
-                               </a>"
+                     <a class='nav-link esp-link esp-link-hover' href='/{iten.Controller.controlador}/{iten.Controller.accion}'>
+                         <div class='sb-nav-link-icon'>
+                             <i class='{iten.icono}'></i>
+                         </div>
+                             {iten.nombre}
+                     </a>"
                  );
             }
-
             return new MvcHtmlString(sb.ToString());
         }
-
     }
 }

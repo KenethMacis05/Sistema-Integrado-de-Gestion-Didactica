@@ -188,7 +188,9 @@
     <Compile Include="Controllers\AccesoController.cs" />
     <Compile Include="Controllers\ArchivoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\PlanificacionController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Filters\VerificarSession.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -548,7 +550,6 @@
     <Content Include="webfonts\fa-brands-400.woff" />
     <Content Include="webfonts\fa-brands-400.ttf" />
     <Content Include="webfonts\fa-brands-400.eot" />
-    <Content Include="Views\Home\Usuario.cshtml" />
     <Content Include="Views\Planificacion\Matriz_de_Integracion.cshtml" />
     <Content Include="Views\Planificacion\Plan_Didactico_Semestral.cshtml" />
     <Content Include="Views\Planificacion\Plan_de_Clases_Diario.cshtml" />
@@ -556,6 +557,7 @@
     <Content Include="Views\Archivo\GestionArchivos.cshtml" />
     <Content Include="Views\Archivo\CarpetasCompartidas.cshtml" />
     <Content Include="Views\Archivo\ArchivosCompartidos.cshtml" />
+    <Content Include="Views\Usuario\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

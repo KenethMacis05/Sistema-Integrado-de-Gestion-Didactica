@@ -23,7 +23,7 @@ namespace modulo_admin.Controllers
             return View();
         }
 
-        // Metodo para Listar los usuarios
+        // Metodo para Listar las carpetas
         [HttpGet]
         public JsonResult ListarCarpetas(int id_usuario)
         {
@@ -41,14 +41,45 @@ namespace modulo_admin.Controllers
 
         #endregion
 
+        #region CarpetasCompartidas
 
+        // Vista a la vista de Carpetas Compartidas
         public ActionResult CarpetasCompartidas()
         {
             return View();
         }
+
+        // Metodo para Listar las carpetas compartidas
+
+        // Metodo para Guardar carpetas compartidas
+
+        // Metodo para Borrar carpetas compartidas
+
+        #endregion
+
+        #region Archivos
+
+
+        // Metodo para Listar las carpetas
+
+        // Metodo para Guardar carpetas
+
+        // Metodo para Borrar carpetas
+
+        #endregion
+
+        #region ArchivosCompartidos
+        // Vista a la vista de Archivos Compartidos
         public ActionResult ArchivosCompartidos()
         {
             return View();
         }
+
+        // Metodo para Listar los archivos compartidos
+
+        // Metodo para Guardar archivos compartidos
+
+        // Metodo para Borrar archivos compartidos
+        #endregion
     }
 }

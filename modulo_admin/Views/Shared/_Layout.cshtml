@@ -8,6 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="@Url.Content("~/faviconUNAN.ico")" />
     <title>@ViewBag.Title</title>
+    <style>
+        /* Estilo para el loading overlay */
+        /* Evitar parpadeo en dropdowns */
+       
+    </style>
     @Styles.Render("~/Content/css")
 </head>
 <body class="sb-nav-fixed">
@@ -94,18 +99,7 @@
                     localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
                 });
             }
-        });
-
-        jQuery.ajax({
-            url: '@Url.Action("ListarMenu", "Home")',
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            success: function (data) {
-                console.log(data)
-            }
-        })
-
+        });      
     </script>
 </body>
 </html>

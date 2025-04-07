@@ -24,15 +24,9 @@
             <!--Boton 2-->
             <li class="nav-item" role="presentation">
                 <button class="nav-link esp-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                    Modal
+                    Reiniciar contraseña
                 </button>
-            </li>
-            <!--Boton 3-->
-            <li class="nav-item" role="presentation">
-                <button class="nav-link esp-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">
-                    Alert
-                </button>
-            </li>
+            </li>          
         </ul>
     </div>
     <div class="card-body">
@@ -49,7 +43,7 @@
                             <th>Nombres</th>
                             <th>Apellidos</th>
                             <th>Correo</th>
-                            <th>Telefono</th>                            
+                            <th>Telefono</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -95,14 +89,7 @@
                                             <span class="input-group-text"><i class="fa fa-user"></i></span>
                                             <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingrese el usuario" required>
                                         </div>
-                                    </div>
-                                    @*<div class="col-lg-6 mb-3">
-                                        <label class="form-label" for="contrasena">Contraseña</label>
-                                        <div class="input-group flex-nowrap">
-                                            <span class="input-group-text" id="nose"><i class="fas fa-key fs-5"></i></span>
-                                            <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingrese la contraseña" required>
-                                        </div>
-                                    </div>*@
+                                    </div>                               
                                     <div class="col-lg-6 mb-3">
                                         <label class="form-label" for="correo">Correo</label>
                                         <div class="input-group mb-3">
@@ -114,7 +101,7 @@
                                         <label class="form-label" for="telefono">Telefono</label>
                                         <div class="input-group mb-3">
                                             <span class="input-group-text"><i class="fa fa-phone"></i></span>
-                                            <input type="text" class="form-control" id="telefono" name="telefono">                                            
+                                            <input type="text" class="form-control" id="telefono" name="telefono">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-3">
@@ -152,26 +139,18 @@
             <!--Contenedor 2-->
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
-            </div>
-            <!--Contenedor 3-->
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                <button type="button" onclick="alertDeleteUser()" class="btn btn-danger">Eliminar</button>
-                <button type="button" class="btn btn-warning" id="alertWarning">Advertencia</button>
-                <button type="button" class="btn btn-danger" id="alertErrorDeleteUser">Error</button>
-                <button type="button" class="btn btn-success" id="alertCreateUser">Éxito</button>
-                <button type="button" class="btn btn-info" id="alertInfo">Información</button>
-                <button type="button" class="btn btn-info" id="alertErrorDataBase">Información</button>
-            </div>
+            </div>            
         </div>
     </div>
 </div>
 
 @section scripts{
-    <script type="text/javascript">        
+    <script type="text/javascript">
+
         var config = {
-            listarUsuariosUrl: '@Url.Action("ListarUsuarios", "Home")',
-            guardarUsuariosUrl: '@Url.Action("GuardarUsuario", "Home")',
-            eliminarUsuariosUrl: '@Url.Action("EliminarUsuario", "Home")',
+            listarUsuariosUrl: '@Url.Action("ListarUsuarios", "Usuario")',
+            guardarUsuariosUrl: '@Url.Action("GuardarUsuario", "Usuario")',
+            eliminarUsuariosUrl: '@Url.Action("EliminarUsuario", "Usuario")',
         };
     </script>
     <script src="@Url.Content("~/Scripts/Views/Usuarios.js")" type="text/javascript"></script>

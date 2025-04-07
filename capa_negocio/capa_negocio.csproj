@@ -123,7 +123,6 @@
     <Compile Include="CN_Permisos.cs" />
     <Compile Include="CN_Recursos.cs" />
     <Compile Include="CN_Usuario.cs" />
-    <Compile Include="Encriptar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -193,4 +193,13 @@ FROM PERMISOS p
 insert into permisos (fk_rol, fk_menu)
 values (2, 1)
 
-select m.* from MENU m INNER JOIN 
+-- Obtener menú para usuario ID 1 (solo mostrará vistas)
+EXEC usp_ObtenerMenuPorUsuario @IdUsuario = 1;
+EXEC usp_ObtenerControllersPorRol @IdRol = 1;
+
+
+-- Verificar permiso para Usuario/Listar
+EXEC usp_VerificarPermiso 
+    @IdUsuario = 1, 
+    @Controlador = 'Home',
+    @Accion = 'ListarUsuarios'

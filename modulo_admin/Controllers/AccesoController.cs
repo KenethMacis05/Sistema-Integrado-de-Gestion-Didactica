@@ -12,7 +12,7 @@ namespace modulo_admin.Controllers
 {
     public class AccesoController : Controller
     {
-        private CD_Usuarios cd_usuario = new CD_Usuarios();
+        private CD_Usuarios CD_Usuarios = new CD_Usuarios();
         // GET: Acceso
         [HttpGet]
         public ActionResult Index(int? error)
@@ -32,7 +32,7 @@ namespace modulo_admin.Controllers
                 
 
                 //Validar usuario y contraseña
-                USUARIOS usuarioAutenticado = cd_usuario.LoginUsuario(usuario, contrasenaHash, out mensaje);
+                USUARIOS usuarioAutenticado = CD_Usuarios.LoginUsuario(usuario, contrasenaHash, out mensaje);
                 if (usuarioAutenticado != null)
                 {
                     Session["UsuarioAutenticado"] = usuarioAutenticado;
@@ -52,7 +52,6 @@ namespace modulo_admin.Controllers
                 TempData["ErrorMessage"] = "Error al iniciar sesión: " + ex.Message;
                 return RedirectToAction("Index", "Acceso");
             }
-
         }
     }
 }
