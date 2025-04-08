@@ -13,8 +13,7 @@ namespace modulo_admin.Controllers
 {
     [VerificarSession]
     public class HomeController : Controller
-    {
-        private static USUARIOS SesionUsuario;
+    {        
         public ActionResult Index()
         {           
             return View();

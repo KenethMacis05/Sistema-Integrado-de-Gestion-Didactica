@@ -424,7 +424,7 @@ BEGIN
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
-
+    
 -- (13) PROCEDIMIENTO ALMACENADO PARA ELIMINAR UN ROL
 CREATE PROCEDURE usp_EliminarRol
     @IdRol INT,

@@ -505,7 +505,7 @@
     <Content Include="Content\DataTables\css\semanticui.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
-    <Content Include="DATABASE\SISTEMA_DE_GESTION_DIDACTICA.bacpac" />
+    <Content Include="DATABASE\SISTEME_DE_GESTION_DIDACTICA.bacpac" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
