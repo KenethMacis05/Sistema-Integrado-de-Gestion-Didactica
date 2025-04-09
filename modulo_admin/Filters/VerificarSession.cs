@@ -56,21 +56,22 @@ namespace modulo_admin.Filters
 
             // Obtener información de la ruta solicitada
             string controlador = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
-            string vista = filterContext.ActionDescriptor.ActionName;
+            string accion = filterContext.ActionDescriptor.ActionName;
 
             // No verificar permisos para Home/Index ni Home/SinPermisos
             if (!
                 (controlador.Equals("Home", StringComparison.OrdinalIgnoreCase) &&                                  
-                 (vista.Equals("Index", StringComparison.OrdinalIgnoreCase) ||
-                  vista.Equals("CerrarSesion", StringComparison.OrdinalIgnoreCase))))
+                 (accion.Equals("Index", StringComparison.OrdinalIgnoreCase) ||
+                  accion.Equals("CerrarSesion", StringComparison.OrdinalIgnoreCase))))
             {
                 //  
                 CN_Permisos CN_Permisos = new CN_Permisos();
-                bool tienePermiso = CN_Permisos.VerificarPermiso(sesionUsuario.id_usuario, controlador, vista);
+                bool tienePermiso = CN_Permisos.VerificarPermiso(sesionUsuario.id_usuario, controlador, accion);
 
                 if (!tienePermiso)
                 {
                     filterContext.Result = new RedirectResult("~/Home/Index");
+                    controller.ViewBag.Mensaje = "Usted no tiene permisos para realizar esta acción";
                     return;
                 }
             }
