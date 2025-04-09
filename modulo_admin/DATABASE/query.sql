@@ -194,8 +194,9 @@ insert into permisos (fk_rol, fk_menu)
 values (2, 1)
 
 -- Obtener menú para usuario ID 1 (solo mostrará vistas)
-EXEC usp_ObtenerMenuPorUsuario @IdUsuario = 1;
-EXEC usp_ObtenerControllersPorRol @IdRol = 1;
+EXEC usp_ObtenerMenuPorUsuario @IdUsuario = 2;
+EXEC usp_ObtenerPermisosPorRol @IdRol = 3;
+
 
 
 -- Verificar permiso para Usuario/Listar
@@ -203,3 +204,17 @@ EXEC usp_VerificarPermiso
     @IdUsuario = 1, 
     @Controlador = 'Home',
     @Accion = 'ListarUsuarios'
+
+-- PROCEDIMIENTO PARA ASIGNAR PERMISO
+EXEC usp_AsignarPermiso
+    @IdRol = 3,
+    @IdControlador = 9,
+    @Estado = 1;
+
+select * from CONTROLLER
+
+-- PROCEDIMIENTO PARA OBTENER PERMISOS NO ASIGNADOS
+EXEC usp_ObtenerPermisosNoAsignados
+    @IdRol = 3;
+
+    select * from USUARIOS

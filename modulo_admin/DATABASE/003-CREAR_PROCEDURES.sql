@@ -88,7 +88,7 @@ END
 GO
 --------------------------------------------------------------------------------------------------------------------
 
--- (3) PROCEDIMIENTO ALMACENADO PARA OBTENER LOS PERMISOS DE UN ROL DE UN USUARIO
+-- (3) PROCEDIMIENTO ALMACENADO PARA OBTENER LOS MENUS DE UN ROL DE UN USUARIO
 CREATE OR ALTER PROCEDURE usp_ObtenerMenuPorUsuario
     @IdUsuario INT
 AS
@@ -182,18 +182,22 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE usp_ObtenerControllersPorRol
+--------------------------------------------------------------------------------------------------------------------
+-- PROCEMIENTO ALMACENADO PARA OBTENER LOS PERMISOS DE UN ROL
+CREATE PROCEDURE usp_ObtenerPermisosPorRol
     @IdRol INT
 AS
 BEGIN
     SET NOCOUNT ON;
     
     SELECT DISTINCT
+        p.id_permiso,
         c.id_controlador,
         c.controlador,
         c.accion,
         c.descripcion,
-        c.tipo       
+        c.tipo,
+        p.estado
     FROM PERMISOS p
     INNER JOIN CONTROLLER c ON p.fk_controlador = c.id_controlador
     WHERE p.fk_rol = @IdRol
@@ -203,8 +207,58 @@ END
 GO
 --------------------------------------------------------------------------------------------------------------------
 
--- (4) PROCEDIMIENTO ALMACENADO PARA ACTUALIZAR LOS PERMISOS DE UN ROL
+-- PROCEDIMIENTO PARA ASIGNAR PERMISO
+CREATE PROCEDURE usp_AsignarPermiso
+    @IdRol INT,
+    @IdControlador INT,
+    @Estado BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    IF EXISTS (SELECT 1 FROM PERMISOS WHERE fk_rol = @IdRol AND fk_controlador = @IdControlador)
+    BEGIN
+        -- Actualizar permiso existente
+        UPDATE PERMISOS 
+        SET estado = @Estado 
+        WHERE fk_rol = @IdRol AND fk_controlador = @IdControlador;
+    END
+    ELSE
+    BEGIN
+        -- Insertar nuevo permiso
+        INSERT INTO PERMISOS (fk_rol, fk_controlador, estado)
+        VALUES (@IdRol, @IdControlador, @Estado);
+    END
+    
+    SELECT @@ROWCOUNT AS Resultado;
+END
+GO
+--------------------------------------------------------------------------------------------------------------------
 
+-- PROCEDIMIENTO PARA OBTENER PERMISOS NO ASIGNADOS
+CREATE PROCEDURE usp_ObtenerPermisosNoAsignados
+    @IdRol INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        c.id_controlador,
+        c.controlador,
+        c.accion,
+        c.descripcion,
+        c.tipo
+    FROM CONTROLLER c
+    WHERE c.estado = 1
+    AND NOT EXISTS (
+        SELECT 1 FROM PERMISOS p 
+        WHERE p.fk_rol = @IdRol 
+        AND p.fk_controlador = c.id_controlador
+        AND p.estado = 1
+    )
+    ORDER BY c.controlador, c.accion;
+END
+GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (5) PROCEDIMIENTO ALMACENADO PARA OBTENER TODOS LOS USUARIOS

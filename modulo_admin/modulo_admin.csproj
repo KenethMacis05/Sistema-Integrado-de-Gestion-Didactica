@@ -189,6 +189,7 @@
     <Compile Include="Controllers\ArchivoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
+    <Compile Include="Controllers\PermisosController.cs" />
     <Compile Include="Controllers\PlanificacionController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Filters\VerificarSession.cs" />
@@ -558,6 +559,7 @@
     <Content Include="Views\Archivo\CarpetasCompartidas.cshtml" />
     <Content Include="Views\Archivo\ArchivosCompartidos.cshtml" />
     <Content Include="Views\Usuario\Index.cshtml" />
+    <Content Include="Views\Permisos\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

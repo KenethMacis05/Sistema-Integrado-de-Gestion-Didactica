@@ -10,7 +10,7 @@ namespace capa_entidad
 {
     public class PERMISOS
     {
-        public int id_permisos { get; set; }
+        public int id_permiso { get; set; }
         public int fk_rol { get; set; }
         public int fk_controlador { get; set; }
         public bool estado { get; set; } = true;

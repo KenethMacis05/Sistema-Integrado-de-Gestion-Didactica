@@ -35,7 +35,28 @@ VALUES
     ('Archivo', 'GuardarCarpeta', 'Guardar/Actualizar carpeta', 'API'),
     ('Archivo', 'EliminarCarpeta', 'Eliminar carpeta', 'API'),
     ('Archivo', 'SubirArchivo', 'Subir archivo al sistema', 'API'),
-    ('Planificacion', 'GenerarPlan', 'Generar planificación', 'API');
+    ('Planificacion', 'GenerarPlan', 'Generar planificación', 'API'),
+
+    -- MenuController
+    ('Menu', 'Index', 'Vista de menú', 'Vista'),
+    ('Menu', 'ObtenerMenuPorRol', 'Listar menú por rol', 'API'),
+    ('Menu', 'ObtenerMenuNoAsignado', 'Listar menú no asignado', 'API'),
+    ('Menu', 'ListarMenu', 'Listar menús', 'API'),
+    ('Menu', 'GuardarMenu', 'Guardar/Actualizar menú', 'API'),
+    ('Menu', 'EliminarMenu', 'Eliminar menú', 'API'),
+
+    -- RolController
+    ('Rol', 'Index', 'Vista de rol', 'Vista'),    
+    ('Rol', 'ListarRoles', 'Listar roles', 'API'),
+    ('Rol', 'GuardarRol', 'Guardar/Actualizar rol', 'API'),
+    ('Rol', 'EliminarRol', 'Eliminar rol', 'API'),    
+
+    -- PermisosController
+    ('Permisos', 'Index', 'Vista de permisos', 'Vista'),
+    ('Permisos', 'ObtenerPermisosPorRol', 'Listar permisos por rol', 'API'),
+    ('Permisos', 'ObtenerPermisosNoAsignados', 'Listar permisos no asignados', 'API'),
+    ('Permisos', 'AsignarPermisos', 'Asignar permiso a un rol', 'API'),
+    ('Permisos', 'EliminarPermiso', 'Eliminar permiso de un rol', 'API')
 GO
 --------------------------------------------------------------------------------------------------------------------
 
@@ -44,13 +65,16 @@ INSERT INTO MENU (nombre, fk_controlador, icono, orden)
 VALUES
     ('Dashboard', 1, 'fas fa-tachometer-alt', 1),
     ('Usuario', 2, 'fa fa-users', 2),
-    ('Gestor de archivos', 3, 'fas fa-cloud', 3),
-    ('Carpetas compartidas', 4, 'fas fa-share-square', 4),
-    ('Archivos compartidos', 5, 'fas fa-share-square', 5),
-    ('Matriz de Integracion', 6, 'fas fa-table', 6),
-    ('Plan Didactico Semestral', 7, 'fas fa-bookmark', 7),
-    ('Plan de Clases Diario', 8, 'fas fa-boxes', 8),
-    ('Reportes', 9, 'far fa-file-pdf', 9);
+    ('Menus', 18, 'fas fa-bars', 3),
+    ('Roles', 24, 'fas fa-user-shield', 4),
+    ('Permisos', 28, 'fas fa-key', 5),
+    ('Gestor de archivos', 3, 'fas fa-cloud', 6),
+    ('Carpetas compartidas', 4, 'fas fa-share-square', 7),
+    ('Archivos compartidos', 5, 'fas fa-share-square', 8),
+    ('Matriz de Integracion', 6, 'fas fa-table', 9),
+    ('Plan Didactico Semestral', 7, 'fas fa-bookmark', 10),
+    ('Plan de Clases Diario', 8, 'fas fa-boxes', 11),
+    ('Reportes', 9, 'far fa-file-pdf', 12);
 GO
 
 --------------------------------------------------------------------------------------------------------------------
@@ -66,13 +90,24 @@ VALUES
 	('admin', 'admin', 'admin', 'admin', 'admin', 
         '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 
         'admin@gmai', 87654321,
-        (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'));
+        (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR')),
+    
+    ('integrador', 'integrador', 'integrador', 'integrador', 'integrador', 
+        '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',
+        'integrador@gmail.com', 12345675,
+        (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'INTEGRADOR')),
+
+	('profesor', 'profesor', 'profesor', 'profesor', 'profesor', 
+        '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 
+        'profesor@gmai', 77654321,
+        (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'PROFESOR'));
 
 GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (5) REGISTROS EN TABLA PERMISOS
 
+-- ADMINISTRADOR tiene acceso a todos los controladores
 INSERT INTO PERMISOS (fk_rol, fk_controlador)
 SELECT 
     (SELECT TOP 1 id_rol FROM ROL WHERE descripcion = 'ADMINISTRADOR'), 
@@ -80,10 +115,24 @@ SELECT
 FROM CONTROLLER;
 GO
 
+-- Integrador tiene acceso básico
+INSERT INTO PERMISOS (fk_rol, fk_controlador)
+VALUES
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 1), -- Home/Index    
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 3), -- Gestor de Archivos
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 4), -- Carpetas Compartidas
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 5), -- Archivos Compartidos
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 6), -- Matriz Integración
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 7), -- Plan Didáctico
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 8); -- Plan Clases
+GO
+
 -- PROFESOR tiene acceso básico
 INSERT INTO PERMISOS (fk_rol, fk_controlador)
 VALUES
     ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 1), -- Home/Index
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 4), -- Carpetas Compartidas
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 5), -- Archivos Compartidos
     ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 6), -- Matriz Integración
     ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 7), -- Plan Didáctico
     ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 8); -- Plan Clases
@@ -101,13 +150,27 @@ SELECT
 FROM MENU;
 GO
 
+-- INTEGRADOR ve solo algunos menús
+INSERT INTO MENU_ROL (fk_rol, fk_menu)
+VALUES  
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 1), -- Dashboard
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 6), -- Gestor de Archivos
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 7), -- Carpetas Compartidas
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 8), -- Archivos Compartidos
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 9), -- Matriz Integración
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 10), -- Plan Didáctico
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'INTEGRADOR'), 11); -- Plan Clases
+GO
+
 -- PROFESOR ve solo algunos menús
 INSERT INTO MENU_ROL (fk_rol, fk_menu)
-VALUES
+VALUES  
     ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 1), -- Dashboard
-    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 6), -- Matriz Integración
-    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 7), -- Plan Didáctico
-    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 8); -- Plan Clases
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 7), -- Carpetas Compartidas
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 8), -- Archivos Compartidos
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 9), -- Matriz Integración
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 10), -- Plan Didáctico
+    ((SELECT id_rol FROM ROL WHERE descripcion = 'PROFESOR'), 11); -- Plan Clases
 GO
 --------------------------------------------------------------------------------------------------------------------
 

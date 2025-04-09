@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Permisos</h2>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                Asignar Permisos
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Seleccion Rol:</label>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control form-control-sm" id="cboRol"></select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="btnBuscar" type="button" class="btn btn-sm btn-primary btn-block">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="btnAgregarPermisos" class="btn btn-sm btn-success btn-block" data-bs-toggle="modal" data-bs-target="#modalPermisos">
+                            <i class="fas fa-plus"></i> Agregar Permisos
+                        </button>
+                    </div>
+                </div>
+                <hr />
+                <div class="row mt-3">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table id="tbPermisos" class="table table-bordered table-sm" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Controlador</th>
+                                        <th>Acción</th>
+                                        <th>Descripción</th>
+                                        <th>Tipo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar permisos -->
+<div class="modal fade" id="modalPermisos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Agregar Nuevos Permisos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="tbPermisosDisponibles" class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Controlador</th>
+                                <th>Acción</th>
+                                <th>Descripción</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarPermisos">Guardar Permisos</button>
+            </div>
+        </div>
+    </div>
+</div>

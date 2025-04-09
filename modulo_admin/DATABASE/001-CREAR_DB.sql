@@ -26,6 +26,8 @@ CREATE TABLE CONTROLLER (
     accion VARCHAR(50) NOT NULL,
     descripcion VARCHAR(100),
     tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('Vista', 'API')), -- Solo 2 tipos claros
+	estado BIT DEFAULT 1, 
+    fecha_registro DATETIME DEFAULT GETDATE()
     CONSTRAINT UQ_CONTROLLER_ACCION UNIQUE (controlador, accion)
 )
 GO
@@ -38,7 +40,8 @@ CREATE TABLE MENU (
     fk_controlador INT NULL, -- Solo para elementos que ejecutan una acción
     icono VARCHAR(60),
     orden INT DEFAULT 0,
-    estado BIT DEFAULT 1,
+    estado BIT DEFAULT 1,	
+    fecha_registro DATETIME DEFAULT GETDATE()
     CONSTRAINT FK_MENU_CONTROLLER FOREIGN KEY (fk_controlador) REFERENCES CONTROLLER(id_controlador)
 )
 GO
@@ -49,7 +52,8 @@ CREATE TABLE PERMISOS (
     id_permiso INT PRIMARY KEY IDENTITY(1,1),
     fk_rol INT NOT NULL,
     fk_controlador INT NOT NULL,
-    estado BIT DEFAULT 1,
+    estado BIT DEFAULT 1,	
+    fecha_registro DATETIME DEFAULT GETDATE()
     CONSTRAINT FK_PERMISO_ROL FOREIGN KEY (fk_rol) REFERENCES ROL(id_rol) ON DELETE CASCADE,
     CONSTRAINT FK_PERMISO_CONTROLLER FOREIGN KEY (fk_controlador) REFERENCES CONTROLLER(id_controlador) ON DELETE CASCADE,
     CONSTRAINT UQ_PERMISO UNIQUE (fk_rol, fk_controlador)
@@ -62,7 +66,8 @@ CREATE TABLE MENU_ROL (
     id_menu_rol INT PRIMARY KEY IDENTITY(1,1),
     fk_rol INT NOT NULL,
     fk_menu INT NOT NULL,
-    estado BIT DEFAULT 1,
+    estado BIT DEFAULT 1,	
+    fecha_registro DATETIME DEFAULT GETDATE()
     CONSTRAINT FK_MENUROL_ROL FOREIGN KEY (fk_rol) REFERENCES ROL(id_rol) ON DELETE CASCADE,
     CONSTRAINT FK_MENUROL_MENU FOREIGN KEY (fk_menu) REFERENCES MENU(id_menu) ON DELETE CASCADE,
     CONSTRAINT UQ_MENUROL UNIQUE (fk_rol, fk_menu)
