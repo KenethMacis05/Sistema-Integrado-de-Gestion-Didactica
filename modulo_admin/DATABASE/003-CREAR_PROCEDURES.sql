@@ -210,27 +210,41 @@ GO
 -- PROCEDIMIENTO PARA ASIGNAR PERMISO
 CREATE PROCEDURE usp_AsignarPermiso
     @IdRol INT,
-    @IdControlador INT,
-    @Estado BIT
+    @IdControlador INT
 AS
 BEGIN
     SET NOCOUNT ON;
     
-    IF EXISTS (SELECT 1 FROM PERMISOS WHERE fk_rol = @IdRol AND fk_controlador = @IdControlador)
+    DECLARE @Resultado INT = 0;
+    DECLARE @EstadoController BIT;
+    
+    -- 1. Verificar si el controlador está activo
+    SELECT @EstadoController = estado 
+    FROM CONTROLLER 
+    WHERE id_controlador = @IdControlador;
+    
+    -- Si el controlador no existe o está inactivo
+    IF @EstadoController IS NULL OR @EstadoController = 0
     BEGIN
-        -- Actualizar permiso existente
-        UPDATE PERMISOS 
-        SET estado = @Estado 
-        WHERE fk_rol = @IdRol AND fk_controlador = @IdControlador;
-    END
-    ELSE
-    BEGIN
-        -- Insertar nuevo permiso
-        INSERT INTO PERMISOS (fk_rol, fk_controlador, estado)
-        VALUES (@IdRol, @IdControlador, @Estado);
+        SELECT -1 AS Resultado; -- Código de error: Controlador no existe o está inactivo
+        RETURN;
     END
     
-    SELECT @@ROWCOUNT AS Resultado;
+    -- 2. Verificar si el rol ya tiene este controlador asignado
+    IF EXISTS (SELECT 1 FROM PERMISOS 
+              WHERE fk_rol = @IdRol AND fk_controlador = @IdControlador)
+    BEGIN
+        SELECT -2 AS Resultado; -- Código de error: El rol ya tiene este controlador
+        RETURN;
+    END
+    
+    -- 3. Si pasa las validaciones, insertar el nuevo permiso
+    INSERT INTO PERMISOS (fk_rol, fk_controlador)
+    VALUES (@IdRol, @IdControlador);
+    
+    SET @Resultado = SCOPE_IDENTITY();
+    
+    SELECT @Resultado AS Resultado;
 END
 GO
 --------------------------------------------------------------------------------------------------------------------

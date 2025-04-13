@@ -42,3 +42,31 @@ const swalConfig = {
         confirmButton: 'custom-confirmar-button',
     }
 };
+
+function mostrarAlerta(titulo, mensaje, tipo) {
+    const config = {
+        title: titulo,
+        text: mensaje,
+        icon: tipo,
+        ...swalConfig,
+    }
+
+    Swal.fire(config);
+}
+
+// Mostrar notificacion
+function mostrarNotificacion(titulo, mensaje, tipo) {
+    const config = {
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        ...swalConfig,
+        title: titulo,
+        text: mensaje,
+        icon: tipo
+    };
+
+    Swal.fire(config);
+}

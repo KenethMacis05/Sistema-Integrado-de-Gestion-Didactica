@@ -76,9 +76,7 @@ namespace capa_datos
                                         controlador = dr["controlador"].ToString(),
                                         accion = dr["accion"].ToString(),
                                         descripcion = dr["descripcion"].ToString(),
-                                        tipo = dr["tipo"].ToString(),
-                                        estado = Convert.ToBoolean(dr["estado"]),
-                                        fecha_registro = Convert.ToDateTime(dr["fecha_registro"]),
+                                        tipo = dr["tipo"].ToString(),                                                                            
                                     },
                                     estado = Convert.ToBoolean(dr["estado"])
                                 }
@@ -134,19 +132,24 @@ namespace capa_datos
             return lst;
         }
 
-        public bool AsignarPermiso(int IdRol, int IdControlador, bool Estado)
+        public int AsignarPermiso(int IdRol, int IdControlador)
         {
-            using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
+            try
             {
-                SqlCommand cmd = new SqlCommand("usp_AsignarPermiso", conexion);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("IdRol", IdRol);
-                cmd.Parameters.AddWithValue("IdControlador", IdControlador);
-                cmd.Parameters.AddWithValue("Estado", Estado);
+                using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_AsignarPermiso", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("IdRol", IdRol);
+                    cmd.Parameters.AddWithValue("IdControlador", IdControlador);
 
-                conexion.Open();
-                int resultado = Convert.ToInt32(cmd.ExecuteScalar());
-                return resultado > 0;
+                    conexion.Open();
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al asignar permiso: " + ex.Message);
             }
         }
     }

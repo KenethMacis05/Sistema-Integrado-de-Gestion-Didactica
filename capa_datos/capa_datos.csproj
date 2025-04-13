@@ -147,6 +147,7 @@
     <Compile Include="CD_Controller.cs" />
     <Compile Include="CD_Menu.cs" />
     <Compile Include="CD_Permisos.cs" />
+    <Compile Include="CD_Rol.cs" />
     <Compile Include="CD_Usuarios.cs" />
     <Compile Include="Conexion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

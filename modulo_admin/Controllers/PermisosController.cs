@@ -24,44 +24,55 @@ namespace modulo_admin.Controllers
 
         [HttpGet]
         public JsonResult ObtenerPermisosPorRol(int IdRol)
-        {
-            string mensaje = string.Empty;
-
+        {                      
             List<PERMISOS> lst = new List<PERMISOS>();
-            lst = CN_Permisos.ListarPermisosPorRol(IdRol, out mensaje);
+            lst = CN_Permisos.ListarPermisosPorRol(IdRol);
 
-            return Json(new { data = lst, mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new { data = lst }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult ObtenerPermisosNoAsignados(int IdRol)
-        {
-            string mensaje = string.Empty;
-
+        {            
             List<CONTROLLER> lst = new List<CONTROLLER>();
-            lst = CN_Permisos.ListarPermisosNoAsignados(IdRol, out mensaje);
+            lst = CN_Permisos.ListarPermisosNoAsignados(IdRol);
 
-            return Json(new { data = lst, mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new { data = lst }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult AsignarPermisos(int idRol, List<int> permisos)
+        public JsonResult AsignarPermisos(int IdRol, List<int> IdsControladores)
         {
-            bool resultado = true;
-            foreach (var idControlador in permisos)
+            try
             {
-                if (!CN_Permisos.AsignarPermiso(idRol, idControlador, true))
-                    resultado = false;
+                var cnPermisos = new CN_Permisos();
+                var resultados = cnPermisos.AsignarPermisos(IdRol, IdsControladores);
+
+                var data = resultados.Select(r => new {
+                    IdControlador = r.Key,
+                    Codigo = r.Value.Codigo,
+                    Mensaje = r.Value.Mensaje,
+                    EsExitoso = r.Value.Codigo > 0
+                }).ToList();
+
+                return Json(new
+                {
+                    success = true,
+                    data = data,
+                    totalExitosos = data.Count(d => d.EsExitoso),
+                    totalFallidos = data.Count(d => !d.EsExitoso)
+                });
             }
-            return Json(new { success = resultado });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]
         public JsonResult EliminarPermiso(int idRol, int idPermiso)
         {
-            // Implementar lógica para eliminar permiso (actualizar estado a false)
-            bool resultado = CN_Permisos.AsignarPermiso(idRol, idPermiso, false);
-            return Json(new { success = resultado });
+            return Json(new { success = false, message = "Método no implementado" });
         }
 
     }
