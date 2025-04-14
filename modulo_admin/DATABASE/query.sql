@@ -94,7 +94,7 @@ EXEC sp_sproc_columns
 
 
 -- Obtener menú para usuario ID 1
-EXEC usp_ObtenerMenuPorUsuario @IdUsuario = 2;
+EXEC usp_LeerMenuPorUsuario @IdUsuario = 2;
 
 -- Obtener permisos por ID ROl
 EXEC usp_ObtenerPermisosPorRol @IdRol = 3;

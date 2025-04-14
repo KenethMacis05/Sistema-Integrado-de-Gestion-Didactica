@@ -19,7 +19,7 @@ namespace capa_datos
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    SqlCommand cmd = new SqlCommand("usp_ObtenerMenuPorUsuario", conexion);
+                    SqlCommand cmd = new SqlCommand("usp_LeerMenuPorUsuario", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("IdUsuario", IdUsuario);
 

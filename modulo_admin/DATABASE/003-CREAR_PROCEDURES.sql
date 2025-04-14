@@ -4,54 +4,61 @@ IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_LoginUsuar
 DROP PROCEDURE usp_LoginUsuario
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerDetalleUsuario')
-DROP PROCEDURE usp_ObtenerDetalleUsuario
-GO
-
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerPermisos')
-DROP PROCEDURE usp_ObtenerPermisos
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_LeerPermisos')
+DROP PROCEDURE usp_LeerPermisos
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ActualizarPermisos')
 DROP PROCEDURE usp_ActualizarPermisos
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerUsuario')
-DROP PROCEDURE usp_ObtenerUsuario
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_LeerUsuario')
+DROP PROCEDURE usp_LeerUsuario
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_RegistrarUsuario')
-DROP PROCEDURE usp_RegistrarUsuario
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_CrearUsuario')
+DROP PROCEDURE usp_CrearUsuario
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ModificarUsuario')
-DROP PROCEDURE usp_ModificarUsuario
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ActualizarUsuario')
+DROP PROCEDURE usp_ActualizarUsuario
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ModificarContrasena')
-DROP PROCEDURE usp_ModificarContrasena
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ActualizarContrasena')
+DROP PROCEDURE usp_ActualizarContrasena
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_EliminarUsuario')
 DROP PROCEDURE usp_EliminarUsuario
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ObtenerRoles')
-DROP PROCEDURE usp_ObtenerRoles
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_LeerRoles')
+DROP PROCEDURE usp_LeerRoles
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_RegistrarRol')
-DROP PROCEDURE usp_RegistrarRol
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_CrearRol')
+DROP PROCEDURE usp_CrearRol
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ModificarRol')
-DROP PROCEDURE usp_ModificarRol
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ActualizarRol')
+DROP PROCEDURE usp_ActualizarRol
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_EliminarRol')
 DROP PROCEDURE usp_EliminarRol
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_LeerMenuPorUsuario')
+DROP PROCEDURE usp_LeerMenuPorUsuario
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_VerificarPermiso')
+DROP PROCEDURE usp_VerificarPermiso
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_AsignarPermiso')
+DROP PROCEDURE usp_AsignarPermiso
+GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (1) PROCEDIMIENTO ALMACENADO PARA INICIAR SESIÓN DE USUARIO
@@ -89,7 +96,7 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (3) PROCEDIMIENTO ALMACENADO PARA OBTENER LOS MENUS DE UN ROL DE UN USUARIO
-CREATE OR ALTER PROCEDURE usp_ObtenerMenuPorUsuario
+CREATE OR ALTER PROCEDURE usp_LeerMenuPorUsuario
     @IdUsuario INT
 AS
 BEGIN
@@ -184,7 +191,7 @@ GO
 
 --------------------------------------------------------------------------------------------------------------------
 -- PROCEMIENTO ALMACENADO PARA OBTENER LOS PERMISOS DE UN ROL
-CREATE PROCEDURE usp_ObtenerPermisosPorRol
+CREATE PROCEDURE usp_LeerPermisosPorRol
     @IdRol INT
 AS
 BEGIN
@@ -202,7 +209,7 @@ BEGIN
     INNER JOIN CONTROLLER c ON p.fk_controlador = c.id_controlador
     WHERE p.fk_rol = @IdRol
     AND p.estado = 1    
-    ORDER BY c.controlador, c.accion;
+    ORDER BY p.id_permiso DESC;
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
@@ -250,7 +257,7 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- PROCEDIMIENTO PARA OBTENER PERMISOS NO ASIGNADOS
-CREATE PROCEDURE usp_ObtenerPermisosNoAsignados
+CREATE PROCEDURE usp_LeerPermisosNoAsignados
     @IdRol INT
 AS
 BEGIN
@@ -270,13 +277,13 @@ BEGIN
         AND p.fk_controlador = c.id_controlador
         AND p.estado = 1
     )
-    ORDER BY c.controlador, c.accion;
+    ORDER BY c.id_controlador DESC;
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (5) PROCEDIMIENTO ALMACENADO PARA OBTENER TODOS LOS USUARIOS
-CREATE PROCEDURE usp_ObtenerUsuario
+CREATE PROCEDURE usp_LeerUsuario
 AS
 BEGIN
     SELECT 
@@ -293,12 +300,13 @@ BEGIN
         r.descripcion AS 'DescripcionRol'
     FROM USUARIOS u
     INNER JOIN ROL r ON r.id_rol = u.fk_rol
+	ORDER BY u.id_usuario DESC
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (6) PROCEDIMIENTO ALMACENADO PARA REGISTRAR UN NUEVO USUARIO
-CREATE PROCEDURE usp_RegistrarUsuario(
+CREATE PROCEDURE usp_CrearUsuario(
     @PriNombre VARCHAR(60),
     @SegNombre VARCHAR(60),
     @PriApellido VARCHAR(60),
@@ -331,6 +339,13 @@ BEGIN
         RETURN
     END
 
+	-- Verificar si el numero de telefono ya existe
+	IF EXISTS (SELECT * FROM USUARIOS WHERE telefono = @Telefono)
+    BEGIN
+        SET @Mensaje = 'El numero de telefono ya está registrado'
+        RETURN
+    END
+
     -- Insertar el nuevo usuario
     INSERT INTO USUARIOS (pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, contrasena, correo, telefono, fk_rol, estado)
     VALUES (@PriNombre, @SegNombre, @PriApellido, @SegApellido, @Usuario, CONVERT(VARBINARY(64), @Clave), @Correo, @Telefono, @FkRol, @Estado)
@@ -342,7 +357,7 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (7) PROCEDIMIENTO ALMACENADO PARA MODIFICAR LOS DATOS DE UN USUARIO
-CREATE PROCEDURE usp_ModificarUsuario
+CREATE PROCEDURE usp_ActualizarUsuario
     @IdUsuario INT,
     @PriNombre VARCHAR(60),
     @SegNombre VARCHAR(60),
@@ -382,6 +397,13 @@ BEGIN
         RETURN
     END
 
+	-- Verificar si el numero de telefono ya existe (excluyendo al usuario actual)
+    IF EXISTS (SELECT 1 FROM USUARIOS WHERE telefono = @Telefono AND id_usuario != @IdUsuario)
+    BEGIN
+        SET @Mensaje = 'El numero de telefono ya está registrado'
+        RETURN
+    END
+
     -- Actualizar el usuario
     UPDATE USUARIOS
     SET 
@@ -403,7 +425,7 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (8) PROCEDIMIENTO ALMACENADO PARA MODIFICAR LA CONTRASEÑA DE UN USUARIO
-CREATE PROCEDURE usp_ModificarContrasena
+CREATE PROCEDURE usp_ActualizarContrasena
     @IdUsuario INT,    
     @ClaveActual VARCHAR(100),
     @ClaveNueva VARCHAR(100),
@@ -458,37 +480,74 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (10) PROCEDIMIENTO ALMACENADO PARA OBTENER TODOS LOS ROLES
-CREATE PROCEDURE usp_ObtenerRoles
+CREATE PROCEDURE usp_LeerRoles
 AS
 BEGIN
-    SELECT id_rol, descripcion, estado FROM ROL
+    SELECT * FROM ROL ORDER BY id_rol DESC
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (11) PROCEDIMIENTO ALMACENADO PARA REGISTRAR UN NUEVO ROL
+CREATE PROCEDURE usp_CrearRol
+    @Descripcion VARCHAR(60),    
+    @Resultado INT OUTPUT,
+	@Mensaje VARCHAR(255) OUTPUT
+AS
+BEGIN
+    SET @Resultado = 0
+	SET @Mensaje = ''
+
+	-- Verificar si el nombre del rol ya existe
+	IF EXISTS (SELECT * FROM ROL WHERE descripcion = @Descripcion)
+	BEGIN
+		SET @Mensaje = 'La descripción del Rol ya está en uso'
+		RETURN
+	END
+
+	INSERT INTO ROL (descripcion) VALUES (@Descripcion)
+    
+    SET @Resultado = SCOPE_IDENTITY()
+	SET @Mensaje = 'Rol registrado exitosamente'
+END
+GO
 
 --------------------------------------------------------------------------------------------------------------------
 
 -- (12) PROCEDIMIENTO ALMACENADO PARA MODIFICAR LOS DATOS DE UN ROL
-CREATE PROCEDURE usp_ModificarRol
+CREATE PROCEDURE usp_ActualizarRol
     @IdRol INT,
     @Descripcion VARCHAR(60),
     @Estado BIT,
-    @Resultado BIT OUTPUT
+    @Resultado INT OUTPUT,
+	@Mensaje VARCHAR(255) OUTPUT
 AS
 BEGIN
+    SET @Resultado = 0
+	SET @Mensaje = ''
+
+	-- Verificar si el rol existe
+	IF NOT EXISTS (SELECT 1 FROM ROL WHERE id_rol = @IdRol)
+	BEGIN
+		SET @Mensaje = 'El rol no existe'
+		RETURN
+	END
+
+	-- Verificar si la descripción del Rol ya existe (excluyendo al Rol actual)
+	IF EXISTS (SELECT 1 FROM ROL WHERE descripcion = @Descripcion AND id_rol != @IdRol)
+	BEGIN
+		SET @Mensaje = 'La descripción del Rol ya está en uso'
+		RETURN
+	END
+    
+    UPDATE ROL
+    SET 
+        descripcion = @Descripcion,
+        estado = @Estado
+    WHERE id_rol = @IdRol
+   
     SET @Resultado = 1
-    IF NOT EXISTS (SELECT * FROM ROL WHERE descripcion = @Descripcion AND id_rol != @IdRol)
-    BEGIN
-        UPDATE ROL
-        SET 
-            descripcion = @Descripcion,
-            estado = @Estado
-        WHERE id_rol = @IdRol
-    END
-    ELSE
-        SET @Resultado = 0
+	SET @Mensaje = 'Rol actualizado exitosamente'
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
@@ -499,14 +558,14 @@ CREATE PROCEDURE usp_EliminarRol
     @Resultado BIT OUTPUT
 AS
 BEGIN
-    SET @Resultado = 1
+    SET @Resultado = 0
     IF NOT EXISTS (SELECT * FROM USUARIOS WHERE fk_rol = @IdRol)
     BEGIN
         DELETE FROM PERMISOS WHERE fk_rol = @IdRol
         DELETE FROM ROL WHERE id_rol = @IdRol
     END
     ELSE
-        SET @Resultado = 0
+        SET @Resultado = 1
 END
 GO
 --------------------------------------------------------------------------------------------------------------------

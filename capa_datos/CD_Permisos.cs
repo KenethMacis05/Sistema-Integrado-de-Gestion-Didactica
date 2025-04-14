@@ -55,7 +55,7 @@ namespace capa_datos
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
 
-                    SqlCommand cmd = new SqlCommand("usp_ObtenerPermisosPorRol", conexion);
+                    SqlCommand cmd = new SqlCommand("usp_LeerPermisosPorRol", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("IdRol", IdRol);
 
@@ -101,7 +101,7 @@ namespace capa_datos
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
 
-                    SqlCommand cmd = new SqlCommand("usp_ObtenerPermisosNoAsignados", conexion);
+                    SqlCommand cmd = new SqlCommand("usp_LeerPermisosNoAsignados", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("IdRol", IdRol);
 

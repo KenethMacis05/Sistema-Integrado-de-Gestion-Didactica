@@ -154,7 +154,7 @@ namespace capa_datos
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
                     // Consulta SQL con parámetros
-                    SqlCommand cmd = new SqlCommand("usp_RegistrarUsuario", conexion);
+                    SqlCommand cmd = new SqlCommand("usp_CrearUsuario", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     // Agregar parámetros
@@ -204,7 +204,7 @@ namespace capa_datos
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
                     // Consulta SQL con parámetros
-                    SqlCommand cmd = new SqlCommand("usp_ModificarUsuario", conexion);
+                    SqlCommand cmd = new SqlCommand("usp_ActualizarUsuario", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     // Agregar parámetros
