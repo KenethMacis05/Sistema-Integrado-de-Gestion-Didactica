@@ -189,7 +189,7 @@ function cargarPermisosNoAsignados(IdRol) {
                         permiso.descripcion,
                         permiso.tipo,
                         `<div class="icheck-primary">
-                            <input type="checkbox" class="checkboxIcheck"
+                            <input type="checkbox" class="checkboxIcheck permisoCheckbox"
                                    id="permiso_${permiso.id_controlador}" 
                                    data-id="${permiso.id_controlador}">
                             <label for="permiso_${permiso.id_controlador}"></label>
@@ -239,7 +239,7 @@ $('#btnGuardarPermisos').click(function () {
     var IdRol = $('#obtenerRol').val();
     var permisosSeleccionados = [];
 
-    $('#dataTablePermisosNoAsignados tbody').find('.permiso-checkbox:checked').each(function () {
+    $('#dataTablePermisosNoAsignados tbody').find('.permisoCheckbox:checked').each(function () {
         permisosSeleccionados.push($(this).data('id'));
     });
 
