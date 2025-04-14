@@ -1,4 +1,29 @@
-﻿// Función para formatear la fecha
+﻿//Métodos Globales
+//Configuración de las dataTable
+const dataTableConfig = {
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    pageLength: 5,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ningún permiso encontrado",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningún rol encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "Buscar:",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    },
+    responsive: true,
+    ordering: false
+};
+
+// Función para formatear la fecha
 function formatASPNetDate(jsonDate) {
     if (!jsonDate) return 'Fecha no disponible';
 
@@ -43,36 +68,38 @@ const swalConfig = {
     }
 };
 
-function mostrarAlerta(titulo, mensaje, tipo) {
-    const config = {
-        title: titulo,
-        text: mensaje,
-        icon: tipo,
-        ...swalConfig,
-    }
 
-    Swal.fire(config);
-}
-
-// Mostrar notificacion
-function mostrarNotificacion(titulo, mensaje, tipo) {
+//Mostrar Alerta
+function showAlert(title, text, icon, isToast = false) {
     const config = {
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
+        title,
+        text,
+        icon,
         ...swalConfig,
-        title: titulo,
-        text: mensaje,
-        icon: tipo
+        ...(isToast && {
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        })
     };
 
-    Swal.fire(config);
+    return Swal.fire(config);
 }
 
-
+//Configuración del ICheck
 $('.checkboxIcheck').iCheck({
     checkboxClass: 'icheckbox_flat-blue',
     radioClass: 'iradio_flat-blue'
 });
+
+//Mostrar Loading
+const showLoading = (element) => {
+    $(element).LoadingOverlay("show");
+};
+
+//Ocultar Loading
+const hideLoading = (element) => {
+    $(element).LoadingOverlay("hide");
+};

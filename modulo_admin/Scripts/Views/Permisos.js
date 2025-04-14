@@ -1,4 +1,5 @@
-﻿const listarPermisosPorRolUrl = config.listarPermisosPorRolUrl;
+﻿// Permisos
+const listarPermisosPorRolUrl = config.listarPermisosPorRolUrl;
 const listarPermisosNoAsignados = config.listarPermisosNoAsignados;
 const listarRolesUrl = config.listarRolesUrl;
 const AsignarPermisos = config.AsignarPermisos;
@@ -6,24 +7,7 @@ let dataTableNoAsignados;
 let dataTable;
 
 const dataTableOptions = {
-    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
-    pageLength: 5,
-    destroy: true,
-    language: {
-        lengthMenu: "Mostrar _MENU_ registros por página",
-        zeroRecords: "Ningún permiso encontrado",
-        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
-        infoEmpty: "Ningún rol encontrado",
-        infoFiltered: "(filtrados desde _MAX_ registros totales)",
-        search: "Buscar:",
-        loadingRecords: "Cargando...",
-        paginate: {
-            first: "Primero",
-            last: "Último",
-            next: "Siguiente",
-            previous: "Anterior"
-        }
-    },
+    ...dataTableConfig,
     columns: [
         { title: "#" },
         { title: "Controlador" },
@@ -37,29 +21,10 @@ const dataTableOptions = {
             width: "90"
         }
     ],
-    responsive: true,
-    ordering: false,
 };
 
 const dataTableNoAsignadosOptions = {
-    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
-    pageLength: 5,
-    destroy: true,
-    language: {
-        lengthMenu: "Mostrar _MENU_ registros por página",
-        zeroRecords: "No hay permisos disponibles para asignar",
-        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
-        infoEmpty: "No hay permisos disponibles",
-        infoFiltered: "(filtrados desde _MAX_ registros totales)",
-        search: "Buscar:",
-        loadingRecords: "Cargando...",
-        paginate: {
-            first: "Primero",
-            last: "Último",
-            next: "Siguiente",
-            previous: "Anterior"
-        }
-    },
+    ...dataTableConfig,
     columns: [
         { title: "#" },
         { title: "Controlador" },
@@ -72,8 +37,6 @@ const dataTableNoAsignadosOptions = {
             width: "100px"
         }
     ],
-    responsive: true,
-    ordering: false,
 };
 
 // Cargar roles en el selec
@@ -90,26 +53,14 @@ jQuery.ajax({
         });
     },
 
-    error: function (xhr) {
-        Swal.fire({
-            ...swalConfig,
-            title: "Error",
-            text: "Error al cargar los Roles",
-            icon: "error"
-        });
-    }
+    error: () => showAlert("Error", "Error al cargar los Roles", "error")
 })
 
 // Mostrar permisos del Rol
 $("#btnBuscar").click(function () {
     var IdRol = $('#obtenerRol').val();
     if (!IdRol) {
-        Swal.fire({
-            ...swalConfig,
-            title: "¡Atención!",
-            text: "Primero debe seleccionar un rol",
-            icon: "warning"
-        });
+        showAlert("¡Atención!", "Primero debe seleccionar un rol", "warning");
         return false;
     }
 
@@ -120,9 +71,7 @@ $("#btnBuscar").click(function () {
         data: { IdRol: IdRol },
         contentType: "application/json; charset=utf-8",
 
-        beforeSend: function () {
-            $(".tbody").LoadingOverlay("show");
-        },
+        beforeSend: () => showLoading(".tbody"),
 
         success: function (data) {
 
@@ -150,23 +99,14 @@ $("#btnBuscar").click(function () {
             }
         },
 
-        complete: function () {
-            $(".tbody").LoadingOverlay("hide");
-        },
-
-        error: function (xhr) {
-            Swal.fire({
-                ...swalConfig,
-                title: "Error",
-                text: "Error al conectar con el servidor",
-                icon: "error"
-            });
-        }
+        complete: () => hideLoading(".tbody"),
+        error: () => showAlert("Error", "Error al conectar con el servidor", "error")
     })
 });
 
 // Función para cargar permisos no asignados
 function cargarPermisosNoAsignados(IdRol) {
+
     $.ajax({
         url: listarPermisosNoAsignados,
         type: "GET",
@@ -174,9 +114,8 @@ function cargarPermisosNoAsignados(IdRol) {
         data: { IdRol: IdRol },
         contentType: "application/json; charset=utf-8",
 
-        beforeSend: function () {
-            $("#dataTablePermisosNoAsignados tbody").LoadingOverlay("show");
-        },
+        beforeSend: () => showLoading("#dataTablePermisosNoAsignados tbody"),
+
         success: function (data) {
             dataTableNoAsignados.clear().draw();
 
@@ -197,22 +136,13 @@ function cargarPermisosNoAsignados(IdRol) {
                     ]);
                 });
                 dataTableNoAsignados.draw();
-               
+
             } else {
                 console.warn("Datos no válidos recibidos", data);
             }
         },
-        complete: function () {
-            $("#dataTablePermisosNoAsignados tbody").LoadingOverlay("hide");
-        },
-        error: function (xhr) {
-            Swal.fire({
-                ...swalConfig,
-                title: "Error",
-                text: "Error al cargar permisos no asignados",
-                icon: "error"
-            });
-        }
+        complete: () => hideLoading("#dataTablePermisosNoAsignados tbody"),
+        error: () => showAlert("Error", "Error al cargar permisos no asignados", "error")
     });
 }
 
@@ -221,12 +151,7 @@ function cargarPermisosNoAsignados(IdRol) {
 function abrirModal() {
     var IdRol = $('#obtenerRol').val();
     if (!IdRol) {
-        Swal.fire({
-            ...swalConfig,
-            title: "¡Atención!",
-            text: "Primero debe seleccionar un rol",
-            icon: "warning"
-        });
+        showAlert("¡Atención!", "Primero debe seleccionar un rol", "warning");
         return false;
     }
 
@@ -244,11 +169,11 @@ $('#btnGuardarPermisos').click(function () {
     });
 
     if (permisosSeleccionados.length === 0) {
-        mostrarNotificacion("!Atención¡", "Debe seleccionar al menos un permiso", "warning");
+        showAlert("!Atención¡", "Debe seleccionar al menos un permiso", "warning", true);
         return;
     }
 
-    $.LoadingOverlay("hide");
+    $.LoadingOverlay("show");
 
     $.ajax({
         url: AsignarPermisos,
@@ -266,40 +191,24 @@ $('#btnGuardarPermisos').click(function () {
                 var fallidos = response.totalFallidos;
 
                 if (fallidos > 0) {
-                    mostrarNotificacion(
-                        exitosos > 0 ? "Nose" : "Nose",
-                        `${exitosos} permisos procesados | ${fallidos} con inconvenientes`,
+                    showAlert(
+                        exitosos > 0 ? "Proceso parcialmente exitoso" : "Proceso con errores",
+                        `${exitosos} permisos procesados correctamente | ${fallidos} con inconvenientes`,
                         exitosos > 0 ? "info" : "warning"
                     );
                 } else {
-                    Swal.fire({
-                        ...swalConfig,
-                        title: "¡Éxito!",
-                        text: `Todos los permisos (${exitosos}) fueron procesados correctamente`,
-                        icon: "success"
-                    });
+                    showAlert("¡Éxito!", `Todos los permisos (${exitosos}) fueron procesados correctamente`, "success");
                 }
 
                 $('#modalPermisos').modal('hide');
                 $('#btnBuscar').click();
             } else {
-                Swal.fire({
-                    ...swalConfig,
-                    title: "Error",
-                    text: response.message || "Ocurrió un error al asignar los permisos",
-                    icon: "error"
-                });
+                showAlert("Error", response.message || "Ocurrió un error al asignar los permisos", "error");
             }
         },
-        error: function (xhr) {
+        error: (xhr) => {
             $.LoadingOverlay("hide");
-
-            Swal.fire({
-                ...swalConfig,
-                title: "Error",
-                text: "Error al conectar con el servidor: " + xhr.statusText,
-                icon: "error"
-            });
+            showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error");
         }
     });
 });
