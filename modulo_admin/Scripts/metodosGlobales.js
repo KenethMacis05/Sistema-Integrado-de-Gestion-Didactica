@@ -70,3 +70,9 @@ function mostrarNotificacion(titulo, mensaje, tipo) {
 
     Swal.fire(config);
 }
+
+
+$('.checkboxIcheck').iCheck({
+    checkboxClass: 'icheckbox_flat-blue',
+    radioClass: 'iradio_flat-blue'
+});

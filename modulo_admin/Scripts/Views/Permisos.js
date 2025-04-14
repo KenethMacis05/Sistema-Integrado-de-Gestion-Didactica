@@ -188,11 +188,16 @@ function cargarPermisosNoAsignados(IdRol) {
                         permiso.accion,
                         permiso.descripcion,
                         permiso.tipo,
-                        `<input type="checkbox" class="form-check-input permiso-checkbox" 
-                                   data-id="${permiso.id_controlador}" value="${permiso.id_controlador}">`
+                        `<div class="icheck-primary">
+                            <input type="checkbox" class="checkboxIcheck"
+                                   id="permiso_${permiso.id_controlador}" 
+                                   data-id="${permiso.id_controlador}">
+                            <label for="permiso_${permiso.id_controlador}"></label>
+                         </div>`
                     ]);
                 });
                 dataTableNoAsignados.draw();
+               
             } else {
                 console.warn("Datos no válidos recibidos", data);
             }
@@ -210,6 +215,7 @@ function cargarPermisosNoAsignados(IdRol) {
         }
     });
 }
+
 
 // Función para abrir el modal y cargar permisos no asignados
 function abrirModal() {
