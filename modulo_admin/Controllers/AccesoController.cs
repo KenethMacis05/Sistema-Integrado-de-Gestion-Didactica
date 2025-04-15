@@ -20,6 +20,38 @@ namespace modulo_admin.Controllers
             return View();            
         }
 
+        [HttpGet]
+        public ActionResult Reestablecer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reestablecer(string passwordActual, string nuevaPassword, string confirmarPassword)
+        {
+            try
+            {
+                int idUsuario = Convert.ToInt32(Session["idUsuario"]);
+                string mensaje = string.Empty;
+                int resultado = 0;
+                string contrasenaActualHash = Encriptar.GetSHA256(passwordActual);
+                if (nuevaPassword == confirmarPassword)
+                {
+                    string nuevaContraseñaHash = Encriptar.GetSHA256(nuevaPassword);
+
+                    resultado = CD_Usuarios.ActualizarContrasena(idUsuario, contrasenaActualHash, nuevaContraseñaHash, out mensaje);
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ViewBag.Mensaje = "Hola";
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Index(string usuario, string password)
@@ -29,17 +61,22 @@ namespace modulo_admin.Controllers
                 string mensaje = string.Empty;
                 //Generar hash de la contraseña
                 string contrasenaHash = Encriptar.GetSHA256(password);
-                
-
+               
                 //Validar usuario y contraseña
                 USUARIOS usuarioAutenticado = CD_Usuarios.LoginUsuario(usuario, contrasenaHash, out mensaje);
                 if (usuarioAutenticado != null)
                 {
                     Session["UsuarioAutenticado"] = usuarioAutenticado;
                     Session["RolUsuario"] = usuarioAutenticado.fk_rol;
-                    Session.Timeout = 30; // 30 minutos de inactividad                    
-
-                    return RedirectToAction("Index", "Home");
+                    Session.Timeout = 30;
+                    if (usuarioAutenticado.reestablecer)
+                    {
+                        return RedirectToAction("Reestablecer", "Acceso");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }                    
                 }
                 else
                 {

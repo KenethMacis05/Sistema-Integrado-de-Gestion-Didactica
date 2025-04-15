@@ -460,6 +460,49 @@ BEGIN
     SET @Mensaje = 'Usuario actualizado exitosamente'
 END
 GO
+
+ALTER PROCEDURE usp_ReestablecerContrasena
+    @IdUsuario INT,    
+    @ClaveActual VARCHAR(100),
+    @ClaveNueva VARCHAR(100),
+    
+    @Resultado INT OUTPUT,
+    @Mensaje VARCHAR(255) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @Resultado = 0
+    SET @Mensaje = ''
+
+    BEGIN TRY
+        
+        IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
+        BEGIN
+            SET @Mensaje = 'El usuario no existe'
+            RETURN
+        END
+        
+        IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario AND contrasena = @ClaveActual)
+        BEGIN
+            SET @Mensaje = 'La contraseña actual es incorrecta'
+            RETURN
+        END
+       
+        UPDATE USUARIOS
+        SET 
+            contrasena = @ClaveNueva,
+            reestablecer = 0
+        WHERE id_usuario = @IdUsuario
+
+        SET @Resultado = 1
+        SET @Mensaje = 'Contraseña actualizada exitosamente'
+        
+    END TRY
+    BEGIN CATCH
+        SET @Mensaje = ERROR_MESSAGE()
+    END CATCH
+END
+GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (9) PROCEDIMIENTO ALMACENADO PARA ELIMINAR UN USUARIO

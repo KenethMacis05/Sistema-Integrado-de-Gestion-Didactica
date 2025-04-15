@@ -131,6 +131,11 @@ namespace capa_datos
                             mensaje = "Usuario inactivo";
                             return null;
                         }
+
+                        if (usuarioAutenticado.reestablecer)
+                        {
+                            mensaje = "Debe restablecer su contraseña";
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -238,6 +243,40 @@ namespace capa_datos
             {
                 resultado = false;
                 mensaje = "Error al actualizar el usuario: " + ex.Message;
+            }
+            return resultado;
+        }
+
+        // Cambiar contraseña
+        public int ActualizarContrasena(int idUsuario, string claveActual, string claveNueva, out string mensaje)
+        {
+            int resultado = 0;
+            mensaje = string.Empty;
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_ActualizarContrasena", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("IdUsuario", idUsuario);
+                    cmd.Parameters.AddWithValue("ClaveActual", claveActual);
+                    cmd.Parameters.AddWithValue("ClaveNueva", claveNueva);
+
+                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 255).Direction = ParameterDirection.Output;
+
+                    conexion.Open();
+                    cmd.ExecuteNonQuery();
+
+                    resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
+                    mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = 0;
+                mensaje = "Error al cambiar la contraseña: " + ex.Message;
             }
             return resultado;
         }

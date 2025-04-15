@@ -1,5 +1,4 @@
-﻿// Permisos
-const listarPermisosPorRolUrl = config.listarPermisosPorRolUrl;
+﻿const listarPermisosPorRolUrl = config.listarPermisosPorRolUrl;
 const listarPermisosNoAsignados = config.listarPermisosNoAsignados;
 const listarRolesUrl = config.listarRolesUrl;
 const AsignarPermisos = config.AsignarPermisos;
@@ -71,7 +70,7 @@ $("#btnBuscar").click(function () {
         data: { IdRol: IdRol },
         contentType: "application/json; charset=utf-8",
 
-        beforeSend: () => showLoading(".tbody"),
+        beforeSend: () => $(".tbody").LoadingOverlay("show"),
 
         success: function (data) {
 
@@ -99,7 +98,7 @@ $("#btnBuscar").click(function () {
             }
         },
 
-        complete: () => hideLoading(".tbody"),
+        complete: () => $(".tbody").LoadingOverlay("hide"),
         error: () => showAlert("Error", "Error al conectar con el servidor", "error")
     })
 });
@@ -114,7 +113,7 @@ function cargarPermisosNoAsignados(IdRol) {
         data: { IdRol: IdRol },
         contentType: "application/json; charset=utf-8",
 
-        beforeSend: () => showLoading("#dataTablePermisosNoAsignados tbody"),
+        beforeSend: () => $("#dataTablePermisosNoAsignados tbody").LoadingOverlay("show"),
 
         success: function (data) {
             dataTableNoAsignados.clear().draw();
@@ -141,7 +140,7 @@ function cargarPermisosNoAsignados(IdRol) {
                 console.warn("Datos no válidos recibidos", data);
             }
         },
-        complete: () => hideLoading("#dataTablePermisosNoAsignados tbody"),
+        complete: () => $("#dataTablePermisosNoAsignados tbody").LoadingOverlay("hide"),
         error: () => showAlert("Error", "Error al cargar permisos no asignados", "error")
     });
 }
@@ -173,7 +172,7 @@ $('#btnGuardarPermisos').click(function () {
         return;
     }
 
-    $.LoadingOverlay("show");
+    $.LoadingOverlay("hide");
 
     $.ajax({
         url: AsignarPermisos,

@@ -30,14 +30,27 @@ namespace modulo_admin.Filters
                     filterContext.Result = new RedirectResult("~/Acceso/Index");
                     return;
                 }
-            }
+            }            
             else
             {
-                // Redirigir si ya está autenticado y trata de acceder a AccesoController
-                if (controller is AccesoController)
+
+                if (sesionUsuario.reestablecer && !(controller is AccesoController))
                 {
-                    filterContext.Result = new RedirectResult("~/Home/Index");
+                    // Redirigir si necesita restablecer contraseña
+                    filterContext.Result = new RedirectResult("~/Acceso/Reestablecer");
                     return;
+                    
+                }
+
+                else
+                {
+                    // Redirigir si ya está autenticado y trata de acceder a AccesoController
+                    if (controller is AccesoController)
+                    {
+                        filterContext.Result = new RedirectResult("~/Home/Index");
+                        return;
+                    }
+
                 }
             }
 
@@ -60,9 +73,13 @@ namespace modulo_admin.Filters
 
             // No verificar permisos para Home/Index ni Home/SinPermisos
             if (!
-                (controlador.Equals("Home", StringComparison.OrdinalIgnoreCase) &&                                  
+                (controlador.Equals("Home", StringComparison.OrdinalIgnoreCase) ||
+                 controlador.Equals("Acceso", StringComparison.OrdinalIgnoreCase) &&
+
                  (accion.Equals("Index", StringComparison.OrdinalIgnoreCase) ||
-                  accion.Equals("CerrarSesion", StringComparison.OrdinalIgnoreCase))))
+                  accion.Equals("CerrarSesion", StringComparison.OrdinalIgnoreCase) ||
+                  accion.Equals("Reestablecer", StringComparison.OrdinalIgnoreCase)
+                  )))
             {
                 //  
                 CN_Permisos CN_Permisos = new CN_Permisos();

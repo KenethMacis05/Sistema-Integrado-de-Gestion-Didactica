@@ -564,6 +564,7 @@
     <Content Include="Views\Archivo\ArchivosCompartidos.cshtml" />
     <Content Include="Views\Usuario\Index.cshtml" />
     <Content Include="Views\Permisos\Index.cshtml" />
+    <Content Include="Views\Acceso\Reestablecer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
