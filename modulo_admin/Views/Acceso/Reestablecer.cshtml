@@ -49,9 +49,11 @@
                     <h1 class="fw-bold fs-2" style="color: #555555">RESTABLECER CONTRASEÑA</h1>
                     <p class="text-muted">Ingrese su nueva contraseña</p>
                 </div>
-                <form id="resetForm" autocomplete="off">
-                    @Html.AntiForgeryToken()
+                @*--------------------------------------------------------------------------------------------------------------------------------------------*@
+                <form id="resetForm" method="post" action="@Url.Action("Reestablecer", "Acceso")">
 
+                    @Html.AntiForgeryToken()
+                    @*Contraseña Actual*@
                     <div class="mb-3">
                         <label for="passwordActual" class="form-label" style="color: #555555">Contraseña Actual</label>
                         <div class="input-wrapper">
@@ -63,6 +65,7 @@
                         </div>
                     </div>
 
+                    @*Nueva Contraseña*@
                     <div class="mb-3">
                         <label for="nuevaPassword" class="form-label" style="color: #555555">Nueva Contraseña</label>
                         <div class="input-wrapper">
@@ -78,6 +81,7 @@
                         <small class="form-text text-muted">Mínimo 8 caracteres con al menos una mayúscula, minúscula y número</small>
                     </div>
 
+                    @*Confirmar Contraseña*@
                     <div class="mb-3">
                         <label for="confirmarPassword" class="form-label" style="color: #555555">Confirmar Contraseña</label>
                         <div class="input-wrapper">
@@ -89,6 +93,7 @@
                         </div>
                     </div>
 
+                    @*Boton de subit*@
                     <div class="d-grid gap-2 mt-5">
                         <button type="submit" class="btn btn-primary fw-bold btnLogin"
                                 style="background-color: #0072BB;" id="btnReset">
@@ -97,6 +102,7 @@
                         </button>
                     </div>
                 </form>
+                @*--------------------------------------------------------------------------------------------------------------------------------------------*@
             </div>
         </div>
     </div>
@@ -104,7 +110,6 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/complementos")
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -138,80 +143,76 @@
                 }
             });
 
-            // Validación de formulario
-            $('#resetForm').submit(function(e) {
+            // Manejo del envío del formulario
+            $('#resetForm').on('submit', function(e) {
                 e.preventDefault();
+                const $form = $(this);
                 const $btn = $('#btnReset');
+                const $spinner = $('#spinner');
+                const $btnText = $('#btnText');
+
+                // Mostrar spinner y deshabilitar botón
                 $btn.prop('disabled', true);
-                $btn.find('.spinner-border').removeClass('d-none');
+                $spinner.removeClass('d-none');
+                $btnText.text('Procesando...');
 
                 // Validaciones
                 const nuevaPassword = $('#nuevaPassword').val();
                 const confirmarPassword = $('#confirmarPassword').val();
 
                 if (nuevaPassword !== confirmarPassword) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Las contraseñas no coinciden'
-                    });
-                    $btn.prop('disabled', false);
-                    $btn.find('.spinner-border').addClass('d-none');
+                    showError('Las contraseñas no coinciden');
+                    resetButton();
                     return;
                 }
 
-                // Validar complejidad
-                const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-                if (!passwordRegex.test(nuevaPassword)) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Contraseña débil',
-                        text: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número'
-                    });
-                    $btn.prop('disabled', false);
-                    $btn.find('.spinner-border').addClass('d-none');
+                if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(nuevaPassword)) {
+                    showError('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número');
+                    resetButton();
                     return;
                 }
 
-                // Enviar solicitud AJAX
+                // Enviar datos via AJAX
                 $.ajax({
-                    url: '@Url.Action("ActualizarContrasenaForzada", "Acceso")',
+                    url: $form.attr('action'),
                     method: 'POST',
-                    data: {
-                        nuevaPassword: nuevaPassword,
-                        confirmarPassword: confirmarPassword
-                    },
+                    data: $form.serialize(),
                     success: function(response) {
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: '¡Contraseña actualizada!',
-                                text: response.message,
+                                title: '¡Éxito!',
+                                text: 'Contraseña actualizada correctamente',
                                 willClose: () => {
                                     window.location.href = '@Url.Action("Index", "Home")';
                                 }
                             });
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message
-                            });
+                            showError(response.message || 'Error al actualizar la contraseña');
                         }
                     },
                     error: function(xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Error en el servidor: ' + xhr.statusText
-                        });
+                        showError(xhr.responseJSON?.message || 'Error en el servidor');
                     },
                     complete: function() {
-                        $btn.prop('disabled', false);
-                        $btn.find('.spinner-border').addClass('d-none');
+                        resetButton();
                     }
                 });
             });
+
+            function showError(message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+            }
+
+            function resetButton() {
+                $('#btnReset').prop('disabled', false);
+                $('#spinner').addClass('d-none');
+                $('#btnText').text('Actualizar Contraseña');
+            }
         });
     </script>
 </body>

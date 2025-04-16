@@ -7,17 +7,19 @@ using System.Web.Services.Description;
 using capa_datos;
 using capa_entidad;
 using capa_negocio;
+using modulo_admin.Filters;
 
 namespace modulo_admin.Controllers
 {
+    [VerificarSession]
     public class AccesoController : Controller
     {
         private CD_Usuarios CD_Usuarios = new CD_Usuarios();
-        // GET: Acceso
+        // GET: Acceso  
         [HttpGet]
         public ActionResult Index(int? error)
         {
-            return View();            
+            return View();
         }
 
         [HttpGet]
@@ -28,28 +30,49 @@ namespace modulo_admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Reestablecer(string passwordActual, string nuevaPassword, string confirmarPassword)
-        {
+        public JsonResult Reestablecer(string passwordActual, string nuevaPassword, string confirmarPassword)
+        {         
             try
             {
-                int idUsuario = Convert.ToInt32(Session["idUsuario"]);
-                string mensaje = string.Empty;
-                int resultado = 0;
-                string contrasenaActualHash = Encriptar.GetSHA256(passwordActual);
-                if (nuevaPassword == confirmarPassword)
+                if (string.IsNullOrEmpty(Session["IdUsuario"]?.ToString()))
                 {
-                    string nuevaContraseñaHash = Encriptar.GetSHA256(nuevaPassword);
-
-                    resultado = CD_Usuarios.ActualizarContrasena(idUsuario, contrasenaActualHash, nuevaContraseñaHash, out mensaje);
-
+                    return Json(new { success = false, message = "Sesión no válida" });
                 }
-            }
-            catch (Exception)
-            {
 
-                throw;
+                int idUsuario = Convert.ToInt32(Session["IdUsuario"]);
+
+                if (nuevaPassword != confirmarPassword)
+                {
+                    return Json(new { success = false, message = "Las contraseñas no coinciden" });
+                }
+
+                // Encriptar contraseñas
+                string contrasenaActualHash = Encriptar.GetSHA256(passwordActual);
+                string nuevaContraseñaHash = Encriptar.GetSHA256(nuevaPassword);
+
+                // Llamar al método de capa de datos
+                int resultado = CD_Usuarios.ReestablecerContrasena(
+                    idUsuario,
+                    contrasenaActualHash,
+                    nuevaContraseñaHash,
+                    out string mensaje
+                );
+
+                if (resultado == 1)
+                {
+                    // Actualizar sesión
+                    var usuarioActualizado = CD_Usuarios.ObtenerUsuarioPorId(idUsuario);
+                    Session["UsuarioAutenticado"] = usuarioActualizado;
+
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false, message = mensaje });
             }
-            return ViewBag.Mensaje = "Hola";
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error: " + ex.Message });
+            }
         }
 
         [HttpPost]
@@ -57,17 +80,18 @@ namespace modulo_admin.Controllers
         public ActionResult Index(string usuario, string password)
         {
             try
-            {                
+            {
                 string mensaje = string.Empty;
-                //Generar hash de la contraseña
+                //Generar hash de la contraseña  
                 string contrasenaHash = Encriptar.GetSHA256(password);
-               
-                //Validar usuario y contraseña
+
+                //Validar usuario y contraseña  
                 USUARIOS usuarioAutenticado = CD_Usuarios.LoginUsuario(usuario, contrasenaHash, out mensaje);
                 if (usuarioAutenticado != null)
                 {
                     Session["UsuarioAutenticado"] = usuarioAutenticado;
                     Session["RolUsuario"] = usuarioAutenticado.fk_rol;
+                    Session["IdUsuario"] = usuarioAutenticado.id_usuario;
                     Session.Timeout = 30;
                     if (usuarioAutenticado.reestablecer)
                     {
@@ -76,7 +100,7 @@ namespace modulo_admin.Controllers
                     else
                     {
                         return RedirectToAction("Index", "Home");
-                    }                    
+                    }
                 }
                 else
                 {

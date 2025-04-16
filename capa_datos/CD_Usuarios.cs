@@ -58,7 +58,7 @@ namespace capa_datos
             return lst;
         }
 
-        private USUARIOS ObtenerUsuarioPorId(int idUsuario)
+        public USUARIOS ObtenerUsuarioPorId(int idUsuario)
         {
             using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
             {
@@ -248,7 +248,7 @@ namespace capa_datos
         }
 
         // Cambiar contraseña
-        public int ActualizarContrasena(int idUsuario, string claveActual, string claveNueva, out string mensaje)
+        public int ReestablecerContrasena(int idUsuario, string claveActual, string claveNueva, out string mensaje)
         {
             int resultado = 0;
             mensaje = string.Empty;
@@ -256,7 +256,7 @@ namespace capa_datos
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    SqlCommand cmd = new SqlCommand("usp_ActualizarContrasena", conexion);
+                    SqlCommand cmd = new SqlCommand("usp_ReestablecerContrasena", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("IdUsuario", idUsuario);
@@ -269,8 +269,13 @@ namespace capa_datos
                     conexion.Open();
                     cmd.ExecuteNonQuery();
 
-                    resultado = Convert.ToInt32(cmd.Parameters["@Resultado"].Value);
-                    mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                    resultado = Convert.ToInt32(cmd.Parameters["Resultado"].Value);
+                    mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
+                    if (resultado == 1 && string.IsNullOrEmpty(mensaje))
+                    {
+                        mensaje = "Contraseña actualizada exitosamente";
+                    }
                 }
             }
             catch (Exception ex)

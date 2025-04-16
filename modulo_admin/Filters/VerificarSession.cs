@@ -81,14 +81,14 @@ namespace modulo_admin.Filters
                   accion.Equals("Reestablecer", StringComparison.OrdinalIgnoreCase)
                   )))
             {
-                //  
+                
                 CN_Permisos CN_Permisos = new CN_Permisos();
                 bool tienePermiso = CN_Permisos.VerificarPermiso(sesionUsuario.id_usuario, controlador, accion);
 
                 if (!tienePermiso)
                 {
                     filterContext.Result = new RedirectResult("~/Home/Index");
-                    controller.ViewBag.Mensaje = "Usted no tiene permisos para realizar esta acción";
+                    controller.ViewBag.MensajeNoTienePermisos = "Usted no tiene permisos para realizar esta acción";
                     return;
                 }
             }

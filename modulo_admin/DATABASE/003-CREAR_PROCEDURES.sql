@@ -28,6 +28,10 @@ IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_Actualizar
 DROP PROCEDURE usp_ActualizarContrasena
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_ReestablecerContrasena')
+DROP PROCEDURE usp_ReestablecerContrasena
+GO
+
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'usp_EliminarUsuario')
 DROP PROCEDURE usp_EliminarUsuario
 GO
@@ -461,7 +465,8 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE usp_ReestablecerContrasena
+-- (8) PROCEDIMIENTO ALMACENADO PARA REESTABLECER LA CONTRASEÑA DE UN USUARIO AL INICIAR SESIÓN POR PRIMERA VEZ
+CREATE PROCEDURE usp_ReestablecerContrasena
     @IdUsuario INT,    
     @ClaveActual VARCHAR(100),
     @ClaveNueva VARCHAR(100),
@@ -494,12 +499,21 @@ BEGIN
             reestablecer = 0
         WHERE id_usuario = @IdUsuario
 
-        SET @Resultado = 1
-        SET @Mensaje = 'Contraseña actualizada exitosamente'
+         -- Verificar si realmente se actualizó el registro
+        IF @@ROWCOUNT > 0
+        BEGIN
+            SET @Resultado = 1;
+            SET @Mensaje = 'Contraseña actualizada exitosamente';
+        END
+        ELSE
+        BEGIN
+            SET @Mensaje = 'No se pudo actualizar la contraseña';
+        END;
         
     END TRY
     BEGIN CATCH
-        SET @Mensaje = ERROR_MESSAGE()
+        SET @Resultado = 0;
+        SET @Mensaje = 'Error al cambiar la contraseña: ' + ERROR_MESSAGE();
     END CATCH
 END
 GO
