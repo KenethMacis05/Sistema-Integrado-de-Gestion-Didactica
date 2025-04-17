@@ -9,77 +9,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="@Url.Content("~/faviconUNAN.ico")" />   
     <title>Restablecer Contraseña</title>
+
+    <style>
+        .background-overlay {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('@Url.Content("~/assets/img/Fondo-de-pantalla-web.jpg")');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            background: rgb(255, 255, 255);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .form-control {
+            border-radius: 25px;
+        }
+
+        .btn-custom {
+            background-color: #004a8d;
+            color: white;
+            border-radius: 25px;
+            padding: 10px 30px;
+        }
+    </style>
     @Styles.Render("~/Content/css")
 </head>
-<body class="bodyLogin">
-    <div class="container">
-        <div class="row cartLogin">
-            <div class="col-lg-7 d-none d-lg-block p-0">
-                <picture>
-                    <source srcset="@Url.Content("~/assets/img/loginIMG1920x180-711x682.png")" media="(min-width: 768px)">
-                    <img src="@Url.Content("~/assets/img/loginIMG1920x180-711x682.png")" alt="2025: Eficiencia y Calidad para seguir en Victorias"
-                         class="login-image">
-                </picture>
-            </div>
-            <div class="col-lg-5 p-5 contenedorLogin">
-                <div class="login-header text-center mb-4">
-                    <h1 class="fw-bold fs-2" style="color: #555555">RESTABLECER CONTRASEÑA</h1>
-                    <p class="text-muted">Ingrese su nueva contraseña</p>
+<body>
+    
+    <div class="background-overlay d-flex align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="login-card p-4">
+                        <!-- Encabezado -->
+                        <div class="text-center mb-4">
+                            <h1 class="fw-bold fs-2" style="color: #555555">RESTABLECER CONTRASEÑA</h1>
+                            <p class="text-muted">Ingrese su nueva contraseña</p>
+                        </div>
+
+                        <!-- Formulario -->
+                        <form id="resetForm" method="post" action="@Url.Action("Reestablecer", "Acceso")">
+
+                            @Html.AntiForgeryToken()
+
+
+                            <div class="mb-3">
+                                <label for="passwordActual" class="form-label" style="color: #555555">Contraseña Actual</label>
+                                <div class="input-wrapper">
+                                    <input type="password" name="passwordActual" id="passwordActual" required
+                                           class="form-control">
+                                    <span class="icon">
+                                        <i class="fas fa-lock fs-5"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            @*Nueva Contraseña*@
+                            <div class="mb-3">
+                                <label for="nuevaPassword" class="form-label" style="color: #555555">Nueva Contraseña</label>
+                                <div class="input-wrapper">
+                                    <input type="password" name="nuevaPassword" id="nuevaPassword" required
+                                           class="form-control"
+                                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                           title="Debe contener al menos 8 caracteres, una mayúscula, una minúscula y un número">
+                                    <span class="icon">
+                                        <i class="fas fa-lock fs-5"></i>
+                                    </span>
+                                </div>
+                                <div class="password-strength mb-2"></div>
+                                <small class="form-text text-muted">Mínimo 8 caracteres con al menos una mayúscula, minúscula y número</small>
+                            </div>
+
+                            @*Confirmar Contraseña*@
+                            <div class="mb-3">
+                                <label for="confirmarPassword" class="form-label" style="color: #555555">Confirmar Contraseña</label>
+                                <div class="input-wrapper">
+                                    <input type="password" name="confirmarPassword" id="confirmarPassword" required
+                                           class="form-control">
+                                    <span class="icon">
+                                        <i class="fas fa-lock fs-5"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            @*Boton de subit*@
+                            <div class="d-grid gap-2 mt-5">
+                                <button type="submit" class="btn btn-primary fw-bold btnLogin"
+                                        style="background-color: #0072BB;" id="btnReset">
+                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                    Actualizar Contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                @*--------------------------------------------------------------------------------------------------------------------------------------------*@
-                <form id="resetForm" method="post" action="@Url.Action("Reestablecer", "Acceso")">
-
-                    @Html.AntiForgeryToken()
-                    @*Contraseña Actual*@
-                    <div class="mb-3">
-                        <label for="passwordActual" class="form-label" style="color: #555555">Contraseña Actual</label>
-                        <div class="input-wrapper">
-                            <input type="password" name="passwordActual" id="passwordActual" required
-                                   class="form-control">
-                            <span class="icon">
-                                <i class="fas fa-lock fs-5"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    @*Nueva Contraseña*@
-                    <div class="mb-3">
-                        <label for="nuevaPassword" class="form-label" style="color: #555555">Nueva Contraseña</label>
-                        <div class="input-wrapper">
-                            <input type="password" name="nuevaPassword" id="nuevaPassword" required
-                                   class="form-control"
-                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                   title="Debe contener al menos 8 caracteres, una mayúscula, una minúscula y un número">
-                            <span class="icon">
-                                <i class="fas fa-lock fs-5"></i>
-                            </span>
-                        </div>
-                        <div class="password-strength mb-2"></div>
-                        <small class="form-text text-muted">Mínimo 8 caracteres con al menos una mayúscula, minúscula y número</small>
-                    </div>
-
-                    @*Confirmar Contraseña*@
-                    <div class="mb-3">
-                        <label for="confirmarPassword" class="form-label" style="color: #555555">Confirmar Contraseña</label>
-                        <div class="input-wrapper">
-                            <input type="password" name="confirmarPassword" id="confirmarPassword" required
-                                   class="form-control">
-                            <span class="icon">
-                                <i class="fas fa-lock fs-5"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    @*Boton de subit*@
-                    <div class="d-grid gap-2 mt-5">
-                        <button type="submit" class="btn btn-primary fw-bold btnLogin"
-                                style="background-color: #0072BB;" id="btnReset">
-                            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                            Actualizar Contraseña
-                        </button>
-                    </div>
-                </form>
-                @*--------------------------------------------------------------------------------------------------------------------------------------------*@
             </div>
         </div>
     </div>
