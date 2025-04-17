@@ -1,21 +1,26 @@
 ﻿const listarUsuariosUrl = config.listarUsuariosUrl;
+const listarRolesUrl = config.listarRolesUrl;
 const guardarUsuariosUrl = config.guardarUsuariosUrl;
 const eliminarUsuariosUrl = config.eliminarUsuariosUrl;
 let dataTable;
-var filaSeleccionada
+var filaSeleccionada;
 
-//jQuery.ajax({
-//    url: listarUsuariosUrl,
-//    type: "GET",
-//    dataType: "json",
-//    contentType: "application/json; charset=utf-8",
-//    success: function (data) {
-//        console.log(data)
-//    }
-//})
+// Cargar roles en el selec
+jQuery.ajax({
+    url: listarRolesUrl,
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
 
-// Configuración común para todas las alertas
+    success: function (response) {
+        $('#obtenerRol').empty().append('<option value="">Seleccione un rol</option>');
+        $.each(response.data, function (index, rol) {
+            $('#obtenerRol').append(`<option value="${rol.id_rol}">${rol.descripcion}</option>`);
+        });
+    },
 
+    error: () => showAlert("Error", "Error al cargar los Roles", "error")
+})
 
 //Abrir modal
 function abrirModal(json) {
@@ -28,19 +33,20 @@ function abrirModal(json) {
     $("#segNombre").val("");
     $("#priApellido").val("");
     $("#segApellido").val("");
-    $("#rol").val("1");
+    $("#obtenerRol").val("");
     $("#estado").prop("checked", true);
 
     if (json !== null) {
         $("#idUsuario").val(json.id_usuario);
         $("#usuario").val(json.usuario);
         $("#correo").val(json.correo);
-        $("#telefono    ").val(json.telefono);
+        $("#telefono").val(json.telefono);
         $("#contrasena").val(json.contrasena);
         $("#priNombre").val(json.pri_nombre);
         $("#segNombre").val(json.seg_nombre);
         $("#priApellido").val(json.pri_apellido);
-        $("#segApellido").val(json.seg_apellido);        
+        $("#segApellido").val(json.seg_apellido);       
+        /*$("#obtenerRol").val(json.seg_apellido);*/
         $("#estado").prop("checked", json.estado === true);
     }
 
@@ -241,26 +247,7 @@ function Guardar() {
 }
 
 const dataTableOptions = {
-    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
-    pageLength: 5,
-    destroy: true,
-    language: {
-        lengthMenu: "Mostrar _MENU_ registros por página",
-        zeroRecords: "Ningún usuario encontrado",
-        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
-        infoEmpty: "Ningún usuario encontrado",
-        infoFiltered: "(filtrados desde _MAX_ registros totales)",
-        search: "Buscar:",
-        loadingRecords: "Cargando...",
-        paginate: {
-            first: "Primero",
-            last: "Último",
-            next: "Siguiente",
-            previous: "Anterior"
-        }
-    },
-    responsive: true,
-    ordering: false,
+    ...dataTableConfig,
 
     ajax: {
         url: listarUsuariosUrl,

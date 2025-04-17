@@ -108,11 +108,7 @@
                                         <label class="form-label" for="rol">Rol</label>
                                         <div class="input-group mb-3">
                                             <label class="input-group-text" for="rol">Optiones</label>
-                                            <select class="form-select" id="rol">
-                                                <option selected value="1">Administrador</option>
-                                                <option value="2">Integrador</option>
-                                                <option value="3">Docente</option>
-                                            </select>
+                                            <select class="form-control form-control-sm" id="obtenerRol"></select>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-3">
@@ -151,6 +147,7 @@
             listarUsuariosUrl: '@Url.Action("ListarUsuarios", "Usuario")',
             guardarUsuariosUrl: '@Url.Action("GuardarUsuario", "Usuario")',
             eliminarUsuariosUrl: '@Url.Action("EliminarUsuario", "Usuario")',
+            listarRolesUrl: '@Url.Action("ListarRoles", "Rol")',
         };
     </script>
     <script src="@Url.Content("~/Scripts/Views/Usuarios.js")" type="text/javascript"></script>
