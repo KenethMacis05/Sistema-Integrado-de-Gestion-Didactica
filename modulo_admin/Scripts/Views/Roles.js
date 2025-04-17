@@ -1,6 +1,7 @@
 ﻿const listarRolUrl = config.listarRolUrl;
 const guardarRolUrl = config.guardarRolUrl;
 const eliminarRolUrl = config.eliminarRolUrl;
+var filaSeleccionada
 let dataTable;
 
 const dataTableOptions = {
@@ -46,7 +47,7 @@ function abrirModal(json) {
     $("#GuardarRol").modal("show");
 }
 
-//Boton seleccionar usuario para editar
+//Boton seleccionar rol para editar
 $("#datatable tbody").on("click", '.btn-editar', function () {
     filaSeleccionada = $(this).closest("tr");
 
