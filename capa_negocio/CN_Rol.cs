@@ -58,10 +58,11 @@ namespace capa_negocio
         }
 
         // Eliminar rol
+        // Eliminar rol
         public int Eliminar(int id_rol, out string mensaje)
         {
-            bool eliminado = CD_Rol.Eliminar(id_rol, out mensaje);
-            return eliminado ? 1 : 0;
-        }       
+            return CD_Rol.Eliminar(id_rol, out mensaje);
+        }
+
     }
 }

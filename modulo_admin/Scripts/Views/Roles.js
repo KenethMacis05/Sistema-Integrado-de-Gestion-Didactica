@@ -56,13 +56,11 @@ $("#datatable tbody").on("click", '.btn-editar', function () {
     abrirModal(data)
 });
 
-//Boton eliminar usuario
+//Boton eliminar rol
 $("#datatable tbody").on("click", '.btn-eliminar', function () {
     const rolseleccionado = $(this).closest("tr");
     const data = dataTable.row(rolseleccionado).data();
-
-    console.log(data);
-    // Alerta de confirmación
+    
     Swal.fire({
         ...swalConfig,
         title: "¿Estás seguro?",
@@ -95,17 +93,20 @@ $("#datatable tbody").on("click", '.btn-eliminar', function () {
 
                 success: function (response) {
                     Swal.close();
-                    if (response.Respuesta) {
 
-                        dataTable.row(rolseleccionado).remove().draw();
-
-                        showAlert("¡Eliminado!", response.Mensaje || "Rol eliminado correctamente", "success");
-
-                    } else {
-                        // Mostrar alerta de error
-
-                        showAlert("Error", response.Mensaje || "No se pudo eliminar el rol", "error");
+                    switch (response.Resultado) {
+                        case 1:
+                            dataTable.row(rolseleccionado).remove().draw();
+                            showAlert("¡Eliminado!", response.Mensaje || "Rol eliminado correctamente", "success");
+                            break;
+                        case 2:
+                            showAlert("No se puede eliminar", response.Mensaje || "El rol está relacionado con uno o más usuarios.", "warning");
+                            break;
+                        default:
+                            showAlert("Error", response.Mensaje || "Ocurrió un error al intentar eliminar el rol.", "error");
+                            break;
                     }
+
                 },
                 error: (xhr) => {
                     showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error");

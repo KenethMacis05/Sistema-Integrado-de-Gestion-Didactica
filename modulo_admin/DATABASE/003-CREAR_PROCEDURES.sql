@@ -612,17 +612,47 @@ GO
 -- (13) PROCEDIMIENTO ALMACENADO PARA ELIMINAR UN ROL
 CREATE PROCEDURE usp_EliminarRol
     @IdRol INT,
-    @Resultado BIT OUTPUT
+    @Resultado INT OUTPUT,
+    @Mensaje NVARCHAR(255) OUTPUT
 AS
 BEGIN
-    SET @Resultado = 0
-    IF NOT EXISTS (SELECT * FROM USUARIOS WHERE fk_rol = @IdRol)
+    SET NOCOUNT ON;
+    
+    -- Verificar si el rol existe
+    IF NOT EXISTS (SELECT 1 FROM ROL WHERE id_rol = @IdRol)
     BEGIN
+        SET @Resultado = 0 -- No se pudo realizar la operación
+        SET @Mensaje = 'El rol no existe.'
+        RETURN
+    END
+    
+    -- Verificar si tiene usuarios asociados
+    IF EXISTS (SELECT 1 FROM USUARIOS WHERE fk_rol = @IdRol)
+    BEGIN
+        SET @Resultado = 2 -- Tiene usuarios asociados
+        SET @Mensaje = 'No se puede eliminar el rol porque tiene usuarios asociados.'
+        RETURN
+    END
+    
+    -- Si pasa las validaciones, eliminar
+    BEGIN TRY
+        BEGIN TRANSACTION
+        
         DELETE FROM PERMISOS WHERE fk_rol = @IdRol
         DELETE FROM ROL WHERE id_rol = @IdRol
-    END
-    ELSE
-        SET @Resultado = 1
+        
+        COMMIT TRANSACTION
+        SET @Resultado = 1 -- Éxito
+        SET @Mensaje = 'Rol eliminado exitosamente.'
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION
+            
+        SET @Resultado = 0 -- Error
+        SET @Mensaje = 'Error al eliminar el rol: ' + ERROR_MESSAGE()
+    END CATCH
 END
 GO
+
 --------------------------------------------------------------------------------------------------------------------

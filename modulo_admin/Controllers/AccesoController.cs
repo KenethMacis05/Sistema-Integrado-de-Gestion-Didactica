@@ -10,8 +10,7 @@ using capa_negocio;
 using modulo_admin.Filters;
 
 namespace modulo_admin.Controllers
-{
-    [VerificarSession]
+{    
     public class AccesoController : Controller
     {
         private CD_Usuarios CD_Usuarios = new CD_Usuarios();

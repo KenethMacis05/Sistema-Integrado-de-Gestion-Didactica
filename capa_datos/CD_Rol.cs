@@ -132,42 +132,42 @@ namespace capa_datos
             }
             return resultado;
         }
-
+        
         // Eliminar rol
-        public bool Eliminar(int id_rol, out string mensaje)
+        public int Eliminar(int id_rol, out string mensaje)
         {
-            bool resultado = false;
+            int resultado = 0;
             mensaje = string.Empty;
+
             try
             {
-                // Crear conexión
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    // Consulta SQL con parámetros
                     SqlCommand cmd = new SqlCommand("usp_EliminarRol", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    // Agregar parámetro de entrada
+                    // Parámetro de entrada
                     cmd.Parameters.AddWithValue("IdRol", id_rol);
 
-                    // Agregar parámetro de salida
-                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    // Parámetros de salida
+                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
 
-                    // Abrir conexión
                     conexion.Open();
                     cmd.ExecuteNonQuery();
 
-                    // Obtener valores de los parámetros de salida
-                    resultado = cmd.Parameters["Resultado"].Value != DBNull.Value && Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
-                    mensaje = resultado ? "Rol eliminado correctamente" : "El rol no existe";
+                    resultado = Convert.ToInt32(cmd.Parameters["Resultado"].Value);
+                    mensaje = cmd.Parameters["Mensaje"].Value.ToString();
                 }
             }
             catch (Exception ex)
             {
-                resultado = false;
+                resultado = 0;
                 mensaje = "Error al eliminar el rol: " + ex.Message;
             }
+
             return resultado;
         }
+
     }
 }

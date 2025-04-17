@@ -57,7 +57,8 @@ namespace modulo_admin.Controllers
 
             int resultado = CN_Rol.Eliminar(id_rol, out mensaje);
 
-            return Json(new { Respuesta = (resultado == 1), Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            { Resultado = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
     }
 }
