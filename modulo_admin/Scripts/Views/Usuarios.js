@@ -13,7 +13,7 @@ jQuery.ajax({
     contentType: "application/json; charset=utf-8",
 
     success: function (response) {
-        $('#obtenerRol').empty().append('<option value="">Seleccione un rol</option>');
+        $('#obtenerRol').empty().append('<option value="" disabled selected>Seleccione un rol...</option>');
         $.each(response.data, function (index, rol) {
             $('#obtenerRol').append(`<option value="${rol.id_rol}">${rol.descripcion}</option>`);
         });
@@ -45,8 +45,10 @@ function abrirModal(json) {
         $("#priNombre").val(json.pri_nombre);
         $("#segNombre").val(json.seg_nombre);
         $("#priApellido").val(json.pri_apellido);
-        $("#segApellido").val(json.seg_apellido);       
-        /*$("#obtenerRol").val(json.seg_apellido);*/
+        $("#segApellido").val(json.seg_apellido);               
+        if (json.fk_rol) {
+            $("#obtenerRol").val(json.fk_rol);
+        }
         $("#estado").prop("checked", json.estado === true);
     }
 

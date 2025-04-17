@@ -21,7 +21,7 @@ namespace capa_datos
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    string query = "SELECT * FROM USUARIOS";
+                    string query = "SELECT id_usuario, pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, correo, telefono, fk_rol, estado, reestablecer FROM USUARIOS ORDER BY id_usuario DESC";
                     SqlCommand cmd = new SqlCommand(query, conexion);
                     cmd.CommandType = CommandType.Text;
 
@@ -39,14 +39,14 @@ namespace capa_datos
                                     seg_nombre = dr["seg_nombre"].ToString(),
                                     pri_apellido = dr["pri_apellido"].ToString(),
                                     seg_apellido = dr["seg_apellido"].ToString(),
-                                    usuario = dr["usuario"].ToString(),
-                                    contrasena = dr["contrasena"].ToString(),
+                                    usuario = dr["usuario"].ToString(),                                    
                                     correo = dr["correo"].ToString(),
                                     telefono = Convert.ToInt32(dr["telefono"]),
                                     fk_rol = Convert.ToInt32(dr["fk_rol"]),
-                                    estado = Convert.ToBoolean(dr["estado"])
+                                    estado = Convert.ToBoolean(dr["estado"]),
+                                    reestablecer = Convert.ToBoolean(dr["reestablecer"]),                                    
                                 }
-                                );
+                            );
                         }
                     }
                 }
