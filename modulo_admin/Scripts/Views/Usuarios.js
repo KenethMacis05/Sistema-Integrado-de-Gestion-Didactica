@@ -25,7 +25,7 @@ jQuery.ajax({
 //Abrir modal
 function abrirModal(json) {
     $("#idUsuario").val("0");
-    $("#usuario").val("");
+    $("#usuario").val("").prop("disabled", false);
     $("#correo").val("");
     $("#telefono").val("");
     $("#contrasena").val("");
@@ -38,7 +38,7 @@ function abrirModal(json) {
 
     if (json !== null) {
         $("#idUsuario").val(json.id_usuario);
-        $("#usuario").val(json.usuario);
+        $("#usuario").val(json.usuario).prop("disabled", true);
         $("#correo").val(json.correo);
         $("#telefono").val(json.telefono);
         $("#contrasena").val(json.contrasena);
@@ -150,7 +150,7 @@ function Guardar() {
         contrasena: $("#contrasena").val(),
         correo: $("#correo").val(),
         telefono: $("#telefono").val(),
-        fk_rol: $("#rol").val(),
+        fk_rol: $("#obtenerRol").val(),
         estado: $("#estado").prop("checked")
     };
 
@@ -258,6 +258,15 @@ const dataTableOptions = {
     },
    
     columns: [
+        {
+            data: null,
+            render: function (data, type, row, meta) {
+                return meta.row + 1;
+            },
+            title: "#",
+            width: "50px",
+            orderable: false
+        },
         { data: "usuario" },
         {
             data: "pri_nombre",
