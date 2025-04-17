@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="alert text-center mt-4" style="background-color: #F7F7F7; border: 1px #D2D2D2 solid " role="alert"><h2 class="fs-3">Roles del Sistema</h2></div>
+@*<ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+        <li class="breadcrumb-item active">Usuarios</li>
+    </ol>*@
+
+<!--Contenedor-->
+<div class="card">
+    <div class="card-header pb-0 border-bottom-0">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <!--Boton 1-->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active esp-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                    Lista de roles
+                </button>
+            </li>
+            <!--Boton 2-->            
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="myTabContent">
+            <!--Contenedor 1-->
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <button type="button" class="btn btn-primary" onclick="abrirModal(null)"><i class="fa fa-plus"></i> Crear Rol</button>
+                <hr />
+                <!--Tabla-->
+                <table class="display cell-border" style="width: 100%" id="datatable">
+                    <thead class="table-cabezera cell-border" style="background: #0072BB; color: white">
+                        <tr>                            
+                            <th>Descripción</th>                            
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+
+                <!-- Modal -->
+                <div class="modal fade modal-lg" id="GuardarRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header text-light" style="background-color: #0072BB">
+                                <h5 class="modal-title" id="exampleModalLabel">Roles</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body g-2">
+
+                                <input type="text" name="idRol" id="idRol" value="0">
+                                <div class="row">
+                                    <div class="col-lg-12 mb-3">
+                                        <label class="form-label" for="descripcion">Descripción</label>
+                                        <input type="text" class="form-control" id="descripcion" name="descripcion" required>
+                                    </div>                                
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="estado" checked required>
+                                            <label class="form-check-label" for="estado">Estado Inactivo/Activo</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer pe-0 ps-0 flex-nowrap ">
+                                    <button type="button" class="btn btn-danger w-50" data-bs-dismiss="modal">
+                                        <i class="fas fa-times-circle me-2"></i>Cerrar
+                                    </button>
+                                    <button type="submit" onclick="Guardar()" class="btn btn-success w-50">
+                                        <i class="fas fa-save me-2"></i>Guardar
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        var config = {
+            listarRolUrl: '@Url.Action("ListarRoles", "Rol")',
+            guardarRolUrl: '@Url.Action("GuardarRol", "Rol")',
+            eliminarRolUrl: '@Url.Action("EliminarRol", "Rol")',
+        };
+    </script>
+    <script src="@Url.Content("~/Scripts/Views/Roles.js")" type="text/javascript"></script>
+}

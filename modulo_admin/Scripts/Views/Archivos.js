@@ -13,8 +13,7 @@
         }
     })
 
-    //Carpetas
-    debugger
+    //Carpetas    
     $.ajax({
         url: listarCarpetasUrl,
         type: 'GET',

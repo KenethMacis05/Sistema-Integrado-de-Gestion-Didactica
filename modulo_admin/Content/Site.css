@@ -310,3 +310,24 @@
 .dropdown-toggle::after {
     display: none;
 }
+
+.password-strength {
+    height: 5px;
+    margin-top: 5px;
+    transition: all 300ms ease;
+}
+
+.strength-weak {
+    background-color: #dc3545;
+    width: 25%;
+}
+
+.strength-medium {
+    background-color: #ffc107;
+    width: 50%;
+}
+
+.strength-strong {
+    background-color: #28a745;
+    width: 100%;
+}
