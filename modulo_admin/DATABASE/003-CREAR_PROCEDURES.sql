@@ -540,7 +540,7 @@ GO
 CREATE PROCEDURE usp_LeerRoles
 AS
 BEGIN
-    SELECT * FROM ROL ORDER BY id_rol DESC
+    SELECT * FROM ROL
 END
 GO
 --------------------------------------------------------------------------------------------------------------------

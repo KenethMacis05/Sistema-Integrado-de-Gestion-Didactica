@@ -39,7 +39,7 @@ namespace capa_negocio
                 mensaje = "Rol creado correctamente.";
             }
 
-            return resultado > 0 ? 1 : 0;
+            return resultado;
         }
 
         // Actualizar rol
@@ -62,6 +62,6 @@ namespace capa_negocio
         {
             bool eliminado = CD_Rol.Eliminar(id_rol, out mensaje);
             return eliminado ? 1 : 0;
-        }
+        }       
     }
 }

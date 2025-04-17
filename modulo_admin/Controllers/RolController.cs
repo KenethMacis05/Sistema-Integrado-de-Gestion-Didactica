@@ -38,13 +38,11 @@ namespace modulo_admin.Controllers
             int resultado = 0;
 
             if (rol.id_rol == 0)
-            {
-                // Crear nuevo usuario
+            {             
                 resultado = CN_Rol.Crear(rol, out mensaje);
             }
             else
-            {
-                // Editar usuario existente
+            {                
                 resultado = CN_Rol.Editar(rol, out mensaje);
             }
 

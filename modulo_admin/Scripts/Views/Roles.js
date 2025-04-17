@@ -61,6 +61,7 @@ $("#datatable tbody").on("click", '.btn-eliminar', function () {
     const rolseleccionado = $(this).closest("tr");
     const data = dataTable.row(rolseleccionado).data();
 
+    console.log(data);
     // Alerta de confirmación
     Swal.fire({
         ...swalConfig,
@@ -147,7 +148,7 @@ function Guardar() {
                     Rol.id_rol = data.Resultado;
                     dataTable.row.add(Rol).draw(false);
                     $("#GuardarRol").modal("hide");
-
+                    console.log(data)
                     showAlert("¡Éxito!", `Rol creado correctamente`, "success");
                     
                 } else {
