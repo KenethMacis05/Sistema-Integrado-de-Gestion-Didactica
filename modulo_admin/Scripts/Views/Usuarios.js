@@ -177,7 +177,18 @@ function Guardar() {
             if (Usuario.id_usuario == 0) {
                 if (data.Resultado != 0) {
                     Usuario.id_usuario = data.Resultado;
+
+                    let insertIndex = 0;
+                    dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                        const rowData = this.data();
+                        if (Usuario.id_usuario > rowData.id_usuario) {
+                            insertIndex = rowIdx;
+                            return false;
+                        }
+                    });
+                    
                     dataTable.row.add(Usuario).draw(false);
+                    dataTable.order([0, 'desc']).draw();
                     $("#createUser").modal("hide");
 
                     // Mostrar alerta de éxito
@@ -250,7 +261,7 @@ function Guardar() {
 
 const dataTableOptions = {
     ...dataTableConfig,
-
+    order: [[0, 'desc']],
     ajax: {
         url: listarUsuariosUrl,
         type: "GET",
@@ -260,8 +271,9 @@ const dataTableOptions = {
     columns: [
         {
             data: null,
-            render: function (data, type, row, meta) {
-                return meta.row + 1;
+            render: function (data, type, row, meta) {                
+                const pageInfo = dataTable.page.info();
+                return pageInfo.start + meta.row + 1;
             },
             title: "#",
             width: "50px",
