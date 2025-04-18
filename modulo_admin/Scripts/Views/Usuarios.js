@@ -2,8 +2,12 @@
 const listarRolesUrl = config.listarRolesUrl;
 const guardarUsuariosUrl = config.guardarUsuariosUrl;
 const eliminarUsuariosUrl = config.eliminarUsuariosUrl;
+const reiniciarPasswordUrl = config.reiniciarPasswordUrl;
+const buscarUsuariosUrl = config.buscarUsuariosUrl;
 let dataTable;
+let tablaReinicio;
 var filaSeleccionada;
+let rolesMap = {};
 
 // Cargar roles en el selec
 jQuery.ajax({
@@ -16,6 +20,9 @@ jQuery.ajax({
         $('#obtenerRol').empty().append('<option value="" disabled selected>Seleccione un rol...</option>');
         $.each(response.data, function (index, rol) {
             $('#obtenerRol').append(`<option value="${rol.id_rol}">${rol.descripcion}</option>`);
+
+            rolesMap[rol.id_rol] = rol.descripcion;
+
         });
     },
 
@@ -281,6 +288,13 @@ const dataTableOptions = {
         },
         { data: "usuario" },
         {
+            data: "fk_rol",
+            render: function (data, type, row) {                
+                return rolesMap[data] || data;
+            },
+            title: "Rol"
+        },
+        {
             data: "pri_nombre",
             render: function (data, type, row) {
                 return data + ' ' + row.seg_nombre;
@@ -312,6 +326,168 @@ const dataTableOptions = {
     ]
 };
 
+const tablaReinicioOptions = {       
+    ...dataTableConfig,
+    columns: [
+        {
+            data: null,
+            render: function (data, type, row, meta) {
+                return meta.row + 1;
+            },
+            title: "#",
+            width: "50px",
+            orderable: false
+        },
+        { data: "usuario" },
+        {
+            data: "fk_rol",
+            render: function (data) {
+                return rolesMap[data] || data;
+            }
+        },
+        {
+            data: null,
+            render: function (data) {
+                return (data.pri_nombre || '') + ' ' + (data.seg_nombre || '');
+            }
+        },
+        {
+            data: null,
+            render: function (data) {
+                return (data.pri_apellido || '') + ' ' + (data.seg_apellido || '');
+            }
+        },
+        { data: "correo" },
+        { data: "telefono" },
+        {
+            data: "estado",
+            render: function (valor) {
+                return valor
+                    ? "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-success'>ACTIVO</span></div>"
+                    : "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-danger'>NO ACTIVO</span></div>";
+            }
+        },
+        {
+            data: "id_usuario",
+            render: function (data) {
+                return `<div class="form-check d-flex justify-content-center">
+                            <input type="checkbox" class="form-check-input usuarioCheckbox" 
+                                   id="usuario_${data}" 
+                                   data-id="${data}">
+                        </div>`;
+            },
+            orderable: false,
+            width: "100px"
+        }
+    ],
+};
+
+$("#btnBuscar").click(function () {
+    const filtros = {
+        usuario: $("#filtroUsuario").val(),
+        nombres: $("#filtroNombres").val(),
+        apellidos: $("#filtroApellidos").val()
+    };
+
+    tablaReinicio.clear().draw();
+
+    $.ajax({
+        url: buscarUsuariosUrl,
+        type: "GET",
+        dataType: "json",
+        data: JSON.stringify(filtros),
+        contentType: "application/json; charset=utf-8",
+
+        beforeSend: () => $("#tablaReinicio .tbody").LoadingOverlay("show"),
+
+        success: function (response) {
+
+            if (response && response.data && Array.isArray(response.data)) {
+                
+                tablaReinicio.rows.add(response.data).draw();
+                
+                $("#contadorRegistros").text(response.data.length + " registros encontrados");
+            } else {
+                showAlert("Advertencia", "No se encontraron resultados", "warning");
+            }
+        },
+
+        complete: () => $("#tablaReinicio .tbody").LoadingOverlay("hide"),
+        error: () => showAlert("Error", "Error al conectar con el servidor", "error")
+    })
+});
+
+// Limpiar filtros
+$("#btnLimpiar").click(function () {
+    $("#filtroUsuario, #filtroNombres, #filtroApellidos").val("");
+    tablaReinicio.clear().draw();
+    $("#contadorRegistros").text("0 registros encontrados");
+});
+
+// Actualizar estado del botón de reinicio cuando cambia cualquier checkbox
+$(document).on('change', '.usuarioCheckbox', function () {
+    actualizarBotonReinicio();
+});
+
+// Función para actualizar estado del botón de reinicio
+function actualizarBotonReinicio() {
+    const haySeleccionados = $('.usuarioCheckbox:checked').length > 0;
+    $('#btnReiniciar').prop('disabled', !haySeleccionados);
+}
+
+// Reiniciar contraseñas de usuarios seleccionados
+$("#btnReiniciar").click(function () {
+    var usuariosSeleccionados = [];
+
+    $('#tablaReinicio tbody').find('.usuarioCheckbox:checked').each(function () {
+        usuariosSeleccionados.push($(this).data('id'));
+    });
+
+    if (usuariosSeleccionados.length === 0) {
+        showAlert("!Atención¡", "Debe seleccionar al menos un usuario", "warning", true);
+        return;
+    }
+
+    Swal.fire({
+        title: "¿Está seguro?",
+        text: "Se reiniciarán las contraseñas de los usuarios seleccionados",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, reiniciar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#28a745"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            
+            $("#btnReiniciar").LoadingOverlay("show");
+
+            $.ajax({
+                url: reiniciarPasswordUrl,
+                type: "POST",
+                data: JSON.stringify({ idsUsuarios: usuariosSeleccionados }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.success) {
+                        showAlert("Éxito", response.message, "success");
+                        
+                        $("#btnBuscar").click();
+                    } else {
+                        showAlert("Error", response.message, "error");
+                    }
+                },
+                error: function () {
+                    showAlert("Error", "Error al conectar con el servidor", "error");
+                },
+                complete: function () {
+                    $("#btnReiniciar").LoadingOverlay("hide");
+                }
+            });
+        }
+    });
+});
+
 $(document).ready(function () {
     dataTable = $("#datatable").DataTable(dataTableOptions);
+    tablaReinicio = $("#tablaReinicio").DataTable(tablaReinicioOptions);
 });

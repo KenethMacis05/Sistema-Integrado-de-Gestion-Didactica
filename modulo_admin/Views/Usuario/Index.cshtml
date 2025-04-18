@@ -24,7 +24,7 @@
             <!--Boton 2-->
             <li class="nav-item" role="presentation">
                 <button class="nav-link esp-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                    Reiniciar contraseña
+                    <i class="fas fa-key me-2"></i> Reiniciar contraseña
                 </button>
             </li>
         </ul>
@@ -41,6 +41,7 @@
                         <tr>
                             <th>#</th>
                             <th>Usuario</th>
+                            <th>Rol</th>
                             <th>Nombres</th>
                             <th>Apellidos</th>
                             <th>Correo</th>
@@ -135,21 +136,103 @@
             </div>
             <!--Contenedor 2-->
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="row">
+                    <!-- Columna de Filtros (25% del ancho) -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <span class="card-title mb-0 fs-6"><i class="fas fa-filter me-2"></i>FILTROS</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="filtroUsuario" class="form-label">Cuenta Usuario</label>
+                                    <input type="text" class="form-control" id="filtroUsuario" placeholder="Buscar por usuario">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="filtroNombres" class="form-label">Nombres</label>
+                                    <input type="text" class="form-control" id="filtroNombres" placeholder="Buscar por nombres">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="filtroApellidos" class="form-label">Apellidos</label>
+                                    <input type="text" class="form-control" id="filtroApellidos" placeholder="Buscar por apellidos">
+                                </div>                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" id="btnBuscar">
+                                        <i class="fas fa-search me-2"></i>Buscar
+                                    </button>
+                                    <button class="btn btn-secondary" id="btnLimpiar">
+                                        <i class="fas fa-broom me-2"></i>Limpiar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0 fs-6"><i class="fas fa-users me-2"></i>RESULTADOS</h5>
+                                    <button class="btn btn-success" id="btnReiniciar" disabled>
+                                        <i class="fas fa-redo-alt me-2"></i>Reiniciar Contraseñas
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Resultados -->
+                                <div class="table-responsive">
+                                    <table class="table cell-border table-hover" id="tablaReinicio" style="width:100%">
+                                        <thead class="table-cabezera cell-border" style="background: #0072BB; color: white">
+                                            <tr>
+                                                <th width="5%">#</th>
+                                                <th>Usuario</th>
+                                                <th>Rol</th>
+                                                <th>Nombres</th>
+                                                <th>Apellidos</th>
+                                                <th>Correo</th>
+                                                <th>Teléfono</th>
+                                                <th>Estado</th>
+                                                <th>Seleccionar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Los datos se cargarán aquí -->
+                                        </tbody>
+                                    </table>
+                                </div>
 
+                                <!-- Paginación -->
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div class="text-muted">
+                                        <span id="contadorRegistros">0 registros encontrados</span>
+                                    </div>
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm" id="paginacion">
+                                            <!-- La paginación se generará dinámicamente -->
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
-</div>
 
-@section scripts{
-    <script type="text/javascript">
+    @section scripts{
+        <script type="text/javascript">
 
         var config = {
             listarUsuariosUrl: '@Url.Action("ListarUsuarios", "Usuario")',
             guardarUsuariosUrl: '@Url.Action("GuardarUsuario", "Usuario")',
             eliminarUsuariosUrl: '@Url.Action("EliminarUsuario", "Usuario")',
+            reiniciarPasswordUrl: '@Url.Action("ReiniciarPassword", "Usuario")',
+            buscarUsuariosUrl: '@Url.Action("BuscarUsuarios", "Usuario")',
             listarRolesUrl: '@Url.Action("ListarRoles", "Rol")',
         };
-    </script>
-    <script src="@Url.Content("~/Scripts/Views/Usuarios.js")" type="text/javascript"></script>
-}
+        </script>
+        <script src="@Url.Content("~/Scripts/Views/Usuarios.js")" type="text/javascript"></script>
+    }
+</div>
