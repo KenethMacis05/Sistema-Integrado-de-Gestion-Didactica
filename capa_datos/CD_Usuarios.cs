@@ -21,9 +21,8 @@ namespace capa_datos
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    string query = "SELECT id_usuario, pri_nombre, seg_nombre, pri_apellido, seg_apellido, usuario, correo, telefono, fk_rol, estado, reestablecer FROM USUARIOS ORDER BY id_usuario DESC";
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.CommandType = CommandType.Text;
+                    SqlCommand cmd = new SqlCommand("usp_LeerUsuario", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
                     conexion.Open();
 

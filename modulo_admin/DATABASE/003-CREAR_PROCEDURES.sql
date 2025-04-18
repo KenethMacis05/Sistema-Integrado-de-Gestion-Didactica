@@ -298,8 +298,10 @@ BEGIN
         u.seg_apellido,
         u.usuario,
         u.correo,
+        u.telefono,
         u.fk_rol,
         u.estado,
+		u.reestablecer,
         u.fecha_registro,
         r.descripcion AS 'DescripcionRol'
     FROM USUARIOS u
