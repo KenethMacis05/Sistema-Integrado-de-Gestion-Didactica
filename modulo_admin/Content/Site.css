@@ -71,28 +71,28 @@
     transition: color 0.3s ease;
 }
 
-/* Crear la línea inferior con ::after */
-.nav-link.esp-submenu-link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0; /* Inicialmente sin anchura */
-    height: 2px; /* Grosor de la línea */
-    background-color: var(--colorSecundario);
-    transition: width 0.3s ease; /* Animación de la anchura */
-}
+    /* Crear la línea inferior con ::after */
+    .nav-link.esp-submenu-link::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0; /* Inicialmente sin anchura */
+        height: 2px; /* Grosor de la línea */
+        background-color: var(--colorSecundario);
+        transition: width 0.3s ease; /* Animación de la anchura */
+    }
 
-/* Animación al hacer hover */
-.nav-link.esp-submenu-link:hover {
-    color: var(--colorSecundario);
-}
+    /* Animación al hacer hover */
+    .nav-link.esp-submenu-link:hover {
+        color: var(--colorSecundario);
+    }
 
-.nav-link.esp-submenu-link:hover::after {
-        width: 100%; /* La línea se expande de izquierda a derecha */
-}
+        .nav-link.esp-submenu-link:hover::after {
+            width: 100%; /* La línea se expande de izquierda a derecha */
+        }
 
-.table-cabezera {    
+.table-cabezera {
     background: var(--colorSecundario) !important
 }
 
@@ -163,35 +163,35 @@
     transition: border-color 0.3s ease-in-out;
 }
 
-.input-wrapper input {
-    flex: 1;
-    border: none;
-    background: none;
-    padding: 10px;
-    font-size: 14px;
-    outline: none;
-    color: #333;
-}
+    .input-wrapper input {
+        flex: 1;
+        border: none;
+        background: none;
+        padding: 10px;
+        font-size: 14px;
+        outline: none;
+        color: #333;
+    }
 
-.input-wrapper .icon {
-    background-color: #0a1f5e;
-    padding: 11px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 3px;
-    color: white;
-    cursor: pointer;
-}
+    .input-wrapper .icon {
+        background-color: #0a1f5e;
+        padding: 11px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        color: white;
+        cursor: pointer;
+    }
 
-.input-wrapper:focus-within {
-    border: 1px solid #0072BB;
-    box-shadow: 0px 0px 5px rgba(0, 115, 187, 0.658);
-}
+    .input-wrapper:focus-within {
+        border: 1px solid #0072BB;
+        box-shadow: 0px 0px 5px rgba(0, 115, 187, 0.658);
+    }
 
-.input-wrapper:focus-within .icon {
-    background-color: #0072BB;
-}
+        .input-wrapper:focus-within .icon {
+            background-color: #0072BB;
+        }
 
 .toggle-password {
     cursor: pointer;
@@ -203,13 +203,13 @@
     box-shadow: -3px 3px 10px rgb(128, 128, 128, 0.658);
 }
 
-.btnLogin:hover {
-    background-color: #0283D5 !important;
-}
+    .btnLogin:hover {
+        background-color: #0283D5 !important;
+    }
 
-.btnLogin:active {
-    background-color: #025E99 !important;
-}
+    .btnLogin:active {
+        background-color: #025E99 !important;
+    }
 
 @media (max-width: 768px) {
     .separador {
@@ -279,7 +279,7 @@
     border-radius: 10px;
 }
 
-    .file-manager-group:hover {        
+    .file-manager-group:hover {
         box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
         border-color: var(--bs-primary) !important;
     }

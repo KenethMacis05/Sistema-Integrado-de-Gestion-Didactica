@@ -1,4 +1,6 @@
 ﻿//Métodos Globales
+
+
 //Configuración de las dataTable
 const dataTableConfig = {
     lengthMenu: [5, 10, 15, 20, 100, 200, 500],
@@ -87,6 +89,31 @@ function showAlert(title, text, icon, isToast = false) {
 
     return Swal.fire(config);
 }
+
+function confirmarEliminacion(titulo = "¿Estás seguro?", texto = "¡Esta acción no se puede deshacer!") {
+    return Swal.fire({
+        ...swalConfig,
+        title: titulo,
+        text: texto,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true
+    });
+}
+
+function showLoadingAlert(titulo = "Eliminando", mensaje = "Por favor espere...") {
+    return Swal.fire({
+        title: titulo,
+        html: mensaje,
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+}
+
 
 //Configuración del ICheck
 $('.checkboxIcheck').iCheck({
