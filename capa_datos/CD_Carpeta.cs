@@ -13,22 +13,27 @@ namespace capa_datos
     public class CD_Carpeta
     {
         // Listar carpetas
-        public List<CARPETA> Listar(int id_usuario)
+        public List<CARPETA> Listar(int id_usuario, out int resultado, out string mensaje)
         {
             List<CARPETA> listaCarpeta = new List<CARPETA>();
+            resultado = 0;
+            mensaje = string.Empty;
 
             try
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.conexion))
                 {
-                    string query = "SELECT TOP 10 * FROM CARPETA WHERE fk_id_usuario = @id_usuario ORDER BY fecha_registro DESC";
-            
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.Parameters.AddWithValue("@id_usuario", id_usuario); // Agregar esta línea
+                    SqlCommand cmd = new SqlCommand("usp_LeerCarpetaRecientes", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("IdUsuario", id_usuario);
 
-                    conexion.Open();
+                    // Parámetros de salida
+                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+
+                    // Abrir conexión
+                    conexion.Open();         
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
@@ -41,11 +46,15 @@ namespace capa_datos
                                     nombre = dr["nombre"].ToString(),
                                     fecha_registro = Convert.ToDateTime(dr["fecha_registro"]),
                                     estado = Convert.ToBoolean(dr["estado"]),
-                                    fk_id_usuario = new USUARIOS() { id_usuario = Convert.ToInt32(dr["fk_id_usuario"]) }
+                                    fk_id_usuario = Convert.ToInt32(dr["fk_id_usuario"])
                                 }
                             );
                         }
                     }
+
+                    resultado = Convert.ToInt32(cmd.Parameters["Resultado"].Value);
+                    mensaje = cmd.Parameters["Mensaje"].Value.ToString();
+
                 }
             }
             catch (Exception ex)
@@ -54,6 +63,5 @@ namespace capa_datos
             }
             return listaCarpeta;
         }
-
     }
 }

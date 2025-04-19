@@ -1,79 +1,325 @@
-﻿$(document).ready(function () {
-    const listarCarpetasUrl = config.listarUsuariosUrl;
-    var idUsuario = config.idUsuario1;
+﻿const listarCarpetasUrl = config.listarCarpetasUrl;
+const guardarCarpetaUrl = config.guardarCarpetaUrl;
+const eliminarCarpetaUrl = config.eliminarCarpetaUrl;
+const compartirCarpetaUrl = config.compartirCarpetaUrl;
+
+function abrirModalCarpeta(json) {
+    $("#idCarpeta").val("0");
+    $("#nombre").val("");
+
+    if (json !== null) {
+        $("#idCarpeta").val(json.id_carpeta);        
+        $("#nombre").val(json.nombre);        
+    }
+
+    $("#createCarpeta").modal("show");
+}
+
+// Seleccionar los datos de la carpeta para editar
+$(document).on('click', '.btn-editar', function (e) {
+    e.preventDefault();
+    const data = {
+        id_carpeta: $(this).data('carpeta-id'),
+        nombre: $(this).data('carpeta-nombre')
+    };
+    abrirModalCarpeta(data);
+});
+
+function GuardarCarpeta() {
+
+    var Carpeta = {
+        id_carpeta: $("#idCarpeta").val(),
+        nombre: $("#nombre").val(),        
+    };
+
+    // Mostrar loader de espera
+    Swal.fire({
+        title: "Procesando",
+        html: "Guardando datos de la carpeta...",
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     jQuery.ajax({
-        url: listarCarpetasUrl,
-        type: "GET",
+        url: guardarCarpetaUrl,
+        type: "POST",
+        data: JSON.stringify(Carpeta),
         dataType: "json",
-        data: { id_usuario: idUsuario },
         contentType: "application/json; charset=utf-8",
         success: function (data) {
-            console.log(data)
-        }
-    })
+            Swal.close();
 
-    //Carpetas    
+            // Carpeta Nueva
+            if (Carpeta.id_carpeta == 0) {
+                if (data.Resultado != 0) {
+                    Carpeta.id_carpeta = data.Resultado;
+                   
+                    Swal.fire({
+                        ...swalConfig,
+                        title: "¡Éxito!",
+                        text: data.Mensaje || "Carpeta creada correctamente",
+                        icon: "success"
+                    }).then(() => {
+                        $("#createCarpeta").modal("hide");
+                        cargarCarpetas();
+                    });
+
+                } else {
+                    $("#createCarpeta").modal("hide");                    
+                    showAlert("Error", data.Mensaje || "No se pudo crear la carpeta", "error");                 
+                }
+            }
+            // Actualizar carpeta
+            else {
+                if (data.Resultado) {                    
+                    $("#createCarpeta").modal("hide");
+                    Swal.fire({
+                        ...swalConfig,
+                        title: "¡Éxito!",
+                        text: data.Mensaje || "Carpeta actualizada correctamente",
+                        icon: "success"
+                    }).then(() => {
+                        $("#createCarpeta").modal("hide");
+                        cargarCarpetas(); // Recargar la lista
+                    });
+                } else {
+                    $("#createCarpeta").modal("hide");                    
+                    showAlert("Error", response.Mensaje || "No se pudo actualizar la carpeta", "error");
+                }
+            }
+        },
+        error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
+    });
+}
+
+// Eliminar carpeta
+$(document).on('click', '.btn-eliminar', function (e) {
+    e.preventDefault();
+    const idCarpeta = $(this).data('carpeta-id');    
+
+    // Alerta de confirmación
+    Swal.fire({
+        ...swalConfig,
+        title: "¿Estás seguro?",
+        text: "¡Esta acción no se puede deshacer!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            // Mostrar loader
+            Swal.fire({
+                title: "Eliminando carpeta",
+                html: "Por favor espere...",
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Enviar petición AJAX
+            $.ajax({
+                url: eliminarCarpetaUrl,
+                type: "POST",
+                data: JSON.stringify({ id_carpeta: idCarpeta }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+
+                success: function (response) {
+                    Swal.close();
+                    if (response.Respuesta) {
+                        // Mostrar alerta de éxito
+                        showAlert("!Eliminado¡", response.Mensaje || "Carpeta eliminada correctamente", "success");
+                       
+                    } else {
+                        // Mostrar alerta de error
+                        showAlert("Error", response.Mensaje || "No se pudo eliminar la carpeta", "error");
+                    }
+                },
+
+                error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
+            });
+        }
+    });
+});
+
+// Función para cargar las carpetas
+function cargarCarpetas() {
     $.ajax({
-        url: listarCarpetasUrl,
+        url: config.listarCarpetasUrl,
         type: 'GET',
         dataType: 'json',
-        data: { id_usuario: idUsuario },
-        contentType: "application/json; charset=utf-8",
-
-        //Si
+        beforeSend: () => $('#contenedor-carpetas').LoadingOverlay("show"),
         success: function (response) {
-
             if (response.data && response.data.length > 0) {
-                var html = '';
-                var colors = ['primary', 'warning', 'danger', 'success', 'info', 'secondary'];
+                let html = '';
+                const colors = ['primary', 'warning', 'danger', 'success', 'info', 'secondary'];
 
                 $.each(response.data, function (index, carpeta) {
-                    // Seleccionar color rotativo
-                    var color = colors[index % colors.length];
-
+                    const color = colors[index % colors.length];
                     html += `
-                            <div class="col-sm-6 col-md-4 col-lg-3">
-                                <div class="card file-manager-group h-100 shadow-sm">
-                                    <div class="card-body d-flex align-items-center">
-                                        <i class="fas fa-folder-open fa-2x text-${color} me-3 d-none"></i>
-                                        <i class="fas fa-folder fa-2x text-${color} me-3"></i>
-                                        <div class="file-manager-group-info flex-fill">
-                                            <a href="#" class="file-manager-group-title h5 d-block text-decoration-none text-dark">${carpeta.nombre}</a>
-                                            <span class="file-manager-group-about text-muted small">${formatASPNetDate(carpeta.fecha_registro)}</span>
-                                        </div>
-                                        <div class="ms-auto">
-                                            <a href="#" class="dropdown-toggle file-manager-recent-file-actions" id="file-manager-recent-${index}" data-bs-toggle="dropdown">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="file-manager-recent-${index}">
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-share me-2"></i>Compartir</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Descargar</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Ver detalles</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="card file-manager-group h-100 shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fas fa-folder-open fa-2x text-${color} me-3 d-none"></i>
+                                <i class="fas fa-folder fa-2x text-${color} me-3"></i>
+                                <div class="file-manager-group-info flex-fill">
+                                    <a href="#" class="file-manager-group-title h5 d-block text-decoration-none text-dark">${carpeta.nombre}</a>
+                                    <span class="file-manager-group-about text-muted small">${formatASPNetDate(carpeta.fecha_registro)}</span>
                                 </div>
-                            </div>`;
+                                <div class="ms-auto">
+                                    <a href="#" class="dropdown-toggle file-manager-recent-file-actions" 
+                                        data-bs-toggle="dropdown" data-carpeta-id="${carpeta.id_carpeta}">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item btn-compartir" href="#" 
+                                            data-carpeta-id="${carpeta.id_carpeta}">
+                                            <i class="fas fa-share me-2"></i>Compartir</a></li>
+                                        <li><a class="dropdown-item btn-descargar" href="#" 
+                                            data-carpeta-id="${carpeta.id_carpeta}">
+                                            <i class="fas fa-download me-2"></i>Descargar</a></li>
+                                        <li><a class="dropdown-item btn-editar" href="#" 
+                                            data-carpeta-id="${carpeta.id_carpeta}" 
+                                            data-carpeta-nombre="${carpeta.nombre}">
+                                            <i class="fas fa-edit me-2"></i>Renombrar</a></li>
+                                        <li><a class="dropdown-item btn-eliminar" href="#" 
+                                            data-carpeta-id="${carpeta.id_carpeta}">
+                                            <i class="fas fa-trash me-2"></i>Eliminar</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
                 });
 
                 $('#contenedor-carpetas').html(html);
             } else {
-                $('#contenedor-carpetas').html('<div class="alert alert-light" role="alert">No hay carpetas disponibles</div>');
+                $('#contenedor-carpetas').html('<div class="alert alert-light">No hay carpetas disponibles</div>');
             }
         },
-        error: function (xhr, status, error) {
-            console.error(error);
-            $('#contenedor-carpetas').html('<div class="alert alert-danger d-flex align-items-center" role="alert"><i class="fa fa-exclamation-triangle me-2"></i><div>Error al cargar las carpetas</div></div></div>');
+        error: function () {
+            $('#contenedor-carpetas').html('<div class="alert alert-danger">Error al cargar las carpetas</div>');
+        },
+        complete: () => $('#contenedor-carpetas').LoadingOverlay("hide")
+    });
+}
+
+// Efectos hover para carpetas
+$(document).on('mouseenter', '.file-manager-group', function () {
+    $(this).find('.fa-folder').addClass('d-none');
+    $(this).find('.fa-folder-open').removeClass('d-none');
+}).on('mouseleave', '.file-manager-group', function () {
+    $(this).find('.fa-folder-open').addClass('d-none');
+    $(this).find('.fa-folder').removeClass('d-none');
+});
+
+// Inicialización
+$(document).ready(function () {
+    cargarCarpetas();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Compartir carpeta
+$(document).on('click', '.btn-compartir', function (e) {
+    e.preventDefault();
+    const idCarpeta = $(this).data('carpeta-id');
+    console.log(idCarpeta);
+    $('#modalCompartir').modal('show');
+});
+// Función para compartir carpeta
+function compartirCarpeta() {
+    const idCarpeta = $('#idCarpetaCompartir').val();
+    const correo = $('#correoCompartir').val();
+    const permisos = $('#permisosCompartir').val();
+
+    Swal.fire({
+        title: "Compartiendo",
+        html: "Procesando solicitud...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        url: config.compartirCarpetaUrl,
+        type: "POST",
+        data: JSON.stringify({
+            id_carpeta: idCarpeta,
+            correo: correo,
+            permisos: permisos
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            Swal.close();
+            if (data.Respuesta) {
+                Swal.fire({
+                    ...swalConfig,
+                    title: "¡Éxito!",
+                    text: data.Mensaje || "Carpeta compartida",
+                    icon: "success"
+                });
+                $('#modalCompartir').modal('hide');
+                $('#correoCompartir').val('');
+            } else {
+                Swal.fire({
+                    ...swalConfig,
+                    title: "Error",
+                    text: data.Mensaje || "Error al compartir",
+                    icon: "error"
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                ...swalConfig,
+                title: "Error",
+                text: "Error en el servidor",
+                icon: "error"
+            });
         }
     });
-    
+}
 
-    $(document).on('mouseenter', '.file-manager-group', function () {
-        $(this).find('.fa-folder').addClass('d-none');
-        $(this).find('.fa-folder-open').removeClass('d-none');
-    }).on('mouseleave', '.file-manager-group', function () {
-        $(this).find('.fa-folder-open').addClass('d-none');
-        $(this).find('.fa-folder').removeClass('d-none');
-    });
+// Descargar carpeta
+$(document).on('click', '.btn-descargar', function (e) {
+    e.preventDefault();
+    const idCarpeta = $(this).data('carpeta-id');
+    console.log(idCarpeta);
+    // Lógica para descargar (puedes hacer una redirección o AJAX)
+    /*window.location.href = '@Url.Action("DescargarCarpeta", "Archivo")' + '?id=' + idCarpeta;*/
 });
+
+
+// Funciones para los modales
+function compartirCarpeta() {
+    const correo = $('#correoCompartir').val();
+    const permisos = $('#permisosCompartir').val();
+
+    // Aquí tu lógica AJAX para compartir
+    console.log('Compartir con:', correo, 'Permisos:', permisos);
+    $('#modalCompartir').modal('hide');
+}

@@ -14,7 +14,7 @@ namespace modulo_admin.Controllers
     public class ArchivoController : Controller
     {     
         CN_Carpeta CN_Carpeta = new CN_Carpeta();
-
+        
         #region Carpetas
 
         // Vista a la vista de Gestion de Archivos
@@ -25,19 +25,54 @@ namespace modulo_admin.Controllers
 
         // Metodo para Listar las carpetas
         [HttpGet]
-        public JsonResult ListarCarpetas(int id_usuario)
+        public JsonResult ListarCarpetas()
         {
- 
-            List<CARPETA> lst = new List<CARPETA>();
-            lst = CN_Carpeta.ListarCarpeta(id_usuario);
+            USUARIOS usuario = (USUARIOS)Session["UsuarioAutenticado"];
+            int resultado;
+            string mensaje;
 
-            return Json(new { data = lst }, JsonRequestBehavior.AllowGet);
+            List<CARPETA> lst = new List<CARPETA>();
+            lst = CN_Carpeta.ListarCarpeta(usuario.id_usuario, out resultado, out mensaje);
+
+            return Json(new { data = lst,
+                resultado = resultado,
+                mensaje = mensaje
+            }, JsonRequestBehavior.AllowGet);
         }
 
-        // Metodo para Guardar carpetas
+        // Metodo para Guardar carpetas        
+        [HttpPost]
+        public JsonResult GuardarCarpeta(CARPETA carpeta)
+        {            
+            carpeta.fk_id_usuario = (int)Session["IdUsuario"];
 
+            string mensaje = string.Empty;
+            int resultado = 0;
+
+            if (carpeta.id_carpeta == 0)
+            {
+                // Crear nueva carpeta
+                resultado = CN_Carpeta.Registra(carpeta, out mensaje);
+            }
+            else
+            {
+                // Editar usuario existente
+                resultado = CN_Carpeta.Editar(carpeta, out mensaje);
+            }
+
+            return Json(new { Resultado = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
 
         // Metodo para Borrar carpetas
+        [HttpPost]
+        public JsonResult EliminarCarpeta(int id_carpeta)
+        {
+            string mensaje = string.Empty;
+
+            int resultado = CN_Carpeta.Eliminar(id_carpeta, out mensaje);
+
+            return Json(new { Respuesta = (resultado == 1), Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
 
         #endregion
 

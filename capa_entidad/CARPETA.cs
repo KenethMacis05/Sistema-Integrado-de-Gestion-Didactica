@@ -12,6 +12,7 @@ namespace capa_entidad
         public string nombre { get; set; }
         public DateTime fecha_registro { get; set; }
         public bool estado { get; set; }
-        public USUARIOS fk_id_usuario { get; set; }
+        public int fk_id_usuario { get; set; }
+        public USUARIOS usuario { get; set; }
     }
 }

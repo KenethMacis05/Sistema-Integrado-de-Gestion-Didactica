@@ -12,9 +12,9 @@ namespace capa_negocio
     {
         private CD_Carpeta CD_Carpeta = new CD_Carpeta();
 
-        public List<CARPETA> ListarCarpeta(int id_usuario)
+        public List<CARPETA> ListarCarpeta(int id_usuario, out int resultado, out string mensaje)
         {
-            return CD_Carpeta.Listar(id_usuario);
+            return CD_Carpeta.Listar(id_usuario, out resultado, out mensaje);
         }
     }
 }

@@ -658,3 +658,177 @@ END
 GO
 
 --------------------------------------------------------------------------------------------------------------------
+
+-- (1) PROCEDIMIENTO ALMACENADO PARA OBTENER CARPETAS RECIENTES DEL USUARIO
+CREATE PROCEDURE usp_LeerCarpetaRecientes
+    @IdUsuario INT,
+    @Resultado INT OUTPUT,
+    @Mensaje VARCHAR(255) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Validar si el usuario existe
+    IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
+    BEGIN
+        SET @Resultado = 0
+        SET @Mensaje = 'El usuario no existe'
+        RETURN
+    END
+
+    -- Validar si el usuario tiene carpetas creadas
+    IF NOT EXISTS (SELECT 1 FROM CARPETA WHERE fk_id_usuario = @IdUsuario)
+    BEGIN
+        SET @Resultado = 0
+        SET @Mensaje = 'El usuario aún no ha creado carpetas'
+        RETURN
+    END
+
+    -- Si todo está bien, mostrar las 10 carpetas más recientes
+    SELECT TOP 10 * 
+    FROM CARPETA 
+    WHERE fk_id_usuario = @IdUsuario AND estado = 1
+    ORDER BY fecha_registro DESC
+
+    SET @Resultado = 1
+    SET @Mensaje = 'Carpetas cargadas correctamente'
+END
+GO
+
+--------------------------------------------------------------------------------------------------------------------
+
+-- (2) PROCEDIMIENTO ALMACENADO PARA REGISTRAR UNA NUEVA CARPETA
+CREATE PROCEDURE usp_CrearCarpeta
+    @Nombre VARCHAR(60),
+    @IdUsuario INT,
+    @Resultado INT OUTPUT,
+    @Mensaje VARCHAR(255) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @Resultado = 0;
+    SET @Mensaje = '';
+
+    -- Verificar si el usuario existe
+    IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
+    BEGIN
+        SET @Mensaje = 'El usuario no existe'
+        RETURN
+    END
+
+    -- Verificar si ya existe una carpeta con ese nombre para el mismo usuario
+    IF EXISTS (SELECT 1 FROM CARPETA WHERE nombre = @Nombre AND fk_id_usuario = @IdUsuario AND estado = 1)
+    BEGIN
+        SET @Mensaje = 'El nombre de la carpeta ya está en uso para este usuario'
+        RETURN
+    END	    
+
+    -- Insertar la nueva carpeta
+    INSERT INTO CARPETA (nombre, fk_id_usuario) 
+    VALUES (@Nombre, @IdUsuario)
+
+    SET @Resultado = SCOPE_IDENTITY()
+    SET @Mensaje = 'Carpeta creada exitosamente'
+END
+GO
+
+--------------------------------------------------------------------------------------------------------------------
+
+-- (3) PROCEDIMIENTO ALMACENADO PARA MODIFICAR LOS DATOS DE UNA CARPETA
+CREATE PROCEDURE usp_ActualizarCarpeta
+    @IdCarpeta INT,
+    @Nombre VARCHAR(60),
+    @Resultado INT OUTPUT,
+    @Mensaje VARCHAR(255) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @Resultado = 0;
+    SET @Mensaje = '';
+
+    -- Verificar si la carpeta existe
+    IF NOT EXISTS (SELECT 1 FROM CARPETA WHERE id_carpeta = @IdCarpeta)
+    BEGIN
+        SET @Mensaje = 'La carpeta no existe'
+        RETURN
+    END
+
+    -- Obtener el ID del usuario propietario de esta carpeta
+    DECLARE @IdUsuario INT;
+    SELECT @IdUsuario = fk_id_usuario FROM CARPETA WHERE id_carpeta = @IdCarpeta;
+
+    -- Verificar si ya existe otra carpeta con ese nombre para el mismo usuario (excluyendo la actual)
+    IF EXISTS (
+        SELECT 1 
+        FROM CARPETA 
+        WHERE nombre = @Nombre 
+        AND fk_id_usuario = @IdUsuario 
+        AND id_carpeta != @IdCarpeta
+		AND estado = 1
+    )
+    BEGIN
+        SET @Mensaje = 'Ya existe una carpeta con ese nombre para este usuario'
+        RETURN
+    END	
+
+    -- Actualizar el nombre de la carpeta
+    UPDATE CARPETA
+    SET nombre = @Nombre
+    WHERE id_carpeta = @IdCarpeta;
+
+    SET @Resultado = 1;
+    SET @Mensaje = 'Carpeta actualizada exitosamente'
+END
+GO
+
+
+-- (4) PROCEDIMIENTO ALMACENADO PARA ELIMINAR UNA CARPETA
+CREATE PROCEDURE usp_EliminarCarpeta
+    @IdCarpeta INT,
+    @Resultado BIT OUTPUT
+AS
+BEGIN
+    SET @Resultado = 0
+    
+    IF EXISTS (SELECT 1 FROM CARPETA WHERE id_carpeta = @IdCarpeta)
+    BEGIN
+        UPDATE CARPETA
+		SET estado = 0,
+		fecha_eliminacion = GETDATE()
+		WHERE id_carpeta = @IdCarpeta;
+        SET @Resultado = 1
+    END
+END
+GO
+
+-- (5) PROCEDIMIENTO ALMACENADO PARA RESTABLECER UNA CARPETA
+CREATE PROCEDURE usp_RestablecerCarpeta
+    @IdCarpeta INT,
+    @Resultado BIT OUTPUT
+AS
+BEGIN
+    SET @Resultado = 0
+    
+    IF EXISTS (SELECT 1 FROM CARPETA WHERE id_carpeta = @IdCarpeta)
+    BEGIN
+        UPDATE CARPETA
+		SET estado = 1,
+		fecha_eliminacion = NULL
+		WHERE id_carpeta = @IdCarpeta;
+        SET @Resultado = 1
+    END
+END
+GO
+
+-- (6) PROCEDIMIENTO ALMACENADO PARA ELIMINAR DIFINITIVAMENTE UNA CARPETA
+CREATE PROCEDURE usp_EliminarCarpetasExpiradas
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM CARPETA
+    WHERE estado = 0
+    AND fecha_eliminacion IS NOT NULL
+    AND DATEDIFF(DAY, fecha_eliminacion, GETDATE()) > 30;
+END
+GO
