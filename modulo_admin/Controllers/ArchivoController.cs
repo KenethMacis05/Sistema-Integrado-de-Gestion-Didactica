@@ -17,13 +17,11 @@ namespace modulo_admin.Controllers
         
         #region Carpetas
 
-        // Vista a la vista de Gestion de Archivos
         public ActionResult GestionArchivos()
         {
             return View();
         }
-
-        // Metodo para Listar las carpetas
+       
         [HttpGet]
         public JsonResult ListarCarpetas()
         {
@@ -34,10 +32,7 @@ namespace modulo_admin.Controllers
             List<CARPETA> lst = new List<CARPETA>();
             lst = CN_Carpeta.ListarCarpeta(usuario.id_usuario, out resultado, out mensaje);
 
-            return Json(new { data = lst,
-                resultado = resultado,
-                mensaje = mensaje
-            }, JsonRequestBehavior.AllowGet);
+            return Json(new { data = lst, resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
         // Metodo para Guardar carpetas        
@@ -52,7 +47,7 @@ namespace modulo_admin.Controllers
             if (carpeta.id_carpeta == 0)
             {
                 // Crear nueva carpeta
-                resultado = CN_Carpeta.Registra(carpeta, out mensaje);
+                resultado = CN_Carpeta.Crear(carpeta, out mensaje);
             }
             else
             {

@@ -279,8 +279,7 @@
     border-radius: 10px;
 }
 
-    .file-manager-group:hover {
-        transform: translateY(-3px);
+    .file-manager-group:hover {        
         box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
         border-color: var(--bs-primary) !important;
     }

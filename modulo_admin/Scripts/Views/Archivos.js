@@ -32,7 +32,11 @@ function GuardarCarpeta() {
         nombre: $("#nombre").val(),        
     };
 
-    // Mostrar loader de espera
+    if (!Carpeta.nombre) {
+        Swal.fire("Campo obligatorio", "El nombre de la carpeta no puede estar vacío", "warning");
+        return;
+    }
+    
     Swal.fire({
         title: "Procesando",
         html: "Guardando datos de la carpeta...",
@@ -49,45 +53,21 @@ function GuardarCarpeta() {
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (data) {
-            Swal.close();
+            Swal.close();                        
 
-            // Carpeta Nueva
-            if (Carpeta.id_carpeta == 0) {
-                if (data.Resultado != 0) {
-                    Carpeta.id_carpeta = data.Resultado;
-                   
-                    Swal.fire({
-                        ...swalConfig,
-                        title: "¡Éxito!",
-                        text: data.Mensaje || "Carpeta creada correctamente",
-                        icon: "success"
-                    }).then(() => {
-                        $("#createCarpeta").modal("hide");
-                        cargarCarpetas();
-                    });
+            if (data.Resultado || data.Respuesta) {
+                const mensaje = data.Mensaje || (Carpeta.id_carpeta == 0 ? "Carpeta creada correctamente" : "Carpeta actualizada correctamente");
 
-                } else {
-                    $("#createCarpeta").modal("hide");                    
-                    showAlert("Error", data.Mensaje || "No se pudo crear la carpeta", "error");                 
-                }
+                showAlert("¡Éxito!", mensaje, "success");
+                cargarCarpetas(); // ← Recarga lista
+
+                $("#createCarpeta").modal("hide");
             }
-            // Actualizar carpeta
             else {
-                if (data.Resultado) {                    
-                    $("#createCarpeta").modal("hide");
-                    Swal.fire({
-                        ...swalConfig,
-                        title: "¡Éxito!",
-                        text: data.Mensaje || "Carpeta actualizada correctamente",
-                        icon: "success"
-                    }).then(() => {
-                        $("#createCarpeta").modal("hide");
-                        cargarCarpetas(); // Recargar la lista
-                    });
-                } else {
-                    $("#createCarpeta").modal("hide");                    
-                    showAlert("Error", response.Mensaje || "No se pudo actualizar la carpeta", "error");
-                }
+                const mensaje = data.Mensaje || (Carpeta.id_carpeta == 0 ? "No se pudo crear la carpeta" : "No se pudo actualizar la carpeta");
+
+                $("#createCarpeta").modal("hide");
+                showAlert("Error", mensaje, "error");
             }
         },
         error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
@@ -133,15 +113,13 @@ $(document).on('click', '.btn-eliminar', function (e) {
                 success: function (response) {
                     Swal.close();
                     if (response.Respuesta) {
-                        // Mostrar alerta de éxito
-                        showAlert("!Eliminado¡", response.Mensaje || "Carpeta eliminada correctamente", "success");
-                       
+                        showAlert("¡Eliminado!", response.Mensaje || "Carpeta eliminada correctamente", "success", true);
+                        cargarCarpetas(); // ← Recarga lista
                     } else {
-                        // Mostrar alerta de error
                         showAlert("Error", response.Mensaje || "No se pudo eliminar la carpeta", "error");
                     }
-                },
-
+                    
+                },                
                 error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
             });
         }
@@ -154,7 +132,7 @@ function cargarCarpetas() {
         url: config.listarCarpetasUrl,
         type: 'GET',
         dataType: 'json',
-        beforeSend: () => $('#contenedor-carpetas').LoadingOverlay("show"),
+        beforeSend: () => $('#contenedor-carpetas').LoadingOverlay("show"),        
         success: function (response) {
             if (response.data && response.data.length > 0) {
                 let html = '';
