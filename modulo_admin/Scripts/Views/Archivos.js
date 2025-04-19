@@ -36,15 +36,8 @@ function GuardarCarpeta() {
         Swal.fire("Campo obligatorio", "El nombre de la carpeta no puede estar vacío", "warning");
         return;
     }
-    
-    Swal.fire({
-        title: "Procesando",
-        html: "Guardando datos de la carpeta...",
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
+
+    showLoadingAlert("Procesando", "Guardando datos la carpeta...");    
 
     jQuery.ajax({
         url: guardarCarpetaUrl,
@@ -54,19 +47,15 @@ function GuardarCarpeta() {
         contentType: "application/json; charset=utf-8",
         success: function (data) {
             Swal.close();                        
+            $("#createCarpeta").modal("hide");
 
             if (data.Resultado || data.Respuesta) {
                 const mensaje = data.Mensaje || (Carpeta.id_carpeta == 0 ? "Carpeta creada correctamente" : "Carpeta actualizada correctamente");
-
                 showAlert("¡Éxito!", mensaje, "success");
-                cargarCarpetas(); // ← Recarga lista
-
-                $("#createCarpeta").modal("hide");
+                cargarCarpetas();
             }
             else {
-                const mensaje = data.Mensaje || (Carpeta.id_carpeta == 0 ? "No se pudo crear la carpeta" : "No se pudo actualizar la carpeta");
-
-                $("#createCarpeta").modal("hide");
+                const mensaje = data.Mensaje || (Carpeta.id_carpeta == 0 ? "No se pudo crear la carpeta" : "No se pudo actualizar la carpeta");                
                 showAlert("Error", mensaje, "error");
             }
         },
@@ -78,30 +67,12 @@ function GuardarCarpeta() {
 $(document).on('click', '.btn-eliminar', function (e) {
     e.preventDefault();
     const idCarpeta = $(this).data('carpeta-id');    
-
-    // Alerta de confirmación
-    Swal.fire({
-        ...swalConfig,
-        title: "¿Estás seguro?",
-        text: "¡Esta acción no se puede deshacer!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "Cancelar",
-        reverseButtons: true
-    }).then((result) => {
+    
+    confirmarEliminacion().then((result) => {
 
         if (result.isConfirmed) {
-            // Mostrar loader
-            Swal.fire({
-                title: "Eliminando carpeta",
-                html: "Por favor espere...",
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
+            showLoadingAlert("Eliminando carpeta", "Por favor espere...")
+            
             // Enviar petición AJAX
             $.ajax({
                 url: eliminarCarpetaUrl,
@@ -114,11 +85,8 @@ $(document).on('click', '.btn-eliminar', function (e) {
                     Swal.close();
                     if (response.Respuesta) {
                         showAlert("¡Eliminado!", response.Mensaje || "Carpeta eliminada correctamente", "success", true);
-                        cargarCarpetas(); // ← Recarga lista
-                    } else {
-                        showAlert("Error", response.Mensaje || "No se pudo eliminar la carpeta", "error");
-                    }
-                    
+                        cargarCarpetas();
+                    } else { showAlert("Error", response.Mensaje || "No se pudo eliminar la carpeta", "error"); }                    
                 },                
                 error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
             });

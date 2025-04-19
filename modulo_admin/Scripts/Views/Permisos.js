@@ -5,39 +5,6 @@ const AsignarPermisos = config.AsignarPermisos;
 let dataTableNoAsignados;
 let dataTable;
 
-const dataTableOptions = {
-    ...dataTableConfig,
-    columns: [
-        { title: "#" },
-        { title: "Controlador" },
-        { title: "Acción" },
-        { title: "Descripcion" },
-        { title: "Tipo" },
-        {
-            defaultContent:
-                '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fa fa-pen"></i></button>' +
-                '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fa fa-trash"></i></button>',
-            width: "90"
-        }
-    ],
-};
-
-const dataTableNoAsignadosOptions = {
-    ...dataTableConfig,
-    columns: [
-        { title: "#" },
-        { title: "Controlador" },
-        { title: "Acción" },
-        { title: "Descripción" },
-        { title: "Tipo" },
-        {
-            title: "Seleccionar",
-            orderable: false,
-            width: "100px"
-        }
-    ],
-};
-
 // Cargar roles en el selec
 jQuery.ajax({
     url: listarRolesUrl,
@@ -52,7 +19,7 @@ jQuery.ajax({
         });
     },
 
-    error: () => showAlert("Error", "Error al cargar los Roles", "error")
+    error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
 })
 
 // Mostrar permisos del Rol
@@ -73,7 +40,6 @@ $("#btnBuscar").click(function () {
         beforeSend: () => $(".tbody").LoadingOverlay("show"),
 
         success: function (data) {
-
             dataTable.clear().draw();
 
             if (data && data.data && Array.isArray(data.data)) {
@@ -97,9 +63,8 @@ $("#btnBuscar").click(function () {
                 console.warn("Datos no válidos recibidos", data);
             }
         },
-
         complete: () => $(".tbody").LoadingOverlay("hide"),
-        error: () => showAlert("Error", "Error al conectar con el servidor", "error")
+        error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
     })
 });
 
@@ -141,10 +106,9 @@ function cargarPermisosNoAsignados(IdRol) {
             }
         },
         complete: () => $("#dataTablePermisosNoAsignados tbody").LoadingOverlay("hide"),
-        error: () => showAlert("Error", "Error al cargar permisos no asignados", "error")
+        error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
     });
 }
-
 
 // Función para abrir el modal y cargar permisos no asignados
 function abrirModal() {
@@ -213,7 +177,7 @@ $('#btnGuardarPermisos').click(function () {
 });
 
 
-// Eliminar permiso
+// EN DESAROLLO (Eliminar permiso)
 $('#tbPermisos').on('click', '.btn-eliminar-permiso', function () {
     var idPermiso = $(this).data('id');
     var idRol = $('#cboRol').val();
@@ -234,6 +198,40 @@ $('#tbPermisos').on('click', '.btn-eliminar-permiso', function () {
         });
     }
 });
+
+const dataTableOptions = {
+    ...dataTableConfig,
+    columns: [
+        { title: "#" },
+        { title: "Controlador" },
+        { title: "Acción" },
+        { title: "Descripcion" },
+        { title: "Tipo" },
+        {
+            defaultContent:
+                '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fa fa-pen"></i></button>' +
+                '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fa fa-trash"></i></button>',
+            width: "90"
+        }
+    ],
+};
+
+const dataTableNoAsignadosOptions = {
+    ...dataTableConfig,
+    columns: [
+        { title: "#" },
+        { title: "Controlador" },
+        { title: "Acción" },
+        { title: "Descripción" },
+        { title: "Tipo" },
+        {
+            title: "Seleccionar",
+            orderable: false,
+            width: "100px"
+        }
+    ],
+};
+
 $(document).ready(function () {
     dataTable = $("#datatable").DataTable(dataTableOptions);
     dataTableNoAsignados = $("#dataTablePermisosNoAsignados").DataTable(dataTableNoAsignadosOptions);

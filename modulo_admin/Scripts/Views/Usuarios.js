@@ -120,7 +120,7 @@ function Guardar() {
                 } else { showAlert("¡Error!", data.Mensaje || "No se pudo actualizar el usuario", "error") }
             }
         },
-        error: () => showAlert("Error", "Error al cargar los Usuarios", "error")
+        error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
     });
 }
 
@@ -131,7 +131,7 @@ $("#datatable tbody").on("click", '.btn-eliminar', function () {
 
     confirmarEliminacion().then((result) => {
         if (result.isConfirmed) {
-            showLoadingAlert("Eliminando usuario", "Por favor espere...")            
+            showLoadingAlert("Eliminando usuario", "Por favor espere...")
 
             // Enviar petición AJAX
             $.ajax({
@@ -148,7 +148,7 @@ $("#datatable tbody").on("click", '.btn-eliminar', function () {
                         showAlert("¡Eliminado!", response.Mensaje || "Usuario eliminado correctamente", "success")
                     } else { showAlert("Error", response.Mensaje || "No se pudo eliminar el usuario", "error") }
                 },
-                error: () => showAlert("Error", "Error al cargar los Usuarios", "error")
+                error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
             });
         }
     });

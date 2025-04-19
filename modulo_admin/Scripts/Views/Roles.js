@@ -4,35 +4,6 @@ const eliminarRolUrl = config.eliminarRolUrl;
 var filaSeleccionada
 let dataTable;
 
-const dataTableOptions = {
-    ...dataTableConfig,
-
-    ajax: {
-        url: listarRolUrl,
-        type: "GET",
-        dataType: "json"
-    },
-
-    columns: [        
-        { data: "descripcion" },        
-        {
-            data: "estado",
-            render: function (valor) {
-                return valor
-                    ? "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-success'>ACTIVO</span></div>"
-                    : "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-danger'>NO ACTIVO</span></div>";
-            },
-            width: "90"
-        },
-        {
-            defaultContent:
-                '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fa fa-pen"></i></button>' +
-                '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fa fa-trash"></i></button>',
-            width: "90"
-        }
-    ],
-};
-
 function abrirModal(json) {
     $("#idRol").val("0");
     $("#descripcion").val("");
@@ -47,41 +18,62 @@ function abrirModal(json) {
     $("#GuardarRol").modal("show");
 }
 
-//Boton seleccionar rol para editar
+
 $("#datatable tbody").on("click", '.btn-editar', function () {
     filaSeleccionada = $(this).closest("tr");
-
     var data = dataTable.row(filaSeleccionada).data()
-
     abrirModal(data)
 });
+
+function Guardar() {
+    var Rol = {
+        id_rol: $("#idRol").val(),
+        descripcion: $("#descripcion").val(),
+        estado: $("#estado").prop("checked")
+    };
+    
+    showLoadingAlert("Procesando", "Guardando datos del rol...");    
+
+    jQuery.ajax({
+        url: guardarRolUrl,
+        type: "POST",
+        data: JSON.stringify({ rol: Rol }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+
+        success: function (data) {
+            Swal.close();
+            $("#GuardarRol").modal("hide");
+
+            // Rol Nuevo
+            if (Rol.id_rol == 0) {
+                if (data.Resultado != 0) {
+                    Rol.id_rol = data.Resultado;
+                    dataTable.row.add(Rol).draw(false);            
+                    showAlert("¡Éxito!", `Rol creado correctamente`, "success");
+                } else { showAlert("Error", data.Mensaje || "Error al crear el rol", "error"); }
+            }
+            // Actualizar rol
+            else {
+                if (data.Resultado) {
+                    dataTable.row(filaSeleccionada).data(Rol);
+                    filaSeleccionada = null;
+                    showAlert("¡Éxito!", `Rol actualizado correctamente`, "success");
+                } else { showAlert("Error", data.Mensaje || "Error al actualizar el rol", "error"); }
+            }
+        },
+        error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
+    });
+}
 
 //Boton eliminar rol
 $("#datatable tbody").on("click", '.btn-eliminar', function () {
     const rolseleccionado = $(this).closest("tr");
     const data = dataTable.row(rolseleccionado).data();
     
-    Swal.fire({
-        ...swalConfig,
-        title: "¿Estás seguro?",
-        text: "¡Esta acción no se puede deshacer!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "Cancelar",
-        reverseButtons: true
-    }).then((result) => {
-
+    confirmarEliminacion().then((result) => {
         if (result.isConfirmed) {
-            // Mostrar loader
-            Swal.fire({
-                title: "Eliminando rol",
-                html: "Por favor espere...",
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            showLoadingAlert("Eliminando rol", "Por favor espere...")
 
             // Enviar petición AJAX
             $.ajax({
@@ -106,81 +98,41 @@ $("#datatable tbody").on("click", '.btn-eliminar', function () {
                             showAlert("Error", response.Mensaje || "Ocurrió un error al intentar eliminar el rol.", "error");
                             break;
                     }
-
                 },
-                error: (xhr) => {
-                    showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error");
-                }
+                error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
             });
         }
     });
 });
 
-function Guardar() {    
-    var Rol = {
-        id_rol: $("#idRol").val(),
-        descripcion: $("#descripcion").val(),
-        estado: $("#estado").prop("checked")
-    };
+const dataTableOptions = {
+    ...dataTableConfig,
 
-    // Mostrar loader de espera
-    Swal.fire({
-        title: "Procesando",
-        html: "Guardando datos del rol...",
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
+    ajax: {
+        url: listarRolUrl,
+        type: "GET",
+        dataType: "json"
+    },
 
-    jQuery.ajax({
-        url: guardarRolUrl,
-        type: "POST",
-        data: JSON.stringify({ rol: Rol }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-
-        success: function (data) {
-            Swal.close();
-
-            // Rol Nuevo
-            if (Rol.id_rol == 0) {
-                if (data.Resultado != 0) {
-                    Rol.id_rol = data.Resultado;
-                    dataTable.row.add(Rol).draw(false);
-                    $("#GuardarRol").modal("hide");
-                    console.log(data)
-                    showAlert("¡Éxito!", `Rol creado correctamente`, "success");
-                    
-                } else {
-                    $("#GuardarRol").modal("hide");
-
-                    showAlert("Error", data.Mensaje, "error");
-                   
-                }
-            }
-            // Actualizar rol
-            else {
-                if (data.Resultado) {
-                    dataTable.row(filaSeleccionada).data(Rol);
-                    filaSeleccionada = null;
-                    $("#GuardarRol").modal("hide");
-
-                    showAlert("¡Éxito!", `Rol actualizado correctamente`, "success");
-                    
-                } else {
-                    $("#GuardarRol").modal("hide");
-
-                    showAlert("Error", data.Mensaje, "error");
-                   
-                }
-            }
+    columns: [
+        { data: "descripcion" },
+        {
+            data: "estado",
+            render: function (valor) {
+                return valor
+                    ? "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-success'>ACTIVO</span></div>"
+                    : "<div class='d-flex justify-content-center align-items-center'><span class='badge text-bg-danger'>NO ACTIVO</span></div>";
+            },
+            width: "90"
         },
-        error: (xhr) => {            
-            showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error");
+        {
+            defaultContent:
+                '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fa fa-pen"></i></button>' +
+                '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fa fa-trash"></i></button>',
+            width: "90"
         }
-    });
-}
+    ],
+};
 
 $(document).ready(function () {
     dataTable = $("#datatable").DataTable(dataTableOptions);   
