@@ -109,26 +109,6 @@ namespace capa_negocio
             usuario.contrasena = CN_Recursos.EncriptarPassword(clave);
             int resultado = CD_Usuarios.RegistrarUsuario(usuario, out mensaje);
 
-
-            // Crear carpeta física para el usuario
-            try
-            {
-                // Ruta absoluta de la carpeta ARCHIVOS
-                string rutaBase = @"C:\Users\kenet\source\repos\Sistema-Integrado-de-Gestion-Didactica\modulo_admin\ARCHIVOS";
-                string rutaCarpeta = Path.Combine(rutaBase, "DEFAULT");
-
-                if (!Directory.Exists(rutaCarpeta))
-                {
-                    Directory.CreateDirectory(rutaCarpeta);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Loguear error (puede ser en un archivo o base de datos)
-                Console.WriteLine($"Error al crear la carpeta física: {ex.Message}");
-            }
-
-
             return resultado > 0 ? 1 : 0;
         }
 

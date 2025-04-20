@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using System.Web.Services.Description;
 using System.IO;
 using capa_datos;
+using Newtonsoft.Json;
 
 namespace modulo_admin.Controllers
 {
@@ -98,50 +99,54 @@ namespace modulo_admin.Controllers
         // Metodo para Listar los archivos
 
         // Metodo para Subir archivos (INCOMPLETO, EN DESAROLLO)
-        public JsonResult SubirArchivo(HttpPostedFileBase Archivo, CARPETA Carpeta)
+        public JsonResult SubirArchivo(HttpPostedFileBase ARCHIVO, string CARPETAJSON)
         {
+            // Deserializar el objeto carpeta desde el JSON recibido
+            CARPETA carpeta = JsonConvert.DeserializeObject<CARPETA>(CARPETAJSON);
             string mensaje = string.Empty;
-                
-            if (Archivo != null)                
+
+            if (ARCHIVO != null && carpeta != null)
             {
                 ARCHIVO archivo = new ARCHIVO();
                 string rutaGuardar = ConfigurationManager.AppSettings["ServidorArchivos"];
-                string rutaFisica = Server.MapPath(rutaGuardar);                
-                Carpeta.fk_id_usuario = (int)Session["IdUsuario"];
+                string rutaFisica = Server.MapPath(rutaGuardar);
+                int idCarpeta = carpeta.id_carpeta;
 
-                
-                if (Archivo.ContentLength > 10 * 1024 * 1024)
+                // Datos del archivo recibido
+                archivo.nombre = Path.GetFileName(ARCHIVO.FileName);
+                archivo.tipo = Path.GetExtension(ARCHIVO.FileName);
+                archivo.size = ARCHIVO.ContentLength;
+                archivo.ruta = Path.Combine(rutaGuardar, archivo.nombre);
+                archivo.fk_id_carpeta = idCarpeta;
+
+                // Crear la carpeta si no existe
+                if (!Directory.Exists(rutaFisica))
+                {
+                    Directory.CreateDirectory(rutaFisica);
+                }
+
+                // Validar tamaño del archivo
+                if (ARCHIVO.ContentLength > 10 * 1024 * 1024)
                 {
                     mensaje = "El archivo no debe superar los 10 MB";
                     return Json(new { Respuesta = false, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
                 }
 
-                archivo.nombre = Path.GetFileName(Archivo.FileName);
-                archivo.tipo = Path.GetExtension(Archivo.FileName);
-                archivo.size = Archivo.ContentLength;
-                archivo.ruta = Path.Combine(rutaGuardar, Carpeta.fk_id_usuario.ToString(), Carpeta.nombre);
-                archivo.fk_id_carpeta = Carpeta.id_carpeta;
-
                 try
                 {
-                    string rutaUsuario = Path.Combine(rutaFisica, Carpeta.fk_id_usuario.ToString(), Carpeta.nombre);
-
-                    if (!Directory.Exists(rutaUsuario))
-                    {
-                        Directory.CreateDirectory(rutaUsuario);
-                    }
-
-                    Archivo.SaveAs(Path.Combine(rutaUsuario, archivo.nombre));
+                    // Guardar el archivo físicamente
+                    ARCHIVO.SaveAs(Path.Combine(rutaFisica, archivo.nombre));
+                    mensaje = "Archivo subido exitosamente";
                 }
                 catch (Exception ex)
                 {
                     mensaje = "Ocurrió un error al guardar el archivo: " + ex.Message;
                     return Json(new { Respuesta = false, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
                 }
-                                
-                int resultado = CN_Archivo.SubirArchivo(archivo, out mensaje);
-                return Json(new { Respuesta = (resultado == 1), Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { Respuesta = true, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
             }
+
             mensaje = "No se seleccionó ningún archivo.";
             return Json(new { Respuesta = false, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }

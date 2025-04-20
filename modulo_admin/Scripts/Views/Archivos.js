@@ -2,6 +2,7 @@
 const guardarCarpetaUrl = config.guardarCarpetaUrl;
 const eliminarCarpetaUrl = config.eliminarCarpetaUrl;
 const compartirCarpetaUrl = config.compartirCarpetaUrl;
+const subirArchivoUrl = config.subirArchivoUrl;
 
 function abrirModalCarpeta(json) {
     $("#idCarpeta").val("0");
@@ -191,8 +192,8 @@ $(document).on('click', '.btn-subirArchivo', function (e) {
 function SubirArchivo() {
     var ArchivoSelecionado = $("#file")[0].files[0];
     var Carpeta = {
-        id_carpeta: $("#idCarpeta2").val(),
-        nombre: $("#nombre2").val(),
+        id_carpeta: 16,
+        nombre: "DEFAULT_KMACIS",
     };
 
     // Validar que se haya seleccionado un archivo
@@ -216,11 +217,11 @@ function SubirArchivo() {
 
     // Preparar el objeto FormData
     var request = new FormData();
-    request.append("Carpeta", JSON.stringify(Carpeta));
-    request.append("Archivo", ArchivoSelecionado); // Agregar el archivo al FormData
+    request.append("CARPETAJSON", JSON.stringify(Carpeta));
+    request.append("ARCHIVO", ArchivoSelecionado);
 
     showLoadingAlert("Procesando", "Subiendo archivo...");
-    
+
     jQuery.ajax({
         url: subirArchivoUrl,
         type: "POST",
@@ -232,7 +233,7 @@ function SubirArchivo() {
             $("#subirArchivo").modal("hide");
 
             if (data.Respuesta) {
-                Swal.fire("Éxito", "Archivo subido correctamente", "success");
+                Swal.fire("Éxito", data.Mensaje, "success");
                 // Aquí puedes agregar lógica adicional, como recargar la lista de archivos
             } else {
                 Swal.fire("Error", data.Mensaje, "error");
