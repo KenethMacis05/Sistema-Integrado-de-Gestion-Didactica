@@ -825,6 +825,15 @@ BEGIN
 		WHERE id_carpeta = @IdCarpeta;
         SET @Resultado = 1
     END
+
+    IF EXISTS (SELECT 1 FROM ARCHIVO WHERE fk_id_carpeta = @IdCarpeta)
+    BEGIN
+        UPDATE ARCHIVO
+		SET estado = 0,
+		fecha_eliminacion = GETDATE()
+		WHERE fk_id_carpeta = @IdCarpeta;
+        SET @Resultado = 1
+    END
 END
 GO
 
@@ -844,6 +853,139 @@ BEGIN
 		WHERE id_carpeta = @IdCarpeta;
         SET @Resultado = 1
     END
+
+    IF EXISTS (SELECT 1 FROM ARCHIVO WHERE fk_id_carpeta = @IdCarpeta)
+    BEGIN
+        UPDATE ARCHIVO
+		SET estado = 1,
+		fecha_eliminacion = NULL
+		WHERE fk_id_carpeta = @IdCarpeta;
+        SET @Resultado = 1
+    END
+END
+GO
+
+-- (1) PROCEDIMIENTO ALMACENADO PARA SUBIR UN ARCHIVO
+CREATE OR ALTER PROCEDURE usp_SubirArchivo
+    @Nombre VARCHAR(60),
+	@Ruta VARCHAR(255),
+	@Size INT,
+	@Tipo VARCHAR(60),
+    @Carpeta INT,
+    
+    @Resultado INT OUTPUT,
+    @Mensaje VARCHAR(500) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @Resultado = 0;
+    SET @Mensaje = '';
+
+    BEGIN TRY
+        -- Verificar si la carpeta existe
+        IF NOT EXISTS (SELECT 1 FROM CARPETA WHERE id_carpeta = @Carpeta AND estado = 1)
+        BEGIN
+            SET @Mensaje = 'La carpeta no existe o fue eliminada';
+            RETURN;
+        END
+
+        -- Verificar si ya existe un archivo con ese nombre para la misma carpeta
+        IF EXISTS (
+            SELECT 1 
+            FROM ARCHIVO 
+            WHERE nombre = @Nombre 
+              AND fk_id_carpeta = @Carpeta              
+              AND estado = 1
+        )
+        BEGIN
+            SET @Mensaje = 'Ya existe un archivo con este nombre en la carpeta selecionada';
+            RETURN;
+        END
+
+        -- Insertar la nueva carpeta
+        INSERT INTO ARCHIVO(nombre, tipo, size, ruta, fk_id_carpeta) 
+        VALUES (@Nombre, @Tipo, @Size, @Ruta, @Carpeta)
+
+        SET @Resultado = SCOPE_IDENTITY();
+        SET @Mensaje = 'Archivo subido exitosamente';
+    END TRY
+    BEGIN CATCH
+        SET @Resultado = 0;
+        SET @Mensaje = 'Error al subir el archivo: ' + ERROR_MESSAGE();
+    END CATCH
+END
+GO
+
+-- (2) PROCEDIMIENTO ALMACENADO PARA RENOMBRAR ARCHIVO
+CREATE PROCEDURE usp_EditarArchivo
+    @IdArchivo INT,
+    @Nombre VARCHAR(60),
+    @Carpeta VARCHAR(255),
+
+    @Resultado INT OUTPUT,
+    @Mensaje VARCHAR(255) OUTPUT
+AS
+BEGIN
+    SET @Resultado = 0
+    SET @Mensaje = ''
+
+    -- Verificar si el archivo existe
+    IF NOT EXISTS (SELECT 1 FROM ARCHIVO WHERE id_archivo = @IdArchivo)
+    BEGIN
+        SET @Mensaje = 'El archivo no existe'
+        RETURN
+    END
+
+    -- Verificar si el nombre del archivo ya existe en la carpeta (excluyendo al archivo actual)
+    IF EXISTS (SELECT 1 FROM ARCHIVO WHERE nombre = @Nombre AND id_archivo != @IdArchivo AND fk_id_carpeta != @Carpeta)
+    BEGIN
+        SET @Mensaje = 'El nombre del archivo ya está en uso en la carpeta actual'
+        RETURN
+    END
+
+    -- Renombrar archivo
+    UPDATE ARCHIVO SET nombre = @Nombre WHERE id_archivo = @IdArchivo
+
+    SET @Resultado = 1
+    SET @Mensaje = 'Archivo renombrado exitosamente'
+END
+GO
+
+-- (3) PROCEDIMIENTO ALMACENADO PARA ELIMINAR UN ARCHIVO
+CREATE PROCEDURE usp_EliminarArchivo
+    @IdArchivo INT,
+    @Resultado BIT OUTPUT
+AS
+BEGIN
+    SET @Resultado = 0
+    
+    IF EXISTS (SELECT 1 FROM ARCHIVO WHERE id_archivo = @IdArchivo)
+    BEGIN
+        UPDATE ARCHIVO
+		SET estado = 0,
+		fecha_eliminacion = GETDATE()
+		WHERE id_archivo = @IdArchivo;
+        SET @Resultado = 1
+    END
+END
+GO
+
+-- (4) PROCEDIMIENTO ALMACENADO PARA RESTABLECER UN ARCHIVO
+CREATE PROCEDURE usp_RestablecerArchivo
+    @IdArchivo INT,
+    @Resultado BIT OUTPUT
+AS
+BEGIN
+    SET @Resultado = 0
+    
+    IF EXISTS (SELECT 1 FROM ARCHIVO WHERE id_archivo = @IdArchivo)
+    BEGIN
+        UPDATE ARCHIVO
+		SET estado = 1,
+		fecha_eliminacion = NULL
+		WHERE id_archivo = @IdArchivo;
+        SET @Resultado = 1
+    END
 END
 GO
 
@@ -854,6 +996,19 @@ BEGIN
     SET NOCOUNT ON;
 
     DELETE FROM CARPETA
+    WHERE estado = 0
+    AND fecha_eliminacion IS NOT NULL
+    AND DATEDIFF(DAY, fecha_eliminacion, GETDATE()) > 30;
+END
+GO
+
+-- (6) PROCEDIMIENTO ALMACENADO PARA ELIMINAR DIFINITIVAMENTE UN ARCHIVO
+CREATE PROCEDURE usp_EliminarArchivosExpiradas
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM ARCHIVO
     WHERE estado = 0
     AND fecha_eliminacion IS NOT NULL
     AND DATEDIFF(DAY, fecha_eliminacion, GETDATE()) > 30;
