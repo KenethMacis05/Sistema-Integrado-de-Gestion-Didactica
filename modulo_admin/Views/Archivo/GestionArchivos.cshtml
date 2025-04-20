@@ -235,6 +235,62 @@
             compartirCarpetaUrl: '@Url.Action("CompartirCarpeta", "Archivo")',
             subirArchivoUrl: '@Url.Action("SubirArchivo", "Archivo")'
         };
+
+        function SubirArchivo() {
+            var ArchivoSelecionado = $("#file")[0].files[0];
+            var Carpeta = {
+                id_carpeta: 16,
+                nombre: "DEFAULT_KMACIS",
+            };
+
+            // Validar que se haya seleccionado un archivo
+            if (!ArchivoSelecionado) {
+                Swal.fire("Campo obligatorio", "No ingresó ningún archivo para subir", "warning");
+                return;
+            }
+
+            // Validar tamaño del archivo (10 MB como máximo)
+            if (ArchivoSelecionado.size > 10 * 1024 * 1024) {
+                Swal.fire("Archivo demasiado grande", "El archivo no debe superar los 10 MB", "error");
+                return;
+            }
+
+            // Validar tipo de archivo permitido
+            const tiposPermitidos = ["image/jpeg", "image/png", "application/pdf"];
+            if (!tiposPermitidos.includes(ArchivoSelecionado.type)) {
+                Swal.fire("Tipo de archivo no permitido", "Solo se permiten imágenes y PDFs", "error");
+                return;
+            }
+
+            // Preparar el objeto FormData
+            var request = new FormData();
+            request.append("CARPETAJSON", JSON.stringify(Carpeta));
+            request.append("ARCHIVO", ArchivoSelecionado);
+
+            showLoadingAlert("Procesando", "Subiendo archivo...");
+
+            jQuery.ajax({
+                url: '@Url.Action("SubirArchivo2", "Archivo")',
+                type: "POST",
+                data: request,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    Swal.close();
+                    $("#subirArchivo").modal("hide");
+
+                    if (data.Respuesta) {
+                        Swal.fire("Éxito", data.Mensaje, "success");
+                        // Aquí puedes agregar lógica adicional, como recargar la lista de archivos
+                    } else {
+                        Swal.fire("Error", data.Mensaje, "error");
+                    }
+                },
+                error: (xhr) => {
+                    Swal.fire("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error");
+                }
+            });
+        }
     </script>
     <script src="@Url.Content("~/Scripts/Views/Archivos.js")" type="text/javascript"></script>
 }

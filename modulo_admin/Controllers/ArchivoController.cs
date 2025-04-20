@@ -99,7 +99,8 @@ namespace modulo_admin.Controllers
         // Metodo para Listar los archivos
 
         // Metodo para Subir archivos (INCOMPLETO, EN DESAROLLO)
-        public JsonResult SubirArchivo(HttpPostedFileBase ARCHIVO, string CARPETAJSON)
+        [HttpPost]
+        public JsonResult SubirArchivo2(HttpPostedFileBase ARCHIVO, string CARPETAJSON)
         {
             // Deserializar el objeto carpeta desde el JSON recibido
             CARPETA carpeta = JsonConvert.DeserializeObject<CARPETA>(CARPETAJSON);
