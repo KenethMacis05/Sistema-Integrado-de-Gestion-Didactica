@@ -45,7 +45,7 @@
                         <button type="button" class="btn btn-secondary" onclick="abrirModalCarpeta(null)">
                             <i class="fa fa-folder me-2"></i>Crear Carpeta
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="abrirModalSubirArchivo()">
+                        <button type="button" class="btn btn-primary" onclick="abrirModalSubirArchivo(null)">
                             <i class="fa fa-file me-2"></i>Subir Archivo
                         </button>
                     </div>
@@ -136,7 +136,7 @@
 
 
 <!-- Modal para crear una nueva carpeta-->
-<div class="modal fade modal-lg" id="createCarpeta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="createCarpeta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-light" style="background-color: #0072BB">
@@ -145,7 +145,7 @@
             </div>
             <div class="modal-body g-2">
 
-                <input type="hidden" name="idCarpeta" id="idCarpeta" value="0">
+                <input type="hidden" name="idCarpeta" id="idCarpeta" value="0">                
 
                 <div class="row mb-3">
                     <div class="input-group flex-nowrap">
@@ -191,6 +191,36 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="compartirCarpeta()">Compartir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para subir archivo -->
+<div class="modal fade" id="subirArchivo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-light" style="background-color: #0072BB">
+                <h5 class="modal-title">Archivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body g-2">
+                <input type="text" name="idCarpeta2" id="idCarpeta2" value="0">
+                <input type="text" name="nombre2" id="nombre2">
+
+                <div class="row mb-3">
+                    <label for="formFile" class="form-label">Seleccionar archivo</label>
+                    <input class="form-control" type="file" id="file">
+                </div>
+
+                <div class="modal-footer pe-0 ps-0 flex-nowrap ">
+                    <button type="button" class="btn btn-danger w-50" data-bs-dismiss="modal">
+                        <i class="fas fa-times-circle me-2"></i>Cerrar
+                    </button>
+                    <button type="submit" style="background: #0072BB " onclick="SubirArchivo()" class="btn btn-success w-50">
+                        <i class="fas fa-save me-2"></i>Guardar
+                    </button>
+                </div>
             </div>
         </div>
     </div>

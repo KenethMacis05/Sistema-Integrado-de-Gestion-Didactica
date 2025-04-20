@@ -1,4 +1,4 @@
-﻿-- Consultas para verificar los registros de la tabla CARPETA
+﻿ -- Consultas para verificar los registros de la tabla CARPETA
 SELECT TOP 10 *
 FROM CARPETA 
 WHERE fk_id_usuario = 2

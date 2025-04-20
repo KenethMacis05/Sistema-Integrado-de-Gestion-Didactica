@@ -176,19 +176,29 @@ GO
 
 -- (1) REGISTROS EN TABLA CARPETA
 INSERT INTO CARPETA (nombre, fk_id_usuario) 
-    VALUES ('Fotos', 1), ('Documentos', 1), ('Videos', 1), ('Música', 1),
-           ('Fotos', 2), ('Documentos', 2), ('Videos', 2), ('Música', 2)
+    VALUES ('Fotos', 1), ('Documentos', 1), ('Videos', 1), ('Música', 1), ('DEFAULT', 1),
+           ('Fotos', 2), ('Documentos', 2), ('Videos', 2), ('Música', 2), ('DEFAULT', 2)
 GO
+
+INSERT INTO CARPETA (nombre, fk_id_usuario, carpeta_padre)
+VALUES 
+('Universidad', 1, 1),
+('Trabajo', 1, 1),
+('Proyectos', 1, 1);
+
+INSERT INTO CARPETA (nombre, fk_id_usuario, carpeta_padre)
+VALUES 
+('Proyecto Final', 1, (SELECT id_carpeta FROM CARPETA WHERE nombre = 'Universidad'));
 
 -- (2) REGISTROS EN TABLA ARCHIVO
-INSERT INTO ARCHIVO (nombre, tipo, fk_id_carpeta) 
-    VALUES ('foto1.jpg', 'imagen', 1), ('documento1.pdf', 'documento', 2), 
-           ('video1.mp4', 'video', 3), ('musica1.mp3', 'audio', 4),
-           ('foto2.jpg', 'imagen', 5), ('documento2.pdf', 'documento', 6), 
-           ('video2.mp4', 'video', 7), ('musica2.mp3', 'audio', 8)
+INSERT INTO ARCHIVO (nombre, size, tipo, fk_id_carpeta) 
+    VALUES ('foto1.jpg', '1111', 'imagen', 1), ('documento1.pdf', '1111', 'documento', 2), 
+           ('video1.mp4', '1111', 'video', 3), ('musica1.mp3', '1111', 'audio', 4),
+           ('foto2.jpg', '1111', 'imagen', 5), ('documento2.pdf', '1111', 'documento', 6), 
+           ('video2.mp4', '1111', 'video', 7), ('musica2.mp3', '1111', 'audio', 8)
 GO
 
--- (3) REGISTROS EN TABLA DETALLEARCHIVO
+-- (3) REGISTROS EN TABLA ARCHIVO/CARPETAS COMPARTIDAS
 INSERT INTO DETALLEARCHIVO (correo, fk_id_archivo, fk_id_carpeta, fk_id_usuario)
 VALUES 
     ('ken123oficial@gmail.com', 1, 1, 1),

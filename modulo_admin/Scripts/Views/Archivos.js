@@ -124,16 +124,24 @@ function cargarCarpetas() {
                                         <i class="fas fa-ellipsis-v"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item btn-subirArchivo" href="#"
+                                            data-carpeta-id="${carpeta.id_carpeta}" 
+                                            data-carpeta-nombre="${carpeta.nombre}">
+                                            <i class="fas fa-file me-2"></i>Subir Archivo</a>
+                                        </li>
                                         <li><a class="dropdown-item btn-compartir" href="#" 
                                             data-carpeta-id="${carpeta.id_carpeta}">
                                             <i class="fas fa-share me-2"></i>Compartir</a></li>
                                         <li><a class="dropdown-item btn-descargar" href="#" 
                                             data-carpeta-id="${carpeta.id_carpeta}">
                                             <i class="fas fa-download me-2"></i>Descargar</a></li>
-                                        <li><a class="dropdown-item btn-editar" href="#" 
+                                        <li>
+                                            <a class="dropdown-item btn-editar" href="#" 
                                             data-carpeta-id="${carpeta.id_carpeta}" 
                                             data-carpeta-nombre="${carpeta.nombre}">
-                                            <i class="fas fa-edit me-2"></i>Renombrar</a></li>
+                                            <i class="fas fa-edit me-2"></i>Renombrar</a>
+                                        </li>
                                         <li><a class="dropdown-item btn-eliminar" href="#" 
                                             data-carpeta-id="${carpeta.id_carpeta}">
                                             <i class="fas fa-trash me-2"></i>Eliminar</a></li>
@@ -154,6 +162,66 @@ function cargarCarpetas() {
         },
         complete: () => $('#contenedor-carpetas').LoadingOverlay("hide")
     });
+}
+
+// EN DESARROLLO (SUBIR ARCHIVOS)
+function abrirModalSubirArchivo(json) {
+    $("#idCarpeta2").val("0");
+    $("#nombre2").val("");
+    $("#file").val("");
+
+    if (json !== null) {
+        $("#idCarpeta2").val(json.id_carpeta);
+        $("#nombre2").val(json.nombre);
+    }
+    $("#subirArchivo").modal("show");
+}
+
+// EN DESARROLLO (Seleccionar los datos de la carpeta para subir un archivo)
+$(document).on('click', '.btn-subirArchivo', function (e) {
+    e.preventDefault();
+    const data = {
+        id_carpeta: $(this).data('carpeta-id'),
+        nombre: $(this).data('carpeta-nombre')
+    };
+    abrirModalSubirArchivo(data);
+});
+
+// EN DESARROLLO
+function SubirArchivo() {
+    var ArchivoSelecionado = $("#file")[0].files[0]
+    var Carpeta = {
+        id_carpeta: $("#idCarpeta2").val(),
+        nombre: $("#nombre2").val(),
+    };
+
+    if (!ArchivoSelecionado) {
+        Swal.fire("Campo obligatorio", "No ingreso ningun archivo para subir", "warning", true);
+        return;
+    }
+
+    var request = new FormData();
+    request.append("Carpeta", JSON.stringify(Carpeta))
+    request.append("ArchivoSelecionado", JSON.stringify(Archivo))
+
+    showLoadingAlert("Procesando", "Subiendo archivo...");
+
+    jQuery.ajax({
+        url: subirArchivoUrl,
+        type: "POST",
+        data: request,
+        processData: false,
+        contentType: false,
+
+        success: function (data) {
+            Swal.close();
+            $("#subirArchivo").modal("hide");
+
+            //LOGICA DEL CODIGO
+        },
+        error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
+    });
+    
 }
 
 // Efectos hover para carpetas

@@ -79,6 +79,7 @@ namespace capa_datos
                     // Agregar parámetros
                     cmd.Parameters.AddWithValue("Nombre", carpeta.nombre);
                     cmd.Parameters.AddWithValue("IdUsuario", carpeta.fk_id_usuario);                    
+                    cmd.Parameters.AddWithValue("CarpetaPadre", carpeta.carpeta_padre);                    
 
                     // Parámetros de salida
                     cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;

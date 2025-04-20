@@ -13,6 +13,7 @@ namespace capa_entidad
         public DateTime fecha_registro { get; set; }
         public bool estado { get; set; }
         public int fk_id_usuario { get; set; }
+        public int carpeta_padre { get; set; }
         public USUARIOS usuario { get; set; }
     }
 }

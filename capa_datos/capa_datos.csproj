@@ -143,6 +143,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CD_Archivo.cs" />
     <Compile Include="CD_Carpeta.cs" />
     <Compile Include="CD_Controller.cs" />
     <Compile Include="CD_Menu.cs" />

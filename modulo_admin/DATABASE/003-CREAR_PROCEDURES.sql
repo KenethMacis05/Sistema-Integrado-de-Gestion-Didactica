@@ -358,6 +358,11 @@ BEGIN
 
     SET @Resultado = SCOPE_IDENTITY()
     SET @Mensaje = 'Usuario registrado exitosamente'
+
+    -- Insertar la carpeta por defecto del usuario
+    INSERT INTO CARPETA (nombre, fk_id_usuario)
+    VALUES ('DEFAULT', @Resultado)
+
 END
 GO
 --------------------------------------------------------------------------------------------------------------------
@@ -676,18 +681,25 @@ BEGIN
         RETURN
     END
 
-    -- Validar si el usuario tiene carpetas creadas
-    IF NOT EXISTS (SELECT 1 FROM CARPETA WHERE fk_id_usuario = @IdUsuario)
+    -- Validar si el usuario tiene carpetas creadas (excluyendo la DEFAULT)
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM CARPETA 
+        WHERE fk_id_usuario = @IdUsuario 
+          AND nombre <> 'DEFAULT'
+    )
     BEGIN
         SET @Resultado = 0
         SET @Mensaje = 'El usuario aún no ha creado carpetas'
         RETURN
     END
 
-    -- Si todo está bien, mostrar las 10 carpetas más recientes
+    -- Mostrar las 10 carpetas más recientes, excluyendo DEFAULT
     SELECT TOP 10 * 
     FROM CARPETA 
-    WHERE fk_id_usuario = @IdUsuario AND estado = 1
+    WHERE fk_id_usuario = @IdUsuario 
+      AND estado = 1 
+      AND nombre <> 'DEFAULT'
     ORDER BY fecha_registro DESC
 
     SET @Resultado = 1
@@ -698,40 +710,53 @@ GO
 --------------------------------------------------------------------------------------------------------------------
 
 -- (2) PROCEDIMIENTO ALMACENADO PARA REGISTRAR UNA NUEVA CARPETA
-CREATE PROCEDURE usp_CrearCarpeta
+CREATE OR ALTER PROCEDURE usp_CrearCarpeta
     @Nombre VARCHAR(60),
     @IdUsuario INT,
+    @CarpetaPadre INT = NULL,
     @Resultado INT OUTPUT,
-    @Mensaje VARCHAR(255) OUTPUT
+    @Mensaje VARCHAR(500) OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
     SET @Resultado = 0;
     SET @Mensaje = '';
 
-    -- Verificar si el usuario existe
-    IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario)
-    BEGIN
-        SET @Mensaje = 'El usuario no existe'
-        RETURN
-    END
+    BEGIN TRY
+        -- Verificar si el usuario existe
+        IF NOT EXISTS (SELECT 1 FROM USUARIOS WHERE id_usuario = @IdUsuario AND estado = 1)
+        BEGIN
+            SET @Mensaje = 'El usuario no existe o está inactivo';
+            RETURN;
+        END
 
-    -- Verificar si ya existe una carpeta con ese nombre para el mismo usuario
-    IF EXISTS (SELECT 1 FROM CARPETA WHERE nombre = @Nombre AND fk_id_usuario = @IdUsuario AND estado = 1)
-    BEGIN
-        SET @Mensaje = 'El nombre de la carpeta ya está en uso para este usuario'
-        RETURN
-    END	    
+        -- Verificar si ya existe una carpeta con ese nombre para el mismo usuario
+        IF EXISTS (
+            SELECT 1 
+            FROM CARPETA 
+            WHERE nombre = @Nombre 
+              AND fk_id_usuario = @IdUsuario 
+              AND ISNULL(carpeta_padre, 0) = ISNULL(@CarpetaPadre, 0)
+              AND estado = 1
+        )
+        BEGIN
+            SET @Mensaje = 'Ya existe una carpeta con este nombre en la ubicación especificada';
+            RETURN;
+        END
 
-    -- Insertar la nueva carpeta
-    INSERT INTO CARPETA (nombre, fk_id_usuario) 
-    VALUES (@Nombre, @IdUsuario)
+        -- Insertar la nueva carpeta
+        INSERT INTO CARPETA (nombre, fk_id_usuario, carpeta_padre) 
+        VALUES (@Nombre, @IdUsuario, @CarpetaPadre)
 
-    SET @Resultado = SCOPE_IDENTITY()
-    SET @Mensaje = 'Carpeta creada exitosamente'
+        SET @Resultado = SCOPE_IDENTITY();
+        SET @Mensaje = 'Carpeta creada exitosamente';
+    END TRY
+    BEGIN CATCH
+        SET @Resultado = 0;
+        SET @Mensaje = 'Error al crear la carpeta: ' + ERROR_MESSAGE();
+    END CATCH
 END
 GO
-
 --------------------------------------------------------------------------------------------------------------------
 
 -- (3) PROCEDIMIENTO ALMACENADO PARA MODIFICAR LOS DATOS DE UNA CARPETA

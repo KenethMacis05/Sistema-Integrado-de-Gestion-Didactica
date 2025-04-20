@@ -3,10 +3,14 @@ using capa_negocio;
 using modulo_admin.Filters;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using System.IO;
+using capa_datos;
 
 namespace modulo_admin.Controllers
 {
@@ -90,11 +94,45 @@ namespace modulo_admin.Controllers
         #region Archivos
 
 
-        // Metodo para Listar las carpetas
+        // Metodo para Listar los archivos
 
-        // Metodo para Guardar carpetas
+        // Metodo para Subir archivos (INCOMPLETO, EN DESAROLLO)
+        public JsonResult SubirArchivo(HttpPostedFileBase Archivo, CARPETA Carpeta)
+        {
+            string mensaje = string.Empty;
+                
+            if (Archivo != null)                
+            {
+                ARCHIVO archivo = new ARCHIVO();                 
+                string rutaGuardar = ConfigurationManager.AppSettings["ServidorArchivos"];
+                Carpeta.fk_id_usuario = (int)Session["IdUsuario"];
 
-        // Metodo para Borrar carpetas
+                archivo.nombre = Path.GetFileName(Archivo.FileName);
+                archivo.tipo = Path.GetExtension(Archivo.FileName);
+                archivo.size = Path. (Tamaño del archivo);
+                archivo.ruta = rutaGuardar;
+                archivo.fk_id_carpeta = Carpeta.id_carpeta;       
+
+                try
+                {
+                    if (archivo.fk_id_carpeta == 0)
+                    {
+                        Archivo.SaveAs(Path.Combine(rutaGuardar, Carpeta.fk_id_usuario, archivo.nombre));
+                    }
+                    Archivo.SaveAs(Path.Combine(rutaGuardar, Carpeta.fk_id_usuario, Carpeta.nombre, archivo.nombre));
+                }
+                catch (Exception ex)
+                {
+                    string msg = ex.Message;
+                    throw;
+                }
+
+                bool resultado = CN_Archivo.SubirArchivo(archivo, out mensaje);                
+                return Json(new { Respuesta = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            }            
+        }
+
+        // Metodo para Borrar archivos
 
         #endregion
 
