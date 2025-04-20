@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +108,25 @@ namespace capa_negocio
             // Encriptar la contraseña y registrar el usuario
             usuario.contrasena = CN_Recursos.EncriptarPassword(clave);
             int resultado = CD_Usuarios.RegistrarUsuario(usuario, out mensaje);
+
+            if (resultado > 0)
+            {
+                // Crear carpeta física para el usuario
+                try
+                {
+                    string rutaBase = System.AppDomain.CurrentDomain.BaseDirectory;
+                    string rutaCarpeta = Path.Combine(rutaBase, "ARCHIVOS", $"DEFAULT_{usuario.usuario}");
+
+                    if (!Directory.Exists(rutaCarpeta))
+                    {
+                        Directory.CreateDirectory(rutaCarpeta);
+                    }
+                }
+                catch (Exception ex)
+                {                    
+                    Console.WriteLine($"Error al crear la carpeta para el usuario: {ex.Message}");
+                }
+            }
 
             return resultado > 0 ? 1 : 0;
         }

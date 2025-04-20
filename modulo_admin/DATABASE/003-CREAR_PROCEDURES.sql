@@ -359,9 +359,11 @@ BEGIN
     SET @Resultado = SCOPE_IDENTITY()
     SET @Mensaje = 'Usuario registrado exitosamente'
 
+    DECLARE @CarpetaRaiz VARCHAR(255) = CONCAT('DEFAULT_', @Usuario)
+
     -- Insertar la carpeta por defecto del usuario
     INSERT INTO CARPETA (nombre, fk_id_usuario)
-    VALUES ('DEFAULT', @Resultado)
+    VALUES (@CarpetaRaiz, @Resultado)
 
 END
 GO
