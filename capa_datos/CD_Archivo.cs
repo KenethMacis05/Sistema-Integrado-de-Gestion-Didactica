@@ -17,7 +17,7 @@ namespace capa_datos
             return 
         }
 
-        public int SubirArchivo(ARCHIVO archivo, out string mensaje)
+        public bool SubirArchivo(ARCHIVO archivo, out string mensaje)
         {
             
         }

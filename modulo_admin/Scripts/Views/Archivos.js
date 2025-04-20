@@ -164,7 +164,7 @@ function cargarCarpetas() {
     });
 }
 
-// EN DESARROLLO (SUBIR ARCHIVOS)
+// EN DESARROLLO (Abrir modal para subir archivo)
 function abrirModalSubirArchivo(json) {
     $("#idCarpeta2").val("0");
     $("#nombre2").val("");
@@ -187,41 +187,61 @@ $(document).on('click', '.btn-subirArchivo', function (e) {
     abrirModalSubirArchivo(data);
 });
 
-// EN DESARROLLO
+// EN DESARROLLO (Subir archivo)
 function SubirArchivo() {
-    var ArchivoSelecionado = $("#file")[0].files[0]
+    var ArchivoSelecionado = $("#file")[0].files[0];
     var Carpeta = {
         id_carpeta: $("#idCarpeta2").val(),
         nombre: $("#nombre2").val(),
     };
 
+    // Validar que se haya seleccionado un archivo
     if (!ArchivoSelecionado) {
-        Swal.fire("Campo obligatorio", "No ingreso ningun archivo para subir", "warning", true);
+        Swal.fire("Campo obligatorio", "No ingresó ningún archivo para subir", "warning");
         return;
     }
 
+    // Validar tamaño del archivo (10 MB como máximo)
+    if (ArchivoSelecionado.size > 10 * 1024 * 1024) {
+        Swal.fire("Archivo demasiado grande", "El archivo no debe superar los 10 MB", "error");
+        return;
+    }
+
+    // Validar tipo de archivo permitido
+    const tiposPermitidos = ["image/jpeg", "image/png", "application/pdf"];
+    if (!tiposPermitidos.includes(ArchivoSelecionado.type)) {
+        Swal.fire("Tipo de archivo no permitido", "Solo se permiten imágenes y PDFs", "error");
+        return;
+    }
+
+    // Preparar el objeto FormData
     var request = new FormData();
-    request.append("Carpeta", JSON.stringify(Carpeta))
-    request.append("ArchivoSelecionado", JSON.stringify(Archivo))
+    request.append("Carpeta", JSON.stringify(Carpeta));
+    request.append("Archivo", ArchivoSelecionado); // Agregar el archivo al FormData
 
     showLoadingAlert("Procesando", "Subiendo archivo...");
-
+    
     jQuery.ajax({
         url: subirArchivoUrl,
         type: "POST",
         data: request,
         processData: false,
         contentType: false,
-
         success: function (data) {
             Swal.close();
             $("#subirArchivo").modal("hide");
 
-            //LOGICA DEL CODIGO
+            if (data.Respuesta) {
+                Swal.fire("Éxito", "Archivo subido correctamente", "success");
+                // Aquí puedes agregar lógica adicional, como recargar la lista de archivos
+            } else {
+                Swal.fire("Error", data.Mensaje, "error");
+            }
         },
-        error: (xhr) => { showAlert("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error"); }
+        error: (xhr) => {
+            Swal.fire("Error", `Error al conectar con el servidor: ${xhr.statusText}`, "error");
+        }
     });
-    
 }
 
 // Efectos hover para carpetas

@@ -18,7 +18,8 @@ namespace modulo_admin.Controllers
     public class ArchivoController : Controller
     {     
         CN_Carpeta CN_Carpeta = new CN_Carpeta();
-        
+        CN_Archivo CN_Archivo = new CN_Archivo();
+
         #region Carpetas
 
         public ActionResult GestionArchivos()
@@ -103,33 +104,46 @@ namespace modulo_admin.Controllers
                 
             if (Archivo != null)                
             {
-                ARCHIVO archivo = new ARCHIVO();                 
+                ARCHIVO archivo = new ARCHIVO();
                 string rutaGuardar = ConfigurationManager.AppSettings["ServidorArchivos"];
+                string rutaFisica = Server.MapPath(rutaGuardar);                
                 Carpeta.fk_id_usuario = (int)Session["IdUsuario"];
+
+                
+                if (Archivo.ContentLength > 10 * 1024 * 1024)
+                {
+                    mensaje = "El archivo no debe superar los 10 MB";
+                    return Json(new { Respuesta = false, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+                }
 
                 archivo.nombre = Path.GetFileName(Archivo.FileName);
                 archivo.tipo = Path.GetExtension(Archivo.FileName);
-                archivo.size = Path. (Tamaño del archivo);
-                archivo.ruta = rutaGuardar;
-                archivo.fk_id_carpeta = Carpeta.id_carpeta;       
+                archivo.size = Archivo.ContentLength;
+                archivo.ruta = Path.Combine(rutaGuardar, Carpeta.fk_id_usuario.ToString(), Carpeta.nombre);
+                archivo.fk_id_carpeta = Carpeta.id_carpeta;
 
                 try
                 {
-                    if (archivo.fk_id_carpeta == 0)
+                    string rutaUsuario = Path.Combine(rutaFisica, Carpeta.fk_id_usuario.ToString(), Carpeta.nombre);
+
+                    if (!Directory.Exists(rutaUsuario))
                     {
-                        Archivo.SaveAs(Path.Combine(rutaGuardar, Carpeta.fk_id_usuario, archivo.nombre));
+                        Directory.CreateDirectory(rutaUsuario);
                     }
-                    Archivo.SaveAs(Path.Combine(rutaGuardar, Carpeta.fk_id_usuario, Carpeta.nombre, archivo.nombre));
+
+                    Archivo.SaveAs(Path.Combine(rutaUsuario, archivo.nombre));
                 }
                 catch (Exception ex)
                 {
-                    string msg = ex.Message;
-                    throw;
+                    mensaje = "Ocurrió un error al guardar el archivo: " + ex.Message;
+                    return Json(new { Respuesta = false, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
                 }
-
-                bool resultado = CN_Archivo.SubirArchivo(archivo, out mensaje);                
-                return Json(new { Respuesta = resultado, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
-            }            
+                                
+                int resultado = CN_Archivo.SubirArchivo(archivo, out mensaje);
+                return Json(new { Respuesta = (resultado == 1), Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            }
+            mensaje = "No se seleccionó ningún archivo.";
+            return Json(new { Respuesta = false, Mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
         // Metodo para Borrar archivos

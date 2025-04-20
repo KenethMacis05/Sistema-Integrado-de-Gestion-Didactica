@@ -17,7 +17,7 @@ namespace capa_negocio
             return CD_Archivo.Listar(id_carpeta, out resultado, out mensaje);
         }
 
-        public int Crear(ARCHIVO archivo, out string mensaje)
+        public int SubirArchivo(ARCHIVO archivo, out string mensaje)
         {
             mensaje = string.Empty;
             if (string.IsNullOrEmpty(archivo.nombre))
@@ -25,7 +25,8 @@ namespace capa_negocio
                 mensaje = "Por favor, ingrese el nombre del archivo";
             }
 
-            return CD_Archivo.SubirArchivo(archivo, out mensaje);
+            bool resultado = CD_Archivo.SubirArchivo(archivo, out mensaje);            
+            return resultado ? 1 : 0;
         }
     }
 }
