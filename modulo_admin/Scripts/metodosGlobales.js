@@ -114,13 +114,6 @@ function showLoadingAlert(titulo = "Eliminando", mensaje = "Por favor espere..."
     });
 }
 
-
-//Configuración del ICheck
-$('.checkboxIcheck').iCheck({
-    checkboxClass: 'icheckbox_flat-blue',
-    radioClass: 'iradio_flat-blue'
-});
-
 //Mostrar Loading
 const showLoading = (element) => {
     $(element).LoadingOverlay("show");
